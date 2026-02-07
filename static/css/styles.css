@@ -21,30 +21,32 @@ body {
 }
 
 /* Navbar */
-.navbar {
+/* Navbar styles are handled in base.html for glassmorphism */
+/* .navbar {
     background: rgba(255, 255, 255, 0.95) !important;
     backdrop-filter: blur(10px);
     box-shadow: var(--shadow-sm);
     border-bottom: var(--glass-border);
-}
+} */
 
-.navbar-brand {
+/* .navbar-brand {
     font-weight: 700;
     color: var(--primary-color) !important;
     font-size: 1.5rem;
     letter-spacing: -0.5px;
-}
+} */
 
-.nav-link {
+/* .nav-link {
     color: #4b5563 !important;
     font-weight: 500;
     transition: all 0.2s ease;
 }
 
-.nav-link:hover, .nav-link.active {
+.nav-link:hover,
+.nav-link.active {
     color: var(--primary-color) !important;
     transform: translateY(-1px);
-}
+} */
 
 /* Cards & Glassmorphism */
 .card {

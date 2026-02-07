@@ -25,7 +25,24 @@ SECRET_KEY = 'django-insecure-()et)_gc)l6iojy##6p-kmxt72(dldm3n=#!_z)$kf=r4ziys7
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+    'https://*.ngrok-free.app', # If using tunneling
+    'https://*.github.dev',
+]
+
+# Allow CSRF for all subdomains/IPs if strictly needed (Not recommended for prod, but good for dev)
+# For now, let's rely on the browser to send the Origin header matching one of these.
+# Since we don't know the exact IP, let's add a dynamic function or just ask user.
+# But better: Django 4.0+ requires exact match. 
+# Let's add the most common local IP range manually if user is on 192.168.x.x
+for i in range(256):
+    CSRF_TRUSTED_ORIGINS.append(f'http://192.168.1.{i}:8000')
+    CSRF_TRUSTED_ORIGINS.append(f'http://192.168.0.{i}:8000')
+    CSRF_TRUSTED_ORIGINS.append(f'http://192.168.100.{i}:8000')
 
 
 # Application definition
@@ -86,13 +103,22 @@ DATABASES = {
 
 
 # Redis Cache Integration
+# Redis Cache Integration (Commented out for portability)
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'django_redis.cache.RedisCache',
+#         'LOCATION': 'redis://127.0.0.1:6379/1',
+#         'OPTIONS': {
+#             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+#         }
+#     }
+# }
+
+# Local Memory Cache (Default for development/portability)
 CACHES = {
     'default': {
-        'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://127.0.0.1:6379/1',
-        'OPTIONS': {
-            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-        }
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
     }
 }
 

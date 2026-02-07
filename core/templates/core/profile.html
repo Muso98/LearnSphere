@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block title %}Profil - LearnSphere{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="glass-card mb-4 p-5 position-relative overflow-hidden">
+            <!-- Decorative Background Element -->
+            <div class="position-absolute top-0 start-0 w-100 h-100"
+                style="background: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 100%); pointer-events: none;">
+            </div>
+
+            <div class="text-center mb-5 position-relative">
+                <div class="position-relative d-inline-block">
+                    {% if user.profile_picture %}
+                    <img src="{{ user.profile_picture.url }}" alt="Profile Picture"
+                        class="rounded-circle shadow-lg border border-3 border-white"
+                        style="width: 150px; height: 150px; object-fit: cover;">
+                    {% else %}
+                    <div class="rounded-circle shadow-lg d-flex align-items-center justify-content-center text-white mx-auto border border-3 border-white"
+                        style="width: 150px; height: 150px; font-size: 4rem; background: var(--primary-gradient);">
+                        {{ user.first_name|first|default:user.username|first }}
+                    </div>
+                    {% endif %}
+                    <button class="btn btn-sm btn-primary rounded-circle position-absolute bottom-0 end-0 shadow"
+                        style="width: 40px; height: 40px;"
+                        onclick="document.getElementById('id_profile_picture').click()">
+                        <i class="bi bi-camera-fill"></i>
+                    </button>
+                </div>
+                <h2 class="mt-3 fw-bold mb-0 text-dark">{{ user.first_name }} {{ user.last_name }}</h2>
+                <p class="text-muted text-uppercase small fw-bold mb-2">{{ user.role }}</p>
+                <span class="badge bg-light text-dark border px-3 py-1 rounded-pill">@{{ user.username }}</span>
+            </div>
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="file" name="profile_picture" id="id_profile_picture" class="d-none"
+                    onchange="this.form.submit()">
+
+                <h5 class="fw-bold mb-4 border-bottom pb-2 text-primary"><i
+                        class="bi bi-person-lines-fill me-2"></i>Shaxsiy Ma'lumotlar</h5>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label text-secondary small fw-bold text-uppercase">Ism</label>
+                        <input type="text" name="first_name" class="form-control bg-light border-0 py-3"
+                            value="{{ user.first_name }}" placeholder="Ismingiz">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-secondary small fw-bold text-uppercase">Familiya</label>
+                        <input type="text" name="last_name" class="form-control bg-light border-0 py-3"
+                            value="{{ user.last_name }}" placeholder="Familiyangiz">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-secondary small fw-bold text-uppercase">Email</label>
+                        <input type="email" name="email" class="form-control bg-light border-0 py-3"
+                            value="{{ user.email }}" placeholder="Email manzilingiz">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-secondary small fw-bold text-uppercase">Telefon</label>
+                        <input type="text" name="phone" class="form-control bg-light border-0 py-3"
+                            value="{{ user.phone|default:'' }}" placeholder="+998...">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label text-secondary small fw-bold text-uppercase">Qisqacha ma'lumot
+                            (Bio)</label>
+                        <textarea name="bio" class="form-control bg-light border-0 py-3" rows="3"
+                            placeholder="O'zingiz haqida...">{{ user.bio|default:'' }}</textarea>
+                    </div>
+                </div>
+
+                <div class="text-end mt-4 pt-3 border-top">
+                    <button type="submit" class="btn btn-primary btn-lg rounded-pill shadow-lg px-5 fw-bold"
+                        style="background: var(--primary-gradient); border: none;">
+                        <i class="bi bi-check-lg me-2"></i> Saqlash
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        {% if user.role == 'parent' and children %}
+        <div class="glass-card p-4">
+            <h5 class="fw-bold mb-3 text-primary"><i class="bi bi-people-fill me-2"></i>Farzandlarim</h5>
+            <div class="list-group list-group-flush rounded-3">
+                {% for child in children %}
+                <div class="list-group-item bg-transparent border-light d-flex align-items-center p-3">
+                    <div class="rounded-circle bg-secondary bg-opacity-10 text-secondary d-flex align-items-center justify-content-center me-3"
+                        style="width: 40px; height: 40px;">
+                        <i class="bi bi-person"></i>
+                    </div>
+                    <div>
+                        <h6 class="mb-0 fw-bold">{{ child.first_name }} {{ child.last_name }}</h6>
+                        <small class="text-muted">{{ child.student_class }}</small>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

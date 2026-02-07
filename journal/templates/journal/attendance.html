@@ -3,97 +3,132 @@
 {% block title %}Davomat - LearnSphere{% endblock %}
 
 {% block content %}
-<h2>Kunlik Davomat</h2>
-
-<form method="get" class="row g-3 mb-4">
-    <div class="col-auto">
-        <select name="class_id" class="form-select" onchange="this.form.submit()">
-            <option value="">Sinfni Tanlang</option>
-            {% for c in classes %}
-            <option value="{{ c.id }}" {% if c.is_selected %}selected{% endif %}>{{ c.name }}</option>
-            {% endfor %}
-        </select>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold text-dark">Kunlik Davomat</h2>
+        <p class="text-muted">O'quvchilar davomatini qayd etish</p>
     </div>
     {% if selected_class %}
-    <div class="col-auto">
-        <a href="{% url 'export_attendance' %}?class_id={{ selected_class.id }}" class="btn btn-success">
-            <i class="bi bi-file-earmark-excel me-2"></i>Excel yuklab olish
-        </a>
-    </div>
+    <a href="{% url 'export_attendance' %}?class_id={{ selected_class.id }}"
+        class="btn btn-success rounded-pill shadow-sm">
+        <i class="bi bi-file-earmark-excel me-2"></i>Excel Yuklash
+    </a>
     {% endif %}
-</form>
+</div>
+
+<!-- Filter Section -->
+<div class="glass-card p-4 mb-4">
+    <form method="get" class="row g-3 align-items-end">
+        <div class="col-md-5">
+            <label class="form-label text-secondary small fw-bold text-uppercase">Sinf</label>
+            <select name="class_id" class="form-select border-0 bg-light" onchange="this.form.submit()"
+                style="padding: 0.8rem;">
+                <option value="">Sinfni Tanlang</option>
+                {% for c in classes %}
+                <option value="{{ c.id }}" {% if c.is_selected %}selected{% endif %}>{{ c.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-7">
+            {% if selected_class %}
+            <div class="alert alert-light border-0 mb-0 d-flex align-items-center">
+                <i class="bi bi-info-circle text-primary me-2"></i>
+                <small class="text-muted">Sinf tanlandi: <strong>{{ selected_class.name }}</strong></small>
+            </div>
+            {% endif %}
+        </div>
+    </form>
+</div>
 
 {% if selected_class %}
-<div class="card shadow-sm">
-    <div class="card-header bg-success text-white">
-        <h5 class="mb-0">Sinf: {{ selected_class.name }}</h5>
-        <small>Sana: {{ today }}</small>
+<div class="glass-card p-0 overflow-hidden">
+    <div class="p-4 border-bottom bg-light d-flex justify-content-between align-items-center">
+        <div>
+            <h5 class="fw-bold mb-0 text-primary">Sinf: {{ selected_class.name }}</h5>
+        </div>
+        <span class="badge bg-white text-dark border px-3 py-2 rounded-pill">
+            <i class="bi bi-calendar-event me-2"></i> {{ today|date:"d.m.Y" }}
+        </span>
     </div>
-    <div class="card-body p-0">
-        <form method="post" id="bulkAttendanceForm">
-            {% csrf_token %}
-            <input type="hidden" name="bulk_save" value="1">
-            <input type="hidden" name="date" value="{{ today|date:'Y-m-d' }}">
 
-            <div class="table-responsive">
-                <table class="table table-hover table-bordered mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th style="width: 50px;">#</th>
-                            <th>O'quvchi</th>
-                            <th style="width: 100px;" class="text-center">Keldi</th>
-                            <th style="width: 100px;" class="text-center">Kelmadi</th>
-                            <th style="width: 100px;" class="text-center">Kech qoldi</th>
-                            <th style="width: 100px;" class="text-center">Sababli</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for student in students %}
-                        <tr>
-                            <td class="text-center">{{ forloop.counter }}</td>
-                            <td>
-                                <strong>{{ student.first_name }} {{ student.last_name }}</strong>
-                                <br><small class="text-muted">{{ student.username }}</small>
-                            </td>
-                            <td class="text-center">
-                                <input type="radio" name="attendance_{{ student.id }}" value="present"
-                                    class="form-check-input" id="present_{{ student.id }}">
-                            </td>
-                            <td class="text-center">
-                                <input type="radio" name="attendance_{{ student.id }}" value="absent"
-                                    class="form-check-input" id="absent_{{ student.id }}">
-                            </td>
-                            <td class="text-center">
-                                <input type="radio" name="attendance_{{ student.id }}" value="late"
-                                    class="form-check-input" id="late_{{ student.id }}">
-                            </td>
-                            <td class="text-center">
-                                <input type="radio" name="attendance_{{ student.id }}" value="excused"
-                                    class="form-check-input" id="excused_{{ student.id }}">
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+    <form method="post" id="bulkAttendanceForm">
+        {% csrf_token %}
+        <input type="hidden" name="bulk_save" value="1">
+        <input type="hidden" name="date" value="{{ today|date:'Y-m-d' }}">
 
-            <div class="card-footer bg-light">
-                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-                    <div class="btn-group" role="group">
-                        <button type="button" class="btn btn-sm btn-outline-success" onclick="markAll('present')">
-                            <i class="bi bi-check-all me-1"></i>Barchasi keldi
-                        </button>
-                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="markAll('absent')">
-                            <i class="bi bi-x-circle me-1"></i>Barchasi kelmadi
-                        </button>
-                    </div>
-                    <button type="submit" class="btn btn-success">
-                        <i class="bi bi-check-circle me-2"></i>Davomatni saqlash
-                    </button>
-                </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="text-secondary text-uppercase small bg-light">
+                    <tr>
+                        <th class="ps-4 border-0" style="width: 50px;">#</th>
+                        <th class="border-0">O'quvchi</th>
+                        <th class="border-0 text-center">Keldi</th>
+                        <th class="border-0 text-center">Kelmadi</th>
+                        <th class="border-0 text-center">Kech qoldi</th>
+                        <th class="border-0 text-center">Sababli</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td class="ps-4 text-center text-muted fw-bold">{{ forloop.counter }}</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="rounded-circle bg-secondary bg-opacity-10 text-secondary d-flex align-items-center justify-content-center me-3"
+                                    style="width: 40px; height: 40px;">
+                                    {{ student.first_name|first }}
+                                </div>
+                                <div>
+                                    <h6 class="mb-0 fw-bold text-dark">{{ student.first_name }} {{ student.last_name }}
+                                    </h6>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            <input type="radio" name="attendance_{{ student.id }}" value="present" class="btn-check"
+                                id="present_{{ student.id }}" autocomplete="off">
+                            <label class="btn btn-outline-success btn-sm rounded-pill px-3"
+                                for="present_{{ student.id }}">Bor</label>
+                        </td>
+                        <td class="text-center">
+                            <input type="radio" name="attendance_{{ student.id }}" value="absent" class="btn-check"
+                                id="absent_{{ student.id }}" autocomplete="off">
+                            <label class="btn btn-outline-danger btn-sm rounded-pill px-3"
+                                for="absent_{{ student.id }}">Yo'q</label>
+                        </td>
+                        <td class="text-center">
+                            <input type="radio" name="attendance_{{ student.id }}" value="late" class="btn-check"
+                                id="late_{{ student.id }}" autocomplete="off">
+                            <label class="btn btn-outline-warning btn-sm rounded-pill px-3"
+                                for="late_{{ student.id }}">Kech</label>
+                        </td>
+                        <td class="text-center">
+                            <input type="radio" name="attendance_{{ student.id }}" value="excused" class="btn-check"
+                                id="excused_{{ student.id }}" autocomplete="off">
+                            <label class="btn btn-outline-secondary btn-sm rounded-pill px-3"
+                                for="excused_{{ student.id }}">Sababli</label>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="p-4 bg-light border-top d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-sm btn-outline-success" onclick="markAll('present')">
+                    <i class="bi bi-check-all me-1"></i>Barchasi keldi
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-danger" onclick="markAll('absent')">
+                    <i class="bi bi-x-circle me-1"></i>Barchasi kelmadi
+                </button>
             </div>
-        </form>
-    </div>
+            <button type="submit" class="btn btn-success shadow-sm px-4 py-2 border-0 rounded-pill"
+                style="font-weight: 600;">
+                <i class="bi bi-check-lg me-2"></i> Davomatni Saqlash
+            </button>
+        </div>
+    </form>
 </div>
 
 <script>
@@ -105,11 +140,14 @@
 </script>
 
 {% elif classes %}
-<div class="alert alert-info">
-    <i class="bi bi-info-circle me-2"></i>Iltimos, sinfni tanlang.
+<div class="glass-card p-5 text-center">
+    <div class="mb-3 text-muted opacity-50">
+        <i class="bi bi-calendar-check fs-1"></i>
+    </div>
+    <h5 class="text-muted">Davomatni boshlash uchun sinfni tanlang</h5>
 </div>
 {% else %}
-<div class="alert alert-warning">
+<div class="alert alert-warning glass-card border-0">
     <i class="bi bi-exclamation-triangle me-2"></i>Sinflar mavjud emas.
 </div>
 {% endif %}

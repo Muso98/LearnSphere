@@ -3,46 +3,86 @@
 {% block title %}Topshiriqlar - LearnSphere{% endblock %}
 
 {% block content %}
-<h2>{{ assignment.subject.name }} bo'yicha topshiriqlar</h2>
-<p class="text-muted">Muddat: {{ assignment.deadline }}</p>
-
-<div class="table-responsive">
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                <th>O'quvchi</th>
-                <th>Topshirilgan vaqt</th>
-                <th>Fayl</th>
-                <th>Baho</th>
-                <th>Amal</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for sub in submissions %}
-            <tr>
-                <td>{{ sub.student.first_name }} {{ sub.student.last_name }}</td>
-                <td>{{ sub.submitted_at }}</td>
-                <td><a href="{{ sub.file_submission.url }}" target="_blank" class="btn btn-sm btn-info">Faylni
-                        Ko'rish</a>
-                </td>
-                <td>
-                    {% if sub.grade %}
-                    <span class="badge bg-success">{{ sub.grade }}</span>
-                    {% else %}
-                    <span class="badge bg-warning text-dark">Baholanmagan</span>
-                    {% endif %}
-                </td>
-                <td>
-                    <a href="{% url 'grade_submission' sub.id %}" class="btn btn-sm btn-primary">Baholash</a>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="4">Topshiriqlar hali yo'q.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold text-dark">{{ assignment.subject.name }}</h2>
+        <p class="text-muted mb-0">Topshiriq muddati: {{ assignment.deadline|date:"d M, H:i" }}</p>
+    </div>
+    <a href="{% url 'assignment_list' %}" class="btn btn-outline-secondary rounded-pill border-0 shadow-sm bg-white">
+        <i class="bi bi-arrow-left me-2"></i>Orqaga
+    </a>
 </div>
-<a href="{% url 'assignment_list' %}" class="btn btn-primary mt-3">Vazifalarga qaytish</a>
+
+<div class="glass-card p-0 overflow-hidden">
+    <div class="p-4 border-bottom bg-light d-flex justify-content-between align-items-center">
+        <h5 class="fw-bold mb-0 text-primary">Topshirilgan Ishlar</h5>
+        <span class="badge bg-white text-dark border px-3 py-2 rounded-pill shadow-sm">
+            Jami: {{ submissions|length }}
+        </span>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover mb-0 align-middle">
+            <thead class="bg-light text-secondary text-uppercase small">
+                <tr>
+                    <th class="py-3 ps-4 border-0">O'quvchi</th>
+                    <th class="py-3 border-0">Vaqt</th>
+                    <th class="py-3 border-0">Fayl</th>
+                    <th class="py-3 border-0">Baho</th>
+                    <th class="py-3 border-0 text-end pe-4">Amal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sub in submissions %}
+                <tr>
+                    <td class="ps-4">
+                        <div class="d-flex align-items-center">
+                            <div class="rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center me-3"
+                                style="width: 40px; height: 40px;">
+                                {{ sub.student.first_name|first }}
+                            </div>
+                            <div>
+                                <h6 class="mb-0 fw-bold text-dark">{{ sub.student.first_name }} {{ sub.student.last_name
+                                    }}</h6>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="text-muted small">{{ sub.submitted_at|date:"d M, H:i" }}</td>
+                    <td>
+                        <a href="{{ sub.file_submission.url }}" target="_blank"
+                            class="btn btn-sm btn-light text-primary border rounded-pill px-3">
+                            <i class="bi bi-file-earmark-text me-1"></i>Fayl
+                        </a>
+                    </td>
+                    <td>
+                        {% if sub.grade %}
+                        <span
+                            class="badge bg-success bg-opacity-10 text-success border border-success px-3 py-1 rounded-pill">{{
+                            sub.grade }}</span>
+                        {% else %}
+                        <span
+                            class="badge bg-warning bg-opacity-10 text-warning border border-warning px-3 py-1 rounded-pill">Baholanmagan</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-end pe-4">
+                        <a href="{% url 'grade_submission' sub.id %}"
+                            class="btn btn-sm btn-primary rounded-pill px-3 shadow-sm">
+                            <i class="bi bi-star me-1"></i>Baholash
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center py-5">
+                        <div class="mb-3 text-muted opacity-25">
+                            <i class="bi bi-inbox fs-1"></i>
+                        </div>
+                        <p class="text-muted mb-0">Topshiriqlar hali yo'q.</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endblock %}

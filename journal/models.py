@@ -21,6 +21,7 @@ class Attendance(models.Model):
 
 class Grade(models.Model):
     student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='grades')
+    teacher = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='given_grades', null=True, blank=True)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     value = models.IntegerField()
     date = models.DateField()

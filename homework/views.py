@@ -52,6 +52,7 @@ def assignment_list(request):
                 assignments.append(a)
     elif request.user.role == 'teacher':
         assignments = Assignment.objects.filter(deadline__gte=today).order_by('deadline')
+        print(f"DEBUG: Found {assignments.count()} assignments for teacher")
         
     return render(request, 'homework/assignment_list.html', {'assignments': assignments, 'today': today})
 

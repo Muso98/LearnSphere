@@ -4,50 +4,84 @@
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>Vazifalar</h2>
+    <div>
+        <h2 class="fw-bold text-dark">Uy Vazifalari</h2>
+        <p class="text-muted">Joriy topshiriqlar va loyihalar</p>
+    </div>
     {% if user.role == 'teacher' %}
-    <a href="{% url 'create_assignment' %}" class="btn btn-success">Yangi Yaratish</a>
+    <a href="{% url 'create_assignment' %}" class="btn btn-success rounded-pill shadow-sm">
+        <i class="bi bi-plus-lg me-2"></i>Yangi Yaratish
+    </a>
     {% endif %}
 </div>
 
-<div class="row">
+<div class="row g-4">
     {% for assignment in assignments %}
-    <div class="col-md-6 mb-3">
-        <div class="card h-100">
-            <div class="card-header d-flex justify-content-between">
-                <span>{{ assignment.subject.name }}</span>
-                <span class="badge bg-danger">{{ assignment.deadline|date:"M d, H:i" }}</span>
+    <div class="col-md-6 col-lg-4">
+        <div class="glass-card h-100 p-0 d-flex flex-column">
+            <div class="p-3 border-bottom d-flex justify-content-between align-items-center bg-light bg-opacity-50">
+                <span class="badge bg-white text-primary border shadow-sm">
+                    {{ assignment.subject.name|default:"Fan Noma'lum" }}
+                </span>
+                <small class="text-danger fw-bold">
+                    <i class="bi bi-clock-history me-1"></i>
+                    {{ assignment.deadline|date:"d-M H:i"|default:"Muddatsiz" }}
+                </small>
             </div>
-            <div class="card-body">
-                <h5 class="card-title">{{ assignment.target_class.name }}</h5>
-                <p class="card-text">{{ assignment.description }}</p>
 
-                <div class="d-flex gap-2">
+            <div class="p-4 flex-grow-1">
+                <h5 class="fw-bold text-dark mb-2">{{ assignment.description|truncatewords:8 }}</h5>
+                <p class="text-muted small mb-3">{{ assignment.target_class.name }} sinfi uchun</p>
+
+                <div class="d-flex flex-wrap gap-2 mt-3">
                     {% if assignment.file_upload %}
-                    <a href="{{ assignment.file_upload.url }}" class="btn btn-sm btn-outline-primary"
-                        target="_blank">Ilova</a>
-                    {% endif %}
-
-                    {% if user.role == 'student' %}
-                    {% if assignment.is_submitted %}
-                    <span class="btn btn-sm btn-success disabled">Topshirildi</span>
-                    {% else %}
-                    <a href="{% url 'submit_homework' assignment.id %}" class="btn btn-sm btn-primary">Topshirish</a>
-                    {% endif %}
-                    {% elif user.role == 'teacher' %}
-                    <a href="{% url 'view_submissions' assignment.id %}"
-                        class="btn btn-sm btn-outline-info">Topshiriqlarni Ko'rish</a>
+                    <a href="{{ assignment.file_upload.url }}"
+                        class="btn btn-sm btn-outline-primary rounded-pill border-0 bg-primary bg-opacity-10"
+                        target="_blank">
+                        <i class="bi bi-paperclip me-1"></i>Ilova
+                    </a>
                     {% endif %}
                 </div>
             </div>
-            <div class="card-footer text-muted">
-                Muddat: {{ assignment.deadline|timeuntil }} qoldi
+
+            <div class="p-3 border-top bg-light bg-opacity-25 mt-auto">
+                <div class="d-grid">
+                    {% if user.role == 'student' %}
+                    {% if assignment.is_submitted %}
+                    <button class="btn btn-success rounded-pill shadow-sm disabled" style="opacity: 0.8;">
+                        <i class="bi bi-check-circle-fill me-2"></i>Topshirildi
+                    </button>
+                    {% else %}
+                    <a href="{% url 'submit_homework' assignment.id %}" class="btn btn-primary rounded-pill shadow-sm"
+                        style="background: var(--primary-gradient); border: none;">
+                        Topshirish <i class="bi bi-arrow-right ms-2"></i>
+                    </a>
+                    {% endif %}
+                    {% elif user.role == 'teacher' %}
+                    <a href="{% url 'view_submissions' assignment.id %}"
+                        class="btn btn-info text-white rounded-pill shadow-sm"
+                        style="background: linear-gradient(135deg, #36D1DC 0%, #5B86E5 100%); border: none;">
+                        <i class="bi bi-eye-fill me-2"></i>Javoblarni Ko'rish
+                    </a>
+                    {% endif %}
+                </div>
+                <div class="text-center mt-2">
+                    <small class="text-muted" style="font-size: 0.75rem;">
+                        Qolgan vaqt: {{ assignment.deadline|timeuntil }}
+                    </small>
+                </div>
             </div>
         </div>
     </div>
     {% empty %}
     <div class="col-12">
-        <p>Faol vazifalar yo'q.</p>
+        <div class="glass-card p-5 text-center">
+            <div class="mb-3 text-muted opacity-25">
+                <i class="bi bi-emoji-smile fs-1"></i>
+            </div>
+            <h5 class="fw-bold text-muted">Vazifalar yo'q</h5>
+            <p class="text-muted small">Ayni damda faol topshiriqlar mavjud emas.</p>
+        </div>
     </div>
     {% endfor %}
 </div>

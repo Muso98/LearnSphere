@@ -3,103 +3,193 @@
 {% block title %}Dars Jadvali - LearnSphere{% endblock %}
 
 {% block content %}
-<div class="row mb-4">
-    <div class="col-md-6">
-        <h2>Dars Jadvali</h2>
+<div class="d-flex justify-content-between align-items-center mb-4 unprintable">
+    <div>
+        <h2 class="fw-bold text-dark">Dars Jadvali</h2>
+        <p class="text-muted mb-0">Haftalik o'quv rejasi va mashg'ulotlar</p>
     </div>
-    <div class="col-md-6 text-end">
+    <div class="d-flex gap-2">
+        <button onclick="window.print()" class="btn btn-outline-secondary rounded-pill shadow-sm bg-white">
+            <i class="bi bi-printer me-2"></i>Chop etish
+        </button>
         {% if user.role == 'director' %}
-        <a href="{% url 'schedule_create' %}" class="btn btn-primary">
-            <i class="bi bi-plus-circle me-2"></i>Yangi dars qo'shish
+        <a href="{% url 'schedule_create' %}" class="btn btn-primary rounded-pill shadow-sm text-white"
+            style="background: var(--primary-gradient); border: none;">
+            <i class="bi bi-plus-lg me-2"></i>Yangi Dars
         </a>
         {% endif %}
     </div>
 </div>
 
 <!-- Filters -->
-<form method="get" class="row g-3 mb-4">
-    <div class="col-auto">
-        <select name="class_id" class="form-select" onchange="this.form.submit()">
-            <option value="">Barcha sinflar</option>
-            {% for class in classes %}
-            <option value="{{ class.id }}" {% if class.is_selected %}selected{% endif %}>{{ class.name }}</option>
-            {% endfor %}
-        </select>
-    </div>
-    <div class="col-auto">
-        <select name="teacher_id" class="form-select" onchange="this.form.submit()">
-            <option value="">Barcha o'qituvchilar</option>
-            {% for teacher in teachers %}
-            <option value="{{ teacher.id }}" {% if teacher.is_selected %}selected{% endif %}>{{ teacher.first_name }} {{
-                teacher.last_name }}</option>
-            {% endfor %}
-        </select>
-    </div>
-</form>
-
-<!-- Weekly Schedule Table -->
-<div class="table-responsive">
-    <table class="table table-bordered">
-        <thead class="table-light">
-            <tr>
-                <th style="width: 100px;">Vaqt</th>
-                <th>Dushanba</th>
-                <th>Seshanba</th>
-                <th>Chorshanba</th>
-                <th>Payshanba</th>
-                <th>Juma</th>
-                <th>Shanba</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for time_slot in "12345678"|make_list %}
-            <tr>
-                <td class="text-center align-middle">
-                    <strong>{{ forloop.counter }}-dars</strong>
-                </td>
-                {% for day, day_name in schedule_by_day.items %}
-                <td>
-                    {% for schedule in day_name %}
-                    <div class="card mb-2 border-primary">
-                        <div class="card-body p-2">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div>
-                                    <strong>{{ schedule.subject.name }}</strong><br>
-                                    <small class="text-muted">{{ schedule.class_obj.name }}</small><br>
-                                    <small>{{ schedule.teacher.first_name }} {{ schedule.teacher.last_name
-                                        }}</small><br>
-                                    <small><i class="bi bi-door-open me-1"></i>{{ schedule.room }}</small><br>
-                                    <small><i class="bi bi-clock me-1"></i>{{ schedule.start_time|time:"H:i" }} - {{
-                                        schedule.end_time|time:"H:i" }}</small>
-                                </div>
-                                {% if user.role == 'director' %}
-                                <div class="btn-group-vertical btn-group-sm">
-                                    <a href="{% url 'schedule_edit' schedule.id %}"
-                                        class="btn btn-sm btn-outline-primary">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <a href="{% url 'schedule_delete' schedule.id %}"
-                                        class="btn btn-sm btn-outline-danger"
-                                        onclick="return confirm('Rostdan ham o\'chirmoqchimisiz?')">
-                                        <i class="bi bi-trash"></i>
-                                    </a>
-                                </div>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
+<!-- Filters (Director Only) -->
+{% if user.role == 'director' %}
+<div class="glass-card p-4 mb-4 unprintable">
+    <form method="get" class="row g-3 align-items-end">
+        <div class="col-md-5">
+            <label class="form-label text-secondary small fw-bold text-uppercase">Sinf</label>
+            <div class="input-group">
+                <span class="input-group-text bg-white border-0 ps-3"><i class="bi bi-people text-muted"></i></span>
+                <select name="class_id" class="form-select border-0 bg-white shadow-none" onchange="this.form.submit()"
+                    style="cursor: pointer;">
+                    <option value="">Barcha sinflar</option>
+                    {% for class in classes %}
+                    <option value="{{ class.id }}" {% if class.is_selected %}selected{% endif %}>{{ class.name }}
+                    </option>
                     {% endfor %}
-                </td>
-                {% endfor %}
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-
-{% if not schedule_by_day.monday and not schedule_by_day.tuesday %}
-<div class="alert alert-info text-center">
-    <i class="bi bi-info-circle me-2"></i>Hozircha darslar qo'shilmagan.
+                </select>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <label class="form-label text-secondary small fw-bold text-uppercase">O'qituvchi</label>
+            <div class="input-group">
+                <span class="input-group-text bg-white border-0 ps-3"><i
+                        class="bi bi-person-badge text-muted"></i></span>
+                <select name="teacher_id" class="form-select border-0 bg-white shadow-none"
+                    onchange="this.form.submit()" style="cursor: pointer;">
+                    <option value="">Barcha o'qituvchilar</option>
+                    {% for teacher in teachers %}
+                    <option value="{{ teacher.id }}" {% if teacher.is_selected %}selected{% endif %}>{{
+                        teacher.first_name }} {{ teacher.last_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <a href="{% url 'schedule_list' %}" class="btn btn-light w-100 border text-muted shadow-sm"
+                style="padding: 0.7rem;">
+                <i class="bi bi-arrow-counterclockwise me-1"></i> Tozalash
+            </a>
+        </div>
+    </form>
 </div>
 {% endif %}
+
+<!-- Schedule Tabs & List View -->
+<div class="glass-card p-0 overflow-hidden unprintable">
+    <!-- Day Tabs -->
+    <ul class="nav nav-pills nav-fill p-3 bg-light bg-opacity-50 border-bottom" id="scheduleTabs" role="tablist">
+        {% for day, day_name in schedule_by_day.items %}
+        <li class="nav-item" role="presentation">
+            <button class="nav-link fw-bold text-uppercase py-3 {% if forloop.first %}active{% endif %}"
+                id="tab-{{ day }}" data-bs-toggle="pill" data-bs-target="#content-{{ day }}" type="button" role="tab">
+                {{ day }}
+            </button>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content p-4" id="scheduleTabContent">
+        {% for day, day_name in schedule_by_day.items %}
+        <div class="tab-pane fade {% if forloop.first %}show active{% endif %}" id="content-{{ day }}" role="tabpanel">
+            {% if day_name %}
+            <div class="d-flex flex-column gap-3">
+                {% for schedule in day_name %}
+                <div
+                    class="schedule-item-card d-flex align-items-center bg-white bg-opacity-50 p-3 rounded-3 shadow-sm border border-light">
+                    <!-- Time Column -->
+                    <div class="text-center px-4 border-end border-2 border-primary border-opacity-25"
+                        style="min-width: 120px;">
+                        <h5 class="fw-bold text-primary mb-0">{{ schedule.start_time|time:"H:i" }}</h5>
+                        <small class="text-muted">{{ schedule.end_time|time:"H:i" }}</small>
+                    </div>
+
+                    <!-- Subject & Teacher -->
+                    <div class="flex-grow-1 px-4">
+                        <h5 class="fw-bold text-dark mb-1">{{ schedule.subject.name|default:"Fan Noma'lum" }}</h5>
+                        <div class="d-flex align-items-center text-muted">
+                            <i class="bi bi-person-circle me-2 text-primary"></i>
+                            <span>{{ schedule.teacher.first_name }} {{ schedule.teacher.last_name }}</span>
+                            <span class="mx-2">•</span>
+                            <span class="badge bg-secondary bg-opacity-10 text-dark">{{ schedule.class_obj.name }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Room & Actions -->
+                    <div class="d-flex align-items-center px-3">
+                        <div class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill me-3">
+                            <i class="bi bi-geo-alt-fill me-1"></i> {{ schedule.room|default:"Xona yo'q" }}
+                        </div>
+
+                        {% if user.role == 'director' %}
+                        <div class="btn-group">
+                            <a href="{% url 'schedule_edit' schedule.id %}"
+                                class="btn btn-sm btn-light text-primary shadow-sm"><i class="bi bi-pencil"></i></a>
+                            <a href="{% url 'schedule_delete' schedule.id %}"
+                                class="btn btn-sm btn-light text-danger shadow-sm"
+                                onclick="return confirm('O\'chirilsinmi?')"><i class="bi bi-trash"></i></a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <div class="mb-3 text-muted opacity-25">
+                    <i class="bi bi-calendar-x fs-1"></i>
+                </div>
+                <h5 class="text-muted fw-bold">Darslar yo'q</h5>
+                <p class="text-muted small">Bu kun uchun dars jadvali hali tuzilmagan.</p>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Printable Table (Hidden on screen, Visible on Print) -->
+<div class="d-none d-print-block">
+    <div class="row g-4">
+        {% for day, day_name in schedule_by_day.items %}
+        <div class="col-4 mb-4 break-inside-avoid">
+            <h5 class="fw-bold border-bottom pb-2 mb-2">{{ day }}</h5>
+            {% for schedule in day_name %}
+            <div class="border mb-2 p-2 rounded">
+                <strong>{{ schedule.start_time|time:"H:i" }}</strong> - {{ schedule.subject.name }}<br>
+                <small>{{ schedule.teacher.last_name }} | Xona: {{ schedule.room }}</small>
+            </div>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    /* Tabs Styling */
+    .nav-pills .nav-link {
+        color: #6c757d;
+        border-radius: 0;
+        border-bottom: 3px solid transparent;
+        transition: all 0.3s ease;
+    }
+
+    .nav-pills .nav-link:hover {
+        background: rgba(79, 70, 229, 0.05);
+        color: var(--primary-color);
+    }
+
+    .nav-pills .nav-link.active {
+        background: transparent;
+        color: var(--primary-color);
+        border-bottom-color: var(--primary-color);
+    }
+
+    /* List Item Hover */
+    .schedule-item-card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .schedule-item-card:hover {
+        transform: translateX(5px);
+        background: white !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
+    }
+
+    /* Scrollbar hidden for cleaner look if needed */
+    .tab-content {
+        min-height: 400px;
+    }
+</style>
 {% endblock %}

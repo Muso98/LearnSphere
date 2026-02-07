@@ -1,139 +1,208 @@
 {% extends 'base.html' %}
 
-{% block title %}Student Dashboard - LearnSphere{% endblock %}
+{% block title %}Talaba Kabineti - LearnSphere{% endblock %}
 
 {% block content %}
-<h2>Student Dashboard</h2>
-<div class="row">
-    <div class="col-md-4 mb-4">
-        <div class="card bg-light">
-            <div class="card-body">
-                <h5 class="card-title">Profile</h5>
-                <p><strong>Name:</strong> {{ user.first_name }} {{ user.last_name }}</p>
-                <p><strong>Class:</strong> {{ user.student_class }}</p>
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="glass-card p-4 d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center">
+                <div class="rounded-circle text-white d-flex align-items-center justify-content-center me-4 shadow-lg"
+                    style="width: 80px; height: 80px; font-size: 2rem; background: var(--primary-gradient);">
+                    {{ user.first_name|first }}{{ user.last_name|first }}
+                </div>
+                <div>
+                    <h2 class="fw-bold mb-1">{{ user.first_name }} {{ user.last_name }}</h2>
+                    <p class="text-muted mb-0 fs-5">
+                        <i class="bi bi-mortarboard-fill me-2 text-primary"></i> Sinf: <strong>{{ user.student_class
+                            }}</strong>
+                    </p>
+                </div>
+            </div>
+            <div class="text-end d-none d-md-block">
+                <span class="badge bg-light text-dark border p-3 rounded-pill">
+                    <i class="bi bi-calendar-event me-2"></i> Bugun: {% now "d.m.Y" %}
+                </span>
             </div>
         </div>
     </div>
 </div>
 
-<ul class="nav nav-tabs" id="myTab" role="tablist">
-    <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="grades-tab" data-bs-toggle="tab" data-bs-target="#grades" type="button"
-            role="tab">Grades</button>
-    </li>
-    <li class="nav-item" role="presentation">
-        <button class="nav-link" id="attendance-tab" data-bs-toggle="tab" data-bs-target="#attendance" type="button"
-            role="tab">Attendance</button>
-    </li>
-    <li class="nav-item" role="presentation">
-        <button class="nav-link" id="competencies-tab" data-bs-toggle="tab" data-bs-target="#competencies" type="button"
-            role="tab">Kompetensiyalar (AI)</button>
-    </li>
-</ul>
-
-<div class="tab-content mt-3" id="myTabContent">
-    <div class="tab-pane fade show active" id="grades" role="tabpanel">
-        <div class="table-responsive">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Subject</th>
-                        <th>Grade</th>
-                        <th>Comment</th>
-                        <th>Teacher</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for grade in grades %}
-                    <tr>
-                        <td>{{ grade.date }}</td>
-                        <td>{{ grade.subject.name }}</td>
-                        <td><span class="badge bg-{{ grade.value|yesno:'danger,warning,warning,primary,success' }}">{{
-                                grade.value }}</span></td>
-                        <td>{{ grade.comment }}</td>
-                        <td>{{ grade.teacher }}</td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="5">No grades yet.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div class="tab-pane fade" id="attendance" role="tabpanel">
-        <div class="table-responsive">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for att in attendance %}
-                    <tr>
-                        <td>{{ att.date }}</td>
-                        <td>
-                            {% if att.status == 'present' %}<span class="badge bg-success">Present</span>
-                            {% elif att.status == 'absent' %}<span class="badge bg-danger">Absent</span>
-                            {% elif att.status == 'late' %}<span class="badge bg-warning text-dark">Late</span>
-                            {% else %}<span class="badge bg-secondary">Excused</span>{% endif %}
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="2">No attendance records.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+<div class="glass-card p-0 overflow-hidden" style="min-height: 500px;">
+    <div class="p-3 bg-light border-bottom">
+        <ul class="nav nav-pills nav-fill" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active rounded-pill fw-bold py-2 mx-1" id="grades-tab" data-bs-toggle="tab"
+                    data-bs-target="#grades" type="button" role="tab">
+                    <i class="bi bi-journal-check me-2"></i> Baholarim
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link rounded-pill fw-bold py-2 mx-1" id="attendance-tab" data-bs-toggle="tab"
+                    data-bs-target="#attendance" type="button" role="tab">
+                    <i class="bi bi-calendar-check me-2"></i> Davomat
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link rounded-pill fw-bold py-2 mx-1 position-relative" id="competencies-tab"
+                    data-bs-toggle="tab" data-bs-target="#competencies" type="button" role="tab">
+                    <i class="bi bi-cpu-fill me-2"></i> AI Kompetensiya
+                    <span
+                        class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle">
+                        <span class="visually-hidden">New alerts</span>
+                    </span>
+                </button>
+            </li>
+        </ul>
     </div>
 
-    <!-- AI & Competencies Tab -->
-    <div class="tab-pane fade" id="competencies" role="tabpanel">
-        <h4 class="mt-3 mb-3"><i class="bi bi-cpu-fill text-primary"></i> Mening Kompetensiyalarim (AI)</h4>
+    <div class="tab-content p-4" id="myTabContent">
+        <!-- Grades Tab -->
+        <div class="tab-pane fade show active" id="grades" role="tabpanel">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0"
+                    style="border-collapse: separate; border-spacing: 0 0.5rem;">
+                    <thead class="text-secondary text-uppercase small">
+                        <tr>
+                            <th class="border-0 ps-3">Sana</th>
+                            <th class="border-0">Fan</th>
+                            <th class="border-0 text-center">Baho</th>
+                            <th class="border-0">Izoh</th>
+                            <th class="border-0 pe-3">O'qituvchi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for grade in grades %}
+                        <tr class="bg-white shadow-sm rounded-3">
+                            <td class="ps-3 border-0 py-3 text-muted fw-medium">{{ grade.date|date:"d.m.Y" }}</td>
+                            <td class="border-0 fw-bold text-dark">{{ grade.subject.name }}</td>
+                            <td class="border-0 text-center">
+                                {% if grade.value >= 5 %}
+                                <span class="badge bg-success rounded-pill px-3 py-2">5 (A'lo)</span>
+                                {% elif grade.value == 4 %}
+                                <span class="badge bg-primary rounded-pill px-3 py-2">4 (Yaxshi)</span>
+                                {% elif grade.value == 3 %}
+                                <span class="badge bg-warning text-dark rounded-pill px-3 py-2">3 (Qon.)</span>
+                                {% else %}
+                                <span class="badge bg-danger rounded-pill px-3 py-2">{{ grade.value }} (Yomon)</span>
+                                {% endif %}
+                            </td>
+                            <td class="border-0 text-muted small">{{ grade.comment|default:"-" }}</td>
+                            <td class="border-0 pe-3 text-muted small">{{ grade.teacher.first_name }} {{
+                                grade.teacher.last_name|first }}.</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center py-5">
+                                <i class="bi bi-journal-x fs-1 text-muted opacity-50 mb-2 d-block"></i>
+                                <span class="text-muted">Hozircha baholar yo'q</span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-        {% if competencies %}
-        <div class="row">
-            {% for item in competencies %}
-            <div class="col-md-6 mb-4">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0 text-primary">{{ item.subject }}</h5>
-                        <span class="badge bg-info text-dark">AI Analiz</span>
-                    </div>
-                    <div class="card-body">
-                        <h6>O'zlashtirilishi kerak bo'lgan ko'nikmalar:</h6>
-                        <div class="d-flex flex-wrap gap-2 mb-3">
-                            {% for skill in item.skills %}
-                            <span class="badge rounded-pill bg-light text-dark border">{{ skill }}</span>
-                            {% empty %}
-                            <span class="text-muted small">Maxsus ko'nikmalar kiritilmagan.</span>
-                            {% endfor %}
-                        </div>
+        <!-- Attendance Tab -->
+        <div class="tab-pane fade" id="attendance" role="tabpanel">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="text-secondary text-uppercase small">
+                        <tr>
+                            <th class="border-0 ps-3">Sana</th>
+                            <th class="border-0">Holat</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for att in attendance %}
+                        <tr>
+                            <td class="ps-3 border-0 py-3 fw-medium">{{ att.date|date:"d.m.Y" }}</td>
+                            <td class="border-0">
+                                {% if att.status == 'present' %}
+                                <span
+                                    class="badge bg-success-subtle text-success border border-success px-3 rounded-pill"><i
+                                        class="bi bi-check-circle me-1"></i> Bor</span>
+                                {% elif att.status == 'absent' %}
+                                <span
+                                    class="badge bg-danger-subtle text-danger border border-danger px-3 rounded-pill"><i
+                                        class="bi bi-x-circle me-1"></i> Yo'q</span>
+                                {% elif att.status == 'late' %}
+                                <span
+                                    class="badge bg-warning-subtle text-warning border border-warning px-3 rounded-pill"><i
+                                        class="bi bi-clock me-1"></i> Kech</span>
+                                {% else %}
+                                <span
+                                    class="badge bg-secondary-subtle text-secondary border border-secondary px-3 rounded-pill"><i
+                                        class="bi bi-shield-check me-1"></i> Sababli</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="2" class="text-center py-5 text-muted">Davomat ma'lumotlari topilmadi.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-                        {% if item.metadata.ai_tutor %}
-                        <div class="alert alert-light border">
-                            <strong><i class="bi bi-robot"></i> AI Tutor Tavsiyasi:</strong>
-                            <p class="mb-0 small">{{ item.metadata.ai_tutor.recommendation|default:"Hozircha tavsiyalar
-                                yo'q." }}</p>
+        <!-- AI Competencies Tab -->
+        <div class="tab-pane fade" id="competencies" role="tabpanel">
+            <h5 class="fw-bold mb-4 text-dark"><i class="bi bi-stars text-warning me-2"></i>Sun'iy Intellekt Tahlili
+            </h5>
+
+            {% if competencies %}
+            <div class="row g-4">
+                {% for item in competencies %}
+                <div class="col-md-6 col-lg-6">
+                    <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden position-relative">
+                        <div class="position-absolute top-0 end-0 p-3 opacity-10">
+                            <i class="bi bi-cpu-fill fs-1 text-primary"></i>
                         </div>
-                        {% endif %}
+                        <div class="card-body p-4">
+                            <h5 class="fw-bold text-primary mb-3">{{ item.subject }}</h5>
+
+                            <h6 class="text-uppercase text-muted small fw-bold mb-2">Ko'nikmalar</h6>
+                            <div class="d-flex flex-wrap gap-2 mb-4">
+                                {% for skill in item.skills %}
+                                <span class="badge bg-light text-dark border px-3 py-2 rounded-pill fw-normal">
+                                    {{ skill }}
+                                </span>
+                                {% empty %}
+                                <span class="text-muted small fst-italic">Kiritilmagan</span>
+                                {% endfor %}
+                            </div>
+
+                            {% if item.metadata.ai_tutor.recommendation %}
+                            <div class="bg-primary bg-opacity-10 p-3 rounded-3 border border-primary border-opacity-10">
+                                <div class="d-flex gap-2">
+                                    <i class="bi bi-robot text-primary fs-5"></i>
+                                    <div>
+                                        <h6 class="fw-bold text-primary mb-1" style="font-size: 0.9rem;">AI Tutor
+                                            Maslahati:</h6>
+                                        <p class="mb-0 small text-dark opacity-75" style="line-height: 1.4;">
+                                            {{ item.metadata.ai_tutor.recommendation }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
+                {% endfor %}
             </div>
-            {% endfor %}
+            {% else %}
+            <div class="text-center py-5">
+                <div class="display-1 text-muted opacity-25 mb-3"><i class="bi bi-robot"></i></div>
+                <h5 class="text-muted">Hozircha ma'lumotlar yetarli emas</h5>
+                <p class="text-muted small">O'qituvchi baholash jarayonida kompetensiyalarni kiritgach, bu yerda AI
+                    tahlili paydo bo'ladi.</p>
+            </div>
+            {% endif %}
         </div>
-        {% else %}
-        <div class="alert alert-info">
-            <i class="bi bi-info-circle-fill me-2"></i> Hozircha sizning sinfingiz fanlari uchun kompetensiya
-            ma'lumotlari kiritilmagan.
-        </div>
-        {% endif %}
     </div>
 </div>
 {% endblock %}

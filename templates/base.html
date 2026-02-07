@@ -9,6 +9,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- HTMX -->
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     {% load static %}
@@ -17,86 +19,163 @@
     <link href="{% static 'css/mobile.css' %}" rel="stylesheet">
 
     <style>
-        html {
-            height: 100%;
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            --card-radius: 20px;
+            --body-bg: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            --sidebar-width: 280px;
+            --text-primary: #2d3748;
+            --text-secondary: #718096;
+            --nav-height: 70px;
         }
 
         body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--body-bg);
+            min-height: 100vh;
+            color: var(--text-primary);
+            padding-top: var(--nav-height);
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
-            padding-top: 70px;
+            overflow-x: hidden;
         }
 
-        .main-content {
-            flex: 1;
+        /* Glassmorphism Classes */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--card-radius);
+            box-shadow: var(--glass-shadow);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
         }
 
-        .footer {
-            margin-top: auto;
-            padding: 1.5rem 0;
-            background-color: white;
-            border-top: 1px solid rgba(0, 0, 0, 0.05);
-            text-align: center;
-            color: #6b7280;
-            font-size: 0.9rem;
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px 0 rgba(31, 38, 135, 0.2);
         }
 
-        /* Sidebar Styles */
+        /* Navbar Styling */
+        .navbar {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            height: var(--nav-height);
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.6rem;
+            background: var(--primary-gradient);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-link {
+            font-weight: 500;
+            color: var(--text-primary);
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover {
+            color: #764ba2;
+        }
+
+        /* Sidebar Styling */
         .sidebar {
             position: fixed;
-            top: 56px;
+            top: 0;
             left: 0;
             bottom: 0;
-            width: 250px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 1.5rem 0;
-            overflow-y: auto;
-            z-index: 1000;
-            transition: transform 0.3s ease;
+            width: var(--sidebar-width);
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-right: 1px solid var(--glass-border);
+            padding-top: calc(var(--nav-height) + 2rem);
+            padding-bottom: 2rem;
+            z-index: 100;
+            /* Below Navbar */
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .sidebar-nav {
             list-style: none;
-            padding: 0;
+            padding: 0 1.5rem;
             margin: 0;
         }
 
         .sidebar-nav li {
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.8rem;
         }
 
         .sidebar-nav a {
             display: flex;
             align-items: center;
-            padding: 0.75rem 1.5rem;
-            color: rgba(255, 255, 255, 0.8);
+            padding: 1rem 1.2rem;
+            color: var(--text-secondary);
             text-decoration: none;
-            transition: all 0.3s;
-            font-weight: 500;
+            font-weight: 600;
+            border-radius: 16px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
-        .sidebar-nav a:hover,
+        .sidebar-nav a:hover {
+            background: rgba(118, 75, 162, 0.05);
+            color: #764ba2;
+            transform: translateX(5px);
+        }
+
         .sidebar-nav a.active {
-            background: rgba(255, 255, 255, 0.1);
+            background: var(--primary-gradient);
             color: white;
-            border-left: 4px solid white;
+            box-shadow: 0 8px 20px rgba(118, 75, 162, 0.3);
         }
 
         .sidebar-nav a i {
-            margin-right: 0.75rem;
-            font-size: 1.2rem;
+            margin-right: 1.2rem;
+            font-size: 1.4rem;
+            transition: transform 0.3s;
+        }
+
+        .sidebar-nav a:hover i {
+            transform: scale(1.1);
         }
 
         .main-content {
-            margin-left: 250px;
-            transition: margin-left 0.3s ease;
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            padding: 2.5rem;
+            transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .footer {
+            margin-top: auto;
+            text-align: center;
+            color: var(--text-secondary);
+            padding: 2rem 0;
+            font-size: 0.9rem;
         }
 
         /* Mobile Responsive */
-        @media (max-width: 768px) {
+        @media (max-width: 991.98px) {
             .sidebar {
                 transform: translateX(-100%);
+                top: var(--nav-height);
+                width: 100%;
+                background: rgba(255, 255, 255, 0.95);
+                border-right: none;
+                padding-top: 1rem;
             }
 
             .sidebar.show {
@@ -105,27 +184,67 @@
 
             .main-content {
                 margin-left: 0;
-            }
-
-            .sidebar-toggle {
-                display: block !important;
+                padding: 1.5rem;
             }
         }
 
-        .sidebar-toggle {
-            display: none;
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 1001;
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(118, 75, 162, 0.2);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(118, 75, 162, 0.5);
+        }
+
+        /* Unified Button Styles */
+        .btn-primary {
+            background: var(--primary-gradient);
             border: none;
-            color: white;
-            font-size: 1.5rem;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-primary:hover {
+            filter: brightness(1.1);
+            transform: translateY(-1px);
+        }
+
+        /* Mobile Toggle */
+        .navbar-toggler {
+            border: none;
+            box-shadow: none !important;
+        }
+
+        .navbar-toggler:focus {
+            box-shadow: none;
+        }
+
+        /* Dropdown Animation */
+        .dropdown-menu {
+            animation: fadeIn 0.3s ease;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid var(--glass-border);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
     {% block extra_css %}{% endblock %}
@@ -134,62 +253,72 @@
 <body>
 
     <nav class="navbar navbar-expand-lg fixed-top">
-        <div class="container">
+        <div class="container-fluid px-lg-5">
             <a class="navbar-brand" href="/">
                 <i class="bi bi-mortarboard-fill me-2 text-primary"></i>LearnSphere
             </a>
+
+            {% if user.is_authenticated %}
+            <button class="navbar-toggler" type="button" onclick="toggleSidebar()">
+                <i class="bi bi-list fs-1 text-primary"></i>
+            </button>
+            {% else %}
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
+            {% endif %}
+
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    {% if user.is_authenticated %}
-                    {% if user.role == 'teacher' %}
-                    {% include 'partials/navbar_teacher.html' %}
-                    {% elif user.role == 'student' %}
-                    {% include 'partials/navbar_student.html' %}
-                    {% elif user.role == 'parent' %}
-                    {% include 'partials/navbar_parent.html' %}
-                    {% elif user.role == 'director' %}
-                    {% include 'partials/navbar_director.html' %}
-                    {% endif %}
-                    {% endif %}
+                <ul class="navbar-nav me-auto d-none d-lg-block">
+                    <!-- Desktop nav items if needed -->
                 </ul>
                 <ul class="navbar-nav ms-auto align-items-center">
                     {% if user.is_authenticated %}
-                    <li class="nav-item me-3">
-                        <a class="nav-link position-relative" href="{% url 'notifications' %}">
-                            <i class="bi bi-bell-fill fs-5"></i>
+                    <li class="nav-item me-4">
+                        <a class="nav-link position-relative btn btn-light rounded-circle shadow-sm"
+                            href="{% url 'notifications' %}"
+                            style="width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.5);">
+                            <i class="bi bi-bell-fill fs-5" style="color: #764ba2;"></i>
                             {% if unread_notifications_count > 0 %}
                             <span
-                                class="position-absolute top-10 start-100 translate-middle badge rounded-pill bg-danger"
-                                style="font-size: 0.6rem;">
-                                {{ unread_notifications_count }}
+                                class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-danger border border-white p-1"
+                                style="width: 12px; height: 12px; padding: 0;">
+                                <span class="visually-hidden">New alerts</span>
                             </span>
                             {% endif %}
                         </a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                            data-bs-toggle="dropdown">
-                            <i class="bi bi-person-circle me-1"></i> {{ user.first_name|default:user.username }}
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown"
+                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="rounded-circle text-white d-flex align-items-center justify-content-center me-2 shadow-sm"
+                                style="width: 40px; height: 40px; background: var(--primary-gradient);">
+                                {{ user.first_name|first|default:user.username|first }}
+                            </div>
+                            <span class="fw-bold d-none d-md-block">{{ user.first_name|default:user.username }}</span>
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
-                            <li><a class="dropdown-item" href="{% url 'profile' %}">Profil</a></li>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-4 mt-2 p-2">
+                            <li>
+                                <h6 class="dropdown-header text-uppercase small fw-bold">Profil boshqaruvi</h6>
+                            </li>
+                            <li><a class="dropdown-item rounded-3" href="{% url 'profile' %}"><i
+                                        class="bi bi-person-circle me-2"></i>Mening Profilim</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
                             <li>
-                                <form action="{% url 'logout' %}" method="post" class="d-inline">
+                                <form action="{% url 'logout' %}" method="post" class="d-inline w-100">
                                     {% csrf_token %}
-                                    <button type="submit" class="dropdown-item text-danger">Chiqish</button>
+                                    <button type="submit" class="dropdown-item rounded-3 text-danger"><i
+                                            class="bi bi-box-arrow-right me-2"></i>Chiqish</button>
                                 </form>
                             </li>
                         </ul>
                     </li>
                     {% else %}
                     <li class="nav-item">
-                        <a class="nav-link btn btn-primary text-white px-3" href="{% url 'login' %}">Kirish</a>
+                        <a class="nav-link btn btn-primary text-white px-4 rounded-pill shadow-sm"
+                            href="{% url 'login' %}">Kirish</a>
                     </li>
                     {% endif %}
                 </ul>
@@ -197,58 +326,85 @@
         </div>
     </nav>
 
-    <!-- Sidebar -->
     {% if user.is_authenticated %}
     <aside class="sidebar" id="sidebar">
         <ul class="sidebar-nav">
+            <li class="px-3 mb-3 text-muted text-uppercase small fw-bold">Menu</li>
+
             {% if user.role == 'student' %}
-            <li><a href="{% url 'student_dashboard' %}"><i class="bi bi-house-door-fill"></i> Bosh sahifa</a></li>
-            <li><a href="{% url 'student_dashboard' %}"><i class="bi bi-bar-chart-fill"></i> Baholarim</a></li>
-            <li><a href="{% url 'assignment_list' %}"><i class="bi bi-file-text-fill"></i> Vazifalar</a></li>
-            <li><a href="{% url 'notifications' %}"><i class="bi bi-bell-fill"></i> Bildirishnomalar</a></li>
-            <li><a href="{% url 'profile' %}"><i class="bi bi-person-fill"></i> Profil</a></li>
+            <li><a href="{% url 'student_dashboard' %}"
+                    class="{% if request.resolver_match.url_name == 'student_dashboard' %}active{% endif %}"><i
+                        class="bi bi-grid-fill"></i> Bosh sahifa</a></li>
+            <li><a href="{% url 'schedule_list' %}" class="{% if 'schedule' in request.path %}active{% endif %}"><i
+                        class="bi bi-calendar-week"></i> Dars Jadvali</a></li>
+            <li><a href="{% url 'assignment_list' %}" class="{% if 'assignments' in request.path %}active{% endif %}"><i
+                        class="bi bi-book-half"></i> Vazifalar</a></li>
+            <li><a href="{% url 'notifications' %}" class="{% if 'notifications' in request.path %}active{% endif %}"><i
+                        class="bi bi-bell-fill"></i> Bildirishnomalar</a></li>
+            <li><a href="{% url 'profile' %}" class="{% if 'profile' in request.path %}active{% endif %}"><i
+                        class="bi bi-person-bounding-box"></i> Profil</a></li>
 
             {% elif user.role == 'parent' %}
-            <li><a href="{% url 'parent_dashboard' %}"><i class="bi bi-house-door-fill"></i> Bosh sahifa</a></li>
-            <li><a href="{% url 'parent_dashboard' %}"><i class="bi bi-people-fill"></i> Farzandlarim</a></li>
-            <li><a href="{% url 'notifications' %}"><i class="bi bi-bell-fill"></i> Bildirishnomalar</a></li>
-            <li><a href="{% url 'profile' %}"><i class="bi bi-person-fill"></i> Profil</a></li>
+            <li><a href="{% url 'parent_dashboard' %}"
+                    class="{% if request.resolver_match.url_name == 'parent_dashboard' %}active{% endif %}"><i
+                        class="bi bi-grid-fill"></i> Bosh sahifa</a></li>
+            <li><a href="{% url 'notifications' %}" class="{% if 'notifications' in request.path %}active{% endif %}"><i
+                        class="bi bi-bell-fill"></i> Bildirishnomalar</a></li>
+            <li><a href="{% url 'profile' %}" class="{% if 'profile' in request.path %}active{% endif %}"><i
+                        class="bi bi-person-bounding-box"></i> Profil</a></li>
 
             {% elif user.role == 'teacher' %}
-            <li><a href="{% url 'home' %}"><i class="bi bi-house-door-fill"></i> Bosh sahifa</a></li>
-            <li><a href="{% url 'gradebook' %}"><i class="bi bi-journal-text"></i> Jurnal</a></li>
-            <li><a href="{% url 'attendance' %}"><i class="bi bi-calendar-check"></i> Davomat</a></li>
-            <li><a href="{% url 'schedule_list' %}"><i class="bi bi-calendar3"></i> Jadval</a></li>
-            <li><a href="{% url 'assignment_list' %}"><i class="bi bi-file-text-fill"></i> Vazifalar</a></li>
-            <li><a href="{% url 'notifications' %}"><i class="bi bi-bell-fill"></i> Bildirishnomalar</a></li>
-            <li><a href="{% url 'profile' %}"><i class="bi bi-person-fill"></i> Profil</a></li>
+            <li><a href="{% url 'home' %}" class="{% if request.path == '/' %}active{% endif %}"><i
+                        class="bi bi-house-door-fill"></i> Bosh sahifa</a></li>
+            <li><a href="{% url 'gradebook' %}" class="{% if 'gradebook' in request.path %}active{% endif %}"><i
+                        class="bi bi-journal-check"></i> Jurnal</a></li>
+            <li><a href="{% url 'attendance' %}" class="{% if 'attendance' in request.path %}active{% endif %}"><i
+                        class="bi bi-calendar-check"></i> Davomat</a></li>
+            <li><a href="{% url 'schedule_list' %}" class="{% if 'schedule' in request.path %}active{% endif %}"><i
+                        class="bi bi-calendar-week"></i> Dars Jadvali</a></li>
+            <li><a href="{% url 'assignment_list' %}" class="{% if 'assignments' in request.path %}active{% endif %}"><i
+                        class="bi bi-briefcase-fill"></i> Vazifalar</a></li>
+            <li><a href="{% url 'notifications' %}" class="{% if 'notifications' in request.path %}active{% endif %}"><i
+                        class="bi bi-bell-fill"></i> Bildirishnomalar</a></li>
+            <li><a href="{% url 'profile' %}" class="{% if 'profile' in request.path %}active{% endif %}"><i
+                        class="bi bi-person-bounding-box"></i> Profil</a></li>
 
             {% elif user.role == 'director' %}
-            <li><a href="{% url 'director_dashboard' %}"><i class="bi bi-house-door-fill"></i> Bosh sahifa</a></li>
-            <li><a href="{% url 'director_dashboard' %}"><i class="bi bi-graph-up"></i> Statistika</a></li>
-            <li><a href="{% url 'schedule_list' %}"><i class="bi bi-calendar3"></i> Jadval</a></li>
-            <li><a href="{% url 'notifications' %}"><i class="bi bi-bell-fill"></i> Bildirishnomalar</a></li>
-            <li><a href="{% url 'profile' %}"><i class="bi bi-person-fill"></i> Profil</a></li>
+            <li><a href="{% url 'director_dashboard' %}"
+                    class="{% if 'dashboard' in request.path %}active{% endif %}"><i class="bi bi-speedometer2"></i>
+                    Dashboard</a></li>
+            <li><a href="{% url 'schedule_list' %}" class="{% if 'schedule' in request.path %}active{% endif %}"><i
+                        class="bi bi-calendar3"></i> Jadval Boshqaruvi</a></li>
+            <li><a href="{% url 'notifications' %}" class="{% if 'notifications' in request.path %}active{% endif %}"><i
+                        class="bi bi-bell-fill"></i> Bildirishnomalar</a></li>
+            <li><a href="{% url 'profile' %}" class="{% if 'profile' in request.path %}active{% endif %}"><i
+                        class="bi bi-shield-lock-fill"></i> Profil</a></li>
             {% endif %}
         </ul>
-    </aside>
 
-    <!-- Mobile Toggle Button -->
-    <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
-        <i class="bi bi-list"></i>
-    </button>
+        <div class="mt-auto px-4 mb-3">
+            <div class="glass-card p-3 text-center border-0 bg-primary bg-opacity-10">
+                <small class="text-primary fw-bold">LearnSphere v1.0</small>
+                <br>
+                <small class="text-muted" style="font-size: 0.7rem;">AI Powered LMS</small>
+            </div>
+        </div>
+    </aside>
     {% endif %}
 
     <div class="container main-content">
         {% if messages %}
         <div class="row justify-content-center mb-4">
-            <div class="col-md-8">
+            <div class="col-md-9 col-lg-8">
                 {% for message in messages %}
-                <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm border-0" role="alert">
-                    {% if message.tags == 'success' %}<i class="bi bi-check-circle-fill me-2"></i>{% endif %}
-                    {% if message.tags == 'error' or message.tags == 'danger' %}<i
-                        class="bi bi-exclamation-triangle-fill me-2"></i>{% endif %}
-                    {{ message }}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm border-0 glass-card d-flex align-items-center"
+                    role="alert">
+                    {% if message.tags == 'success' %}
+                    <div class="rounded-circle bg-success text-white p-2 me-3"><i class="bi bi-check-lg"></i></div>
+                    {% elif message.tags == 'error' or message.tags == 'danger' %}
+                    <div class="rounded-circle bg-danger text-white p-2 me-3"><i class="bi bi-exclamation-lg"></i></div>
+                    {% endif %}
+                    <div>{{ message }}</div>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
                 {% endfor %}
@@ -261,7 +417,7 @@
 
     <footer class="footer">
         <div class="container">
-            <span>&copy; 2026 LearnSphere LMS. Ta'lim uchun yaratilgan.</span>
+            <span>&copy; 2026 LearnSphere LMS. Barcha huquqlar himoyalangan.</span>
         </div>
     </footer>
 
@@ -274,10 +430,10 @@
         // Close sidebar when clicking outside on mobile
         document.addEventListener('click', function (event) {
             const sidebar = document.getElementById('sidebar');
-            const toggle = document.getElementById('sidebarToggle');
-
-            if (sidebar && toggle && window.innerWidth <= 768) {
-                if (!sidebar.contains(event.target) && !toggle.contains(event.target)) {
+            // Check if click is outside sidebar and not on the toggler
+            if (sidebar && window.innerWidth <= 991) {
+                const toggler = document.querySelector('.navbar-toggler');
+                if (!sidebar.contains(event.target) && !toggler.contains(event.target) && sidebar.classList.contains('show')) {
                     sidebar.classList.remove('show');
                 }
             }

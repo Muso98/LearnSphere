@@ -9,10 +9,12 @@ from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
 
 @login_required
-@cache_page(60 * 15) # Cache for 15 minutes
+# @cache_page(60 * 15) # Cache for 15 minutes
 def schedule_list(request):
     """Display weekly schedule"""
-    if request.user.role not in ['teacher', 'director']:
+    # Allow students, teachers, and directors
+    allowed_roles = ['student', 'teacher', 'director']
+    if request.user.role not in allowed_roles:
         messages.error(request, "Ruxsat yo'q!")
         return redirect('home')
     
@@ -21,15 +23,34 @@ def schedule_list(request):
     teacher_filter = request.GET.get('teacher_id')
     
     # Convert to int if present
-    class_filter_int = int(class_filter) if class_filter else None
-    teacher_filter_int = int(teacher_filter) if teacher_filter else None
+    class_filter_int = int(class_filter) if class_filter and class_filter.isdigit() else None
+    teacher_filter_int = int(teacher_filter) if teacher_filter and teacher_filter.isdigit() else None
     
     schedules = Schedule.objects.select_related('class_obj', 'subject', 'teacher').all()
     
-    if class_filter_int:
-        schedules = schedules.filter(class_obj_id=class_filter_int)
-    if teacher_filter_int:
-        schedules = schedules.filter(teacher_id=teacher_filter_int)
+    # Role-based filtering logic
+    if request.user.role == 'student':
+        # Students see ONLY their assigned class
+        if request.user.student_class:
+            schedules = schedules.filter(class_obj=request.user.student_class)
+            class_filter_int = request.user.student_class.id # Lock filter UI
+        else:
+            schedules = Schedule.objects.none()
+            messages.warning(request, "Sizga sinf biriktirilmagan. Iltimos, ma'muriyatga murojaat qiling.")
+            
+    elif request.user.role == 'teacher':
+        # Teachers see ONLY their own schedule
+        schedules = schedules.filter(teacher=request.user)
+        # Note: We ignore teacher_filter_int from GET to prevent accessing others
+        # Class filtering is still allowed if valid logic permits, but UI is hidden.
+        # For simplicity, we just show their full schedule.
+
+    # Apply explicit filters (Only relevant for Director now)
+    if request.user.role == 'director':
+        if class_filter_int:
+            schedules = schedules.filter(class_obj_id=class_filter_int)
+        if teacher_filter_int:
+            schedules = schedules.filter(teacher_id=teacher_filter_int)
     
     # Organize by day
     days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
@@ -37,7 +58,7 @@ def schedule_list(request):
     for day in days:
         schedule_by_day[day] = schedules.filter(day_of_week=day).order_by('start_time')
     
-    # Mark selected items
+    # Mark selected items for UI
     classes = Class.objects.all()
     for c in classes:
         c.is_selected = (class_filter_int == c.id)
@@ -50,6 +71,7 @@ def schedule_list(request):
         'schedule_by_day': schedule_by_day,
         'classes': classes,
         'teachers': teachers,
+        'user_role': request.user.role, # Pass role explicitly if needed
     }
     return render(request, 'schedule/schedule_list.html', context)
 

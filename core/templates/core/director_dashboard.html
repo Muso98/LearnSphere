@@ -3,62 +3,336 @@
 {% block title %}Director Dashboard - LearnSphere{% endblock %}
 
 {% block content %}
-<h2>Director Overview</h2>
+<style>
+    :root {
+        --glass-bg: rgba(255, 255, 255, 0.7);
+        --glass-border: rgba(255, 255, 255, 0.5);
+        --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+        --card-radius: 20px;
+    }
 
-<div class="row mb-4">
+    body {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        min-height: 100vh;
+    }
+
+    .glass-card {
+        background: var(--glass-bg);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--card-radius);
+        box-shadow: var(--glass-shadow);
+        transition: transform 0.3s ease;
+    }
+
+    .glass-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .stat-card {
+        color: white;
+        border: none;
+        border-radius: var(--card-radius);
+    }
+
+    .bg-gradient-primary {
+        background: linear-gradient(45deg, #4e54c8, #8f94fb);
+    }
+
+    .bg-gradient-success {
+        background: linear-gradient(45deg, #11998e, #38ef7d);
+    }
+
+    .bg-gradient-warning {
+        background: linear-gradient(45deg, #fce38a, #f38181);
+    }
+
+    .chart-container {
+        position: relative;
+        height: 300px;
+        width: 100%;
+    }
+
+    .table-modern thead th {
+        border-top: none;
+        border-bottom: 2px solid #eee;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        color: #666;
+    }
+
+    .avatar-circle {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #eee;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: #555;
+    }
+</style>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold text-dark">Director Dashboard</h2>
+        <p class="text-muted">Maktab faoliyati bo'yicha sun'iy intellekt tahlili</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="{% url 'export_students' %}" class="btn btn-dark rounded-pill shadow-sm">
+            <i class="bi bi-download me-2"></i>Hisobotni Yuklash
+        </a>
+        <a href="{% url 'import_students' %}" class="btn btn-light rounded-pill shadow-sm border">
+            <i class="bi bi-upload me-2"></i>Import
+        </a>
+    </div>
+</div>
+
+<!-- Stats Row -->
+<div class="row mb-4 g-4">
     <div class="col-md-4">
-        <div class="card text-white bg-primary mb-3">
-            <div class="card-header">Total Students</div>
-            <div class="card-body">
-                <h5 class="card-title display-4">{{ total_students }}</h5>
+        <div class="card stat-card bg-gradient-primary h-100 shadow-lg p-3">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="text-uppercase mb-2 opacity-75">O'quvchilar</h6>
+                    <h2 class="display-5 fw-bold mb-0">{{ total_students }}</h2>
+                </div>
+                <i class="bi bi-people-fill fs-1 opacity-50"></i>
             </div>
         </div>
     </div>
     <div class="col-md-4">
-        <div class="card text-white bg-success mb-3">
-            <div class="card-header">Total Teachers</div>
-            <div class="card-body">
-                <h5 class="card-title display-4">{{ total_teachers }}</h5>
+        <div class="card stat-card bg-gradient-success h-100 shadow-lg p-3">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="text-uppercase mb-2 opacity-75">O'qituvchilar</h6>
+                    <h2 class="display-5 fw-bold mb-0">{{ total_teachers }}</h2>
+                </div>
+                <i class="bi bi-person-workspace fs-1 opacity-50"></i>
             </div>
         </div>
     </div>
     <div class="col-md-4">
-        <div class="card text-white bg-warning mb-3">
-            <div class="card-header">Active Classes</div>
-            <div class="card-body">
-                <h5 class="card-title display-4">{{ total_classes }}</h5>
+        <div class="card stat-card bg-gradient-warning h-100 shadow-lg p-3">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="text-uppercase mb-2 opacity-75">Faol Sinflar</h6>
+                    <h2 class="display-5 fw-bold mb-0">{{ total_classes }}</h2>
+                </div>
+                <i class="bi bi-mortarboard-fill fs-1 opacity-50"></i>
             </div>
         </div>
     </div>
 </div>
 
-<div class="card">
-    <div class="card-header">Recent Academic Activity</div>
-    <div class="card-body">
-        <table class="table table-hover">
-            <thead>
+<!-- Charts Section -->
+<div class="row mb-4 g-4">
+    <div class="col-md-8">
+        <div class="glass-card h-100 p-4">
+            <h5 class="fw-bold mb-4 text-dark">
+                <i class="bi bi-bar-chart-fill text-primary me-2"></i>Fanlar O'zlashtirishi
+            </h5>
+            <div class="chart-container">
+                <canvas id="subjectChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="glass-card h-100 p-4">
+            <h5 class="fw-bold mb-4 text-dark">
+                <i class="bi bi-pie-chart-fill text-success me-2"></i>Davomat Tahlili
+            </h5>
+            <div class="chart-container">
+                <canvas id="attendanceChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Ratings Section -->
+<div class="row mb-4 g-4">
+    <div class="col-md-6">
+        <div class="glass-card h-100 p-0 overflow-hidden">
+            <div class="p-4 bg-light bg-opacity-50 border-bottom d-flex align-items-center">
+                <i class="bi bi-trophy-fill text-warning fs-4 me-3"></i>
+                <h5 class="fw-bold mb-0 text-dark">Top 5 Faol O'qituvchilar</h5>
+            </div>
+            <div class="list-group list-group-flush">
+                {% for t in top_teachers %}
+                <div
+                    class="list-group-item border-0 d-flex justify-content-between align-items-center py-3 px-4 bg-transparent show-on-hover">
+                    <div class="d-flex align-items-center">
+                        <div class="avatar-circle me-3 bg-white shadow-sm text-primary border">
+                            {{ t.teacher__first_name|default:""|first }}{{ t.teacher__last_name|default:""|first }}
+                        </div>
+                        <div>
+                            <h6 class="mb-0 fw-bold text-dark">{{ t.teacher__first_name }} {{ t.teacher__last_name }}
+                            </h6>
+                            <small class="text-muted">Faoliyat reytingi</small>
+                        </div>
+                    </div>
+                    <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-3 py-2 border border-primary border-opacity-25">{{ t.grade_count|default:0 }} ta baho</span>
+                </div>
+                {% empty %}
+                <div class="p-4 text-center text-muted">Ma'lumotlar yetarli emas</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="glass-card h-100 p-0 overflow-hidden">
+            <div class="p-4 bg-light bg-opacity-50 border-bottom d-flex align-items-center">
+                <i class="bi bi-award-fill text-info fs-4 me-3"></i>
+                <h5 class="fw-bold mb-0 text-dark">Top 5 A'lochi O'quvchilar</h5>
+            </div>
+            <div class="list-group list-group-flush">
+                {% for s in top_students %}
+                <div
+                    class="list-group-item border-0 d-flex justify-content-between align-items-center py-3 px-4 bg-transparent show-on-hover">
+                    <div class="d-flex align-items-center">
+                        <div class="avatar-circle me-3 bg-white shadow-sm text-success border">
+                            {{ s.student__first_name|default:""|first }}{{ s.student__last_name|default:""|first }}
+                        </div>
+                        <div>
+                            <h6 class="mb-0 fw-bold text-dark">{{ s.student__first_name }} {{ s.student__last_name }}
+                            </h6>
+                            <small class="text-muted">{{ s.student__student_class__name }} sinf</small>
+                        </div>
+                    </div>
+                    <span
+                        class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-2 border border-success border-opacity-25">GPA:
+                        {{ s.gpa|floatformat:1 }}</span>
+                </div>
+                {% empty %}
+                <div class="p-4 text-center text-muted">Ma'lumotlar yetarli emas</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="glass-card mb-4 p-0 overflow-hidden">
+    <div class="p-4 border-bottom bg-light bg-opacity-50">
+        <h5 class="fw-bold mb-0 text-dark"><i class="bi bi-activity me-2 text-secondary"></i>So'nggi Akademik Faoliyat
+        </h5>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover mb-0 align-middle">
+            <thead class="bg-light bg-opacity-75 text-secondary text-uppercase small">
                 <tr>
-                    <th>Date</th>
-                    <th>Student</th>
-                    <th>Class</th>
-                    <th>Subject</th>
-                    <th>Grade</th>
-                    <th>Teacher</th>
+                    <th class="py-3 ps-4 border-0">Sana</th>
+                    <th class="py-3 border-0">O'quvchi</th>
+                    <th class="py-3 border-0">Sinf</th>
+                    <th class="py-3 border-0">Fan</th>
+                    <th class="py-3 border-0">Baho</th>
+                    <th class="py-3 border-0 pe-4">O'qituvchi</th>
                 </tr>
             </thead>
             <tbody>
                 {% for grade in recent_grades %}
                 <tr>
-                    <td>{{ grade.date }}</td>
-                    <td>{{ grade.student.first_name }} {{ grade.student.last_name }}</td>
-                    <td>{{ grade.student.student_class }}</td>
-                    <td>{{ grade.subject.name }}</td>
-                    <td>{{ grade.value }}</td>
-                    <td>{{ grade.teacher }}</td>
+                    <td class="ps-4 text-muted small">{{ grade.date }}</td>
+                    <td class="fw-bold text-dark">{{ grade.student.first_name }} {{ grade.student.last_name }}</td>
+                    <td><span class="badge bg-light text-dark border">{{ grade.student.student_class }}</span></td>
+                    <td class="text-secondary">{{ grade.subject.name }}</td>
+                    <td>
+                        {% if grade.value >= 5 %}
+                        <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-pill px-3">5 (A'lo)</span>
+                        {% elif grade.value == 4 %}
+                        <span class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-25 rounded-pill px-3">4 (Yaxshi)</span>
+                        {% else %}
+                        <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 rounded-pill px-3">{% firstof grade.value "N/A" %}</span>
+                        {% endif %}
+                    </td>
+                    <td class="pe-4 text-muted small">{% firstof grade.teacher.first_name "" %} {% firstof grade.teacher.last_name "" %}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    Chart.defaults.font.family = "'Segoe UI', 'Roboto', sans-serif";
+    Chart.defaults.color = '#666';
+
+    // Subject Performance Chart
+    const ctxSubject = document.getElementById('subjectChart').getContext('2d');
+    const gradientSubject = ctxSubject.createLinearGradient(0, 0, 0, 400);
+    gradientSubject.addColorStop(0, 'rgba(78, 84, 200, 0.5)');
+    gradientSubject.addColorStop(1, 'rgba(78, 84, 200, 0.0)');
+
+    new Chart(ctxSubject, {
+        type: 'line',
+        data: {
+            labels: {{ subject_labels| safe }},
+        datasets: [{
+            label: "O'rtacha Baho",
+            data: {{ subject_data| safe }},
+        backgroundColor: gradientSubject,
+        borderColor: '#4e54c8',
+        borderWidth: 3,
+        pointBackgroundColor: '#fff',
+        pointBorderColor: '#4e54c8',
+        pointRadius: 6,
+        fill: true,
+        tension: 0.4
+            }]
+        },
+        options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { display: false }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                max: 5,
+                grid: { borderDash: [5, 5] }
+            },
+            x: {
+                grid: { display: false }
+            }
+        }
+    }
+    });
+
+    // Attendance Chart
+    const ctxAttendance = document.getElementById('attendanceChart').getContext('2d');
+    new Chart(ctxAttendance, {
+        type: 'doughnut',
+        data: {
+            labels: {{ attendance_labels| safe }},
+        datasets: [{
+            data: {{ attendance_data| safe }},
+        backgroundColor: [
+            '#38ef7d',
+            '#f38181',
+            '#fce38a',
+            '#a8a4e6'
+        ],
+        borderWidth: 0,
+        hoverOffset: 10
+            }]
+        },
+        options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '70%',
+        plugins: {
+            legend: {
+                position: 'bottom',
+                labels: { usePointStyle: true, padding: 20 }
+            }
+        }
+    }
+    });
+</script>
 {% endblock %}

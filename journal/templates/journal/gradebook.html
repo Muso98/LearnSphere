@@ -3,141 +3,159 @@
 {% block title %}Jurnal - LearnSphere{% endblock %}
 
 {% block content %}
-<h2>O'qituvchi Jurnali</h2>
-
-<form method="get" class="row g-3 mb-4">
-    <div class="col-auto">
-        <select name="class_id" class="form-select">
-            <option value="">Sinfni tanlang</option>
-            {% for c in classes %}
-            <option value="{{ c.id }}" {% if c.is_selected %}selected{% endif %}>{{ c.name }}</option>
-            {% endfor %}
-        </select>
-    </div>
-    <div class="col-auto">
-        <select name="subject_id" class="form-select">
-            <option value="">Fanni tanlang</option>
-            {% for s in subjects %}
-            <option value="{{ s.id }}" {% if s.is_selected %}selected{% endif %}>{{ s.name }}</option>
-            {% endfor %}
-        </select>
-    </div>
-    <div class="col-auto">
-        <button type="submit" class="btn btn-primary">Ko'rsatish</button>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold text-dark">O'qituvchi Jurnali</h2>
+        <p class="text-muted">O'quvchilarni baholash va kompetensiyalarni belgilash</p>
     </div>
     {% if selected_class and selected_subject %}
-    <div class="col-auto">
-        <a href="{% url 'export_grades' %}?class_id={{ selected_class.id }}&subject_id={{ selected_subject.id }}"
-            class="btn btn-success">
-            <i class="bi bi-file-earmark-excel me-2"></i>Excel yuklab olish
-        </a>
-    </div>
+    <a href="{% url 'export_grades' %}?class_id={{ selected_class.id }}&subject_id={{ selected_subject.id }}"
+        class="btn btn-success rounded-pill shadow-sm">
+        <i class="bi bi-file-earmark-excel me-2"></i>Excel Yuklash
+    </a>
     {% endif %}
-</form>
+</div>
+
+<!-- Filter Section -->
+<div class="glass-card p-4 mb-4">
+    <form method="get" class="row g-3 align-items-end">
+        <div class="col-md-4">
+            <label class="form-label text-secondary small fw-bold text-uppercase">Sinf</label>
+            <select name="class_id" class="form-select border-0 bg-light" style="padding: 0.8rem;">
+                <option value="">Sinfni tanlang</option>
+                {% for c in classes %}
+                <option value="{{ c.id }}" {% if c.is_selected %}selected{% endif %}>{{ c.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label text-secondary small fw-bold text-uppercase">Fan</label>
+            <select name="subject_id" class="form-select border-0 bg-light" style="padding: 0.8rem;">
+                <option value="">Fanni tanlang</option>
+                {% for s in subjects %}
+                <option value="{{ s.id }}" {% if s.is_selected %}selected{% endif %}>{{ s.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-4">
+            <button type="submit" class="btn btn-primary w-100 shadow-sm border-0"
+                style="background: var(--primary-gradient); padding: 0.8rem; font-weight: 600;">
+                <i class="bi bi-search me-2"></i> Jurnalni Ochish
+            </button>
+        </div>
+    </form>
+</div>
 
 {% if selected_class and selected_subject %}
-<div class="card shadow-sm">
-    <div class="card-header bg-primary text-white">
-        <h5 class="mb-0">{{ selected_class.name }} - {{ selected_subject.name }}</h5>
-        <small>Sana: {{ today }}</small>
+<div class="glass-card p-0 overflow-hidden">
+    <div class="p-4 border-bottom bg-light d-flex justify-content-between align-items-center">
+        <div>
+            <h5 class="fw-bold mb-0 text-primary">{{ selected_class.name }} - {{ selected_subject.name }}</h5>
+        </div>
+        <span class="badge bg-white text-dark border px-3 py-2 rounded-pill">
+            <i class="bi bi-calendar-event me-2"></i> {{ today|date:"d.m.Y" }}
+        </span>
     </div>
-    <div class="card-body p-0">
-        <form method="post" id="bulkGradeForm">
-            {% csrf_token %}
-            <input type="hidden" name="bulk_save" value="1">
-            <input type="hidden" name="date" value="{{ today|date:'Y-m-d' }}">
 
-            <div class="table-responsive">
-                <table class="table table-hover table-bordered mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th style="width: 50px;">#</th>
-                            <th>O'quvchi</th>
-                            <th style="width: 200px;">Baho (1-5)</th>
-                            {% if selected_subject.metadata.competencies %}
-                            <th>Kompetensiya</th>
-                            {% endif %}
-                            <th>Izoh (ixtiyoriy)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for student in students %}
-                        <tr>
-                            <td class="text-center">{{ forloop.counter }}</td>
-                            <td>
-                                <strong>{{ student.first_name }} {{ student.last_name }}</strong>
-                                <br><small class="text-muted">{{ student.username }}</small>
-                            </td>
-                            <td>
-                                <input type="number" name="grade_{{ student.id }}" class="form-control grade-input"
-                                    min="1" max="5" placeholder="1-5" data-student-id="{{ student.id }}">
-                            </td>
-                            {% if selected_subject.metadata.competencies %}
-                            <td>
-                                <select name="competency_{{ student.id }}" class="form-select form-select-sm">
-                                    <option value="">Tanlang...</option>
-                                    {% for comp in selected_subject.metadata.competencies %}
-                                    <option value="{{ comp }}">{{ comp }}</option>
-                                    {% endfor %}
-                                </select>
-                            </td>
-                            {% endif %}
-                            <td>
-                                <textarea name="comment_{{ student.id }}" class="form-control" rows="1"
-                                    placeholder="Masalan: Vazifani qisman bajardi"></textarea>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+    <form method="post" id="bulkGradeForm">
+        {% csrf_token %}
+        <input type="hidden" name="bulk_save" value="1">
+        <input type="hidden" name="date" value="{{ today|date:'Y-m-d' }}">
 
-            <div class="card-footer bg-light">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <small class="text-muted">
-                            <i class="bi bi-info-circle me-1"></i>
-                            Tab tugmasi bilan keyingi o'quvchiga o'ting
-                        </small>
-                    </div>
-                    <button type="submit" class="btn btn-success">
-                        <i class="bi bi-check-circle me-2"></i>Barcha baholarni saqlash
-                    </button>
-                </div>
-            </div>
-        </form>
-    </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="text-secondary text-uppercase small bg-light">
+                    <tr>
+                        <th class="ps-4 border-0" style="width: 50px;">#</th>
+                        <th class="border-0">O'quvchi</th>
+                        <th class="border-0" style="width: 150px;">Baho (1-5)</th>
+                        {% if selected_subject.metadata.competencies %}
+                        <th class="border-0">Kompetensiya</th>
+                        {% endif %}
+                        <th class="pe-4 border-0">Izoh</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td class="ps-4 text-center text-muted fw-bold">{{ forloop.counter }}</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="rounded-circle bg-secondary bg-opacity-10 text-secondary d-flex align-items-center justify-content-center me-3"
+                                    style="width: 40px; height: 40px;">
+                                    {{ student.first_name|first }}
+                                </div>
+                                <div>
+                                    <h6 class="mb-0 fw-bold text-dark">{{ student.first_name }} {{ student.last_name }}
+                                    </h6>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <input type="number" name="grade_{{ student.id }}"
+                                class="form-control text-center fw-bold border-0 bg-light grade-input" min="1" max="5"
+                                placeholder="-" data-student-id="{{ student.id }}" style="height: 45px;">
+                        </td>
+                        {% if selected_subject.metadata.competencies %}
+                        <td>
+                            <select name="competency_{{ student.id }}"
+                                class="form-select border-0 bg-light text-muted small" style="height: 45px;">
+                                <option value="">Tanlang...</option>
+                                {% for comp in selected_subject.metadata.competencies %}
+                                <option value="{{ comp }}">{{ comp }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                        {% endif %}
+                        <td class="pe-4">
+                            <input type="text" name="comment_{{ student.id }}"
+                                class="form-control border-0 bg-light small" placeholder="Izoh..."
+                                style="height: 45px;">
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="p-4 bg-light border-top d-flex justify-content-between align-items-center">
+            <small class="text-muted d-none d-md-block">
+                <i class="bi bi-keyboard me-1"></i> <strong>Tab</strong> tugmasi orqali tezkor o'tish
+            </small>
+            <button type="submit" class="btn btn-success shadow-sm px-4 py-2 border-0 rounded-pill"
+                style="font-weight: 600;">
+                <i class="bi bi-check-lg me-2"></i> Saqlash
+            </button>
+        </div>
+    </form>
 </div>
 
 <script>
-    // Klaviatura navigatsiyasi
-    document.querySelectorAll('.grade-input').forEach((input, index, inputs) => {
-        input.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                if (index < inputs.length - 1) {
-                    inputs[index + 1].focus();
-                } else {
-                    document.getElementById('bulkGradeForm').submit();
-                }
-            }
-        });
-
-        // Faqat 1-5 raqamlarni qabul qilish
+    document.querySelectorAll('.grade-input').forEach(input => {
         input.addEventListener('input', (e) => {
-            const value = parseInt(e.target.value);
-            if (value < 1) e.target.value = '';
-            if (value > 5) e.target.value = '5';
+            const val = parseInt(e.target.value);
+            if (val > 5) e.target.value = 5;
+            if (val < 1 && e.target.value !== '') e.target.value = '';
+
+            // Color coding
+            e.target.classList.remove('text-success', 'text-primary', 'text-warning', 'text-danger');
+            if (val === 5) e.target.classList.add('text-success');
+            else if (val === 4) e.target.classList.add('text-primary');
+            else if (val === 3) e.target.classList.add('text-warning');
+            else if (val <= 2 && val > 0) e.target.classList.add('text-danger');
         });
     });
 </script>
 
 {% elif classes and subjects %}
-<div class="alert alert-info">
-    <i class="bi bi-info-circle me-2"></i>Sinf va fanni tanlang.
+<div class="glass-card p-5 text-center">
+    <div class="mb-3 text-muted opacity-50">
+        <i class="bi bi-journal-album fs-1"></i>
+    </div>
+    <h5 class="text-muted">Ishni boshlash uchun sinf va fanni tanlang</h5>
 </div>
 {% else %}
-<div class="alert alert-warning">
+<div class="alert alert-warning glass-card border-0">
     <i class="bi bi-exclamation-triangle me-2"></i>Sinflar yoki fanlar mavjud emas.
 </div>
 {% endif %}

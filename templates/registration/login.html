@@ -3,68 +3,86 @@
 {% block title %}Kirish - LearnSphere{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-4">
-        <div class="card shadow">
-            <div class="card-header bg-primary text-white text-center">
-                <h4>Tizimga Kirish</h4>
+<div class="row justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="col-md-5 col-lg-4">
+        <div class="glass-card p-5">
+            <div class="text-center mb-4">
+                <div class="mb-3">
+                    <i class="bi bi-mortarboard-fill fs-1 text-primary"
+                        style="background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+                </div>
+                <h3 class="fw-bold mb-1">Xush kelibsiz!</h3>
+                <p class="text-muted small">LearnSphere ta'lim platformasiga kirish</p>
             </div>
-            <div class="card-body">
-                <form method="post">
-                    {% csrf_token %}
-                    {% if form.errors %}
-                    <div class="alert alert-danger">
-                        Login yoki parol noto'g'ri.
-                    </div>
-                    {% endif %}
 
-                    <div class="mb-3">
-                        <label for="id_username" class="form-label">Foydalanuvchi nomi</label>
-                        <input type="text" name="username" class="form-control" id="id_username" required autofocus>
-                    </div>
+            <form method="post">
+                {% csrf_token %}
+                {% if form.errors %}
+                <div class="alert alert-danger border-0 shadow-sm mb-4" role="alert" style="font-size: 0.9rem;">
+                    <i class="bi bi-exclamation-circle me-2"></i>Login yoki parol noto'g'ri.
+                </div>
+                {% endif %}
 
-                    <div class="mb-3">
-                        <label for="id_password" class="form-label">Parol</label>
-                        <input type="password" name="password" class="form-control" id="id_password" required>
+                <div class="mb-3">
+                    <label for="id_username"
+                        class="form-label text-secondary small fw-bold text-uppercase">Foydalanuvchi nomi</label>
+                    <div class="input-group">
+                        <span class="input-group-text border-0 bg-light"><i class="bi bi-person text-muted"></i></span>
+                        <input type="text" name="username" class="form-control border-0 bg-light" id="id_username"
+                            placeholder="Username" required autofocus style="padding: 0.8rem;">
                     </div>
+                </div>
 
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-primary">Kirish</button>
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <label for="id_password"
+                            class="form-label text-secondary small fw-bold text-uppercase">Parol</label>
                     </div>
-                </form>
+                    <div class="input-group">
+                        <span class="input-group-text border-0 bg-light"><i class="bi bi-lock text-muted"></i></span>
+                        <input type="password" name="password" class="form-control border-0 bg-light" id="id_password"
+                            placeholder="••••••••" required style="padding: 0.8rem;">
+                    </div>
+                </div>
+
+                <div class="d-grid mb-4">
+                    <button type="submit" class="btn btn-primary shadow-lg border-0"
+                        style="background: var(--primary-gradient); padding: 0.8rem; font-weight: 600; border-radius: 12px; transition: transform 0.2s;">
+                        Tizimga Kirish <i class="bi bi-arrow-right ms-2"></i>
+                    </button>
+                </div>
+            </form>
+
+            <div class="text-center mt-4 pt-3 border-top border-light">
+                <p class="text-muted small mb-0">Demo hisoblar kerakmi?</p>
+                <button class="btn btn-link btn-sm text-decoration-none" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#demoAccounts" aria-expanded="false" aria-controls="demoAccounts">
+                    Ko'rish <i class="bi bi-chevron-down"></i>
+                </button>
             </div>
-            <div class="card-footer text-center">
-                <small class="text-muted">Parolni unutgan bo'lsangiz administratorga murojaat qiling.</small>
-            </div>
-        </div>
-    </div>
 
-    <div class="col-md-4">
-        <div class="card shadow">
-            <div class="card-header bg-info text-white">
-                <h5 class="mb-0">Demo Hisoblar</h5>
-            </div>
-            <div class="card-body">
-                <p>Turli rollarni sinab ko'rish uchun quyidagi hisoblardan foydalaning (parol:
-                    <strong>password123</strong>, admin uchun <strong>admin123</strong>):</p>
-                <div class="list-group">
-                    <div class="list-group-item">
-                        <strong>O'quvchi:</strong> <code>student1</code>
+            <div class="collapse mt-3" id="demoAccounts">
+                <div class="card card-body bg-light border-0 small rounded-3 p-3">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>👨‍🎓 O'quvchi:</span> <code>student1</code>
                     </div>
-                    <div class="list-group-item">
-                        <strong>Ota-ona:</strong> <code>parent1</code>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>👨‍👩‍👧 Ota-ona:</span> <code>parent1</code>
                     </div>
-                    <div class="list-group-item">
-                        <strong>O'qituvchi:</strong> <code>teacher1</code>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>👨‍🏫 O'qituvchi:</span> <code>teacher1</code>
                     </div>
-                    <div class="list-group-item">
-                        <strong>Direktor:</strong> <code>director1</code>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>👔 Direktor:</span> <code>director1</code>
                     </div>
-                    <div class="list-group-item bg-light">
-                        <strong>Admin:</strong> <code>admin</code> (pass: <code>admin123</code>)
+                    <div class="d-flex justify-content-between">
+                        <span>🔐 Parol:</span> <code>password123</code>
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="text-center mt-4">
+            <small class="text-muted opacity-75">&copy; 2026 LearnSphere LMS</small>
         </div>
     </div>
 </div>
