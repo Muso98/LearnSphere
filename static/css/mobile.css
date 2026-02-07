@@ -1,0 +1,222 @@
+/* Mobile-First Responsive Styles */
+
+/* Touch-Friendly Buttons */
+@media (max-width: 768px) {
+    .btn {
+        min-height: 44px;
+        padding: 12px 20px;
+        font-size: 16px;
+    }
+
+    .form-control,
+    .form-select {
+        min-height: 44px;
+        font-size: 16px;
+    }
+
+    /* Prevent zoom on input focus */
+    input[type="text"],
+    input[type="number"],
+    input[type="email"],
+    input[type="password"],
+    input[type="date"],
+    input[type="time"],
+    textarea,
+    select {
+        font-size: 16px !important;
+    }
+}
+
+/* Responsive Tables */
+@media (max-width: 992px) {
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .table {
+        font-size: 14px;
+    }
+
+    .table td,
+    .table th {
+        padding: 8px;
+        white-space: nowrap;
+    }
+}
+
+/* Mobile Sidebar */
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed;
+        top: 56px;
+        left: -250px;
+        width: 250px;
+        height: calc(100vh - 56px);
+        transition: left 0.3s ease;
+        z-index: 1040;
+        overflow-y: auto;
+    }
+
+    .sidebar.show {
+        left: 0;
+    }
+
+    .sidebar-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1039;
+    }
+
+    .sidebar-overlay.show {
+        display: block;
+    }
+
+    .main-content {
+        margin-left: 0 !important;
+        width: 100%;
+    }
+
+    /* Mobile Navbar */
+    .navbar-brand {
+        font-size: 18px;
+    }
+
+    .mobile-menu-toggle {
+        display: block;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 24px;
+        padding: 8px;
+        cursor: pointer;
+    }
+}
+
+@media (min-width: 769px) {
+    .mobile-menu-toggle {
+        display: none;
+    }
+}
+
+/* Card Optimization */
+@media (max-width: 576px) {
+    .card {
+        margin-bottom: 1rem;
+    }
+
+    .card-header h4,
+    .card-header h5 {
+        font-size: 16px;
+    }
+
+    .card-body {
+        padding: 12px;
+    }
+}
+
+/* Form Layouts */
+@media (max-width: 768px) {
+    .row.g-3>[class*="col-"] {
+        margin-bottom: 12px;
+    }
+
+    .d-flex.justify-content-between {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .btn-group {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .btn-group .btn {
+        width: 100%;
+        margin-bottom: 8px;
+    }
+}
+
+/* Stats Cards */
+@media (max-width: 768px) {
+    .stats-card {
+        margin-bottom: 15px;
+    }
+
+    .stats-card h2 {
+        font-size: 24px;
+    }
+}
+
+/* Schedule Table */
+@media (max-width: 992px) {
+    .schedule-table {
+        font-size: 12px;
+    }
+
+    .schedule-table td {
+        padding: 4px;
+        min-width: 80px;
+    }
+}
+
+/* Gradebook */
+@media (max-width: 768px) {
+    .grade-input {
+        width: 60px;
+        font-size: 14px;
+    }
+
+    textarea[name^="comment_"] {
+        font-size: 14px;
+    }
+}
+
+/* Notifications */
+@media (max-width: 576px) {
+    .notification-item {
+        padding: 10px;
+        font-size: 14px;
+    }
+}
+
+/* Utility Classes */
+.mobile-only {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .mobile-only {
+        display: block;
+    }
+
+    .desktop-only {
+        display: none;
+    }
+
+    .mobile-hide {
+        display: none !important;
+    }
+}
+
+/* Smooth Scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Touch Feedback */
+@media (hover: none) and (pointer: coarse) {
+
+    .btn:active,
+    .card:active,
+    a:active {
+        opacity: 0.7;
+        transform: scale(0.98);
+        transition: all 0.1s ease;
+    }
+}

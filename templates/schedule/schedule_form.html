@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block title %}Dars Jadvali - LearnSphere{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">
+                    <i class="bi bi-plus-circle me-2"></i>Yangi Dars Qo'shish
+                </h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Sinf *</label>
+                            <select name="class_id" class="form-select" required>
+                                <option value="">Tanlang...</option>
+                                {% for class in classes %}
+                                <option value="{{ class.id }}">{{ class.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Fan *</label>
+                            <select name="subject_id" class="form-select" required>
+                                <option value="">Tanlang...</option>
+                                {% for subject in subjects %}
+                                <option value="{{ subject.id }}">{{ subject.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">O'qituvchi *</label>
+                            <select name="teacher_id" class="form-select" required>
+                                <option value="">Tanlang...</option>
+                                {% for teacher in teachers %}
+                                <option value="{{ teacher.id }}">{{ teacher.first_name }} {{ teacher.last_name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Xona *</label>
+                            <input type="text" name="room" class="form-control" placeholder="101, 202, Laboratoriya..."
+                                required>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label class="form-label fw-bold">Kun *</label>
+                            <select name="day_of_week" class="form-select" required>
+                                <option value="">Tanlang...</option>
+                                <option value="monday">Dushanba</option>
+                                <option value="tuesday">Seshanba</option>
+                                <option value="wednesday">Chorshanba</option>
+                                <option value="thursday">Payshanba</option>
+                                <option value="friday">Juma</option>
+                                <option value="saturday">Shanba</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Boshlanish vaqti *</label>
+                            <input type="time" name="start_time" class="form-control" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Tugash vaqti *</label>
+                            <input type="time" name="end_time" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-warning mt-3">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        <strong>Eslatma:</strong> Tizim avtomatik ravishda konfliktlarni tekshiradi:
+                        <ul class="mb-0 mt-2">
+                            <li>O'qituvchi bir vaqtda ikki joyda bo'lolmaydi</li>
+                            <li>Xona bir vaqtda ikki sinf uchun ishlatilmaydi</li>
+                            <li>Sinf bir vaqtda ikki darsda bo'lolmaydi</li>
+                        </ul>
+                    </div>
+
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-check-circle me-2"></i>Saqlash
+                        </button>
+                        <a href="{% url 'schedule_list' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-2"></i>Bekor qilish
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

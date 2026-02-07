@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block title %}Mening Kabinetim - LearnSphere{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h2>Xush kelibsiz, {{ user.first_name|default:user.username }}</h2>
+        <p class="text-muted">Sinf: {{ user.student_class.name|default:"Biriktirilmagan" }}</p>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Grades -->
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-journal-check me-2"></i>Baholarim</h5>
+            </div>
+            <div class="card-body">
+                {% if grades %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Fan</th>
+                                <th>Baho</th>
+                                <th>Sana</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for grade in grades %}
+                            <tr>
+                                <td>{{ grade.subject.name }}</td>
+                                <td>
+                                    <span
+                                        class="badge bg-{% if grade.value >= 4 %}success{% elif grade.value == 3 %}warning{% else %}danger{% endif %}">
+                                        {{ grade.value }}
+                                    </span>
+                                </td>
+                                <td>{{ grade.date|date:"M d" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted text-center my-4">Baholar hali mavjud emas.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Attendance -->
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="bi bi-calendar-check me-2"></i>Davomat</h5>
+            </div>
+            <div class="card-body">
+                {% if attendance %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Sana</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for record in attendance %}
+                            <tr>
+                                <td>{{ record.date|date:"M d, Y" }}</td>
+                                <td>
+                                    {% if record.status == 'present' %}
+                                    <span class="badge bg-success">Bor</span>
+                                    {% elif record.status == 'absent' %}
+                                    <span class="badge bg-danger">Yo'q</span>
+                                    {% elif record.status == 'late' %}
+                                    <span class="badge bg-warning text-dark">Kechikkan</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">{{ record.get_status_display }}</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted text-center my-4">Davomat ma'lumotlari topilmadi.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

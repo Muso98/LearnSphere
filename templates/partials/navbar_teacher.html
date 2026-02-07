@@ -1,0 +1,24 @@
+<li class="nav-item">
+    <a class="nav-link {% if request.resolver_match.url_name == 'gradebook' %}active{% endif %}"
+        href="{% url 'gradebook' %}">
+        <i class="bi bi-book me-1"></i> Gradebook
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link {% if request.resolver_match.url_name == 'attendance' %}active{% endif %}"
+        href="{% url 'attendance' %}">
+        <i class="bi bi-calendar-check me-1"></i> Attendance
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link {% if 'assignment' in request.resolver_match.url_name %}active{% endif %}"
+        href="{% url 'assignment_list' %}">
+        <i class="bi bi-file-earmark-text me-1"></i> Assignments
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link {% if request.resolver_match.url_name == 'create_assignment' %}active{% endif %}"
+        href="{% url 'create_assignment' %}">
+        <i class="bi bi-plus-circle me-1"></i> Create
+    </a>
+</li>

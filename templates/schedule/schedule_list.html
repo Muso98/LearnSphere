@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block title %}Dars Jadvali - LearnSphere{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-6">
+        <h2>Dars Jadvali</h2>
+    </div>
+    <div class="col-md-6 text-end">
+        {% if user.role == 'director' %}
+        <a href="{% url 'schedule_create' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-2"></i>Yangi dars qo'shish
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Filters -->
+<form method="get" class="row g-3 mb-4">
+    <div class="col-auto">
+        <select name="class_id" class="form-select" onchange="this.form.submit()">
+            <option value="">Barcha sinflar</option>
+            {% for class in classes %}
+            <option value="{{ class.id }}" {% if class.is_selected %}selected{% endif %}>{{ class.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-auto">
+        <select name="teacher_id" class="form-select" onchange="this.form.submit()">
+            <option value="">Barcha o'qituvchilar</option>
+            {% for teacher in teachers %}
+            <option value="{{ teacher.id }}" {% if teacher.is_selected %}selected{% endif %}>{{ teacher.first_name }} {{
+                teacher.last_name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+</form>
+
+<!-- Weekly Schedule Table -->
+<div class="table-responsive">
+    <table class="table table-bordered">
+        <thead class="table-light">
+            <tr>
+                <th style="width: 100px;">Vaqt</th>
+                <th>Dushanba</th>
+                <th>Seshanba</th>
+                <th>Chorshanba</th>
+                <th>Payshanba</th>
+                <th>Juma</th>
+                <th>Shanba</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for time_slot in "12345678"|make_list %}
+            <tr>
+                <td class="text-center align-middle">
+                    <strong>{{ forloop.counter }}-dars</strong>
+                </td>
+                {% for day, day_name in schedule_by_day.items %}
+                <td>
+                    {% for schedule in day_name %}
+                    <div class="card mb-2 border-primary">
+                        <div class="card-body p-2">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <strong>{{ schedule.subject.name }}</strong><br>
+                                    <small class="text-muted">{{ schedule.class_obj.name }}</small><br>
+                                    <small>{{ schedule.teacher.first_name }} {{ schedule.teacher.last_name
+                                        }}</small><br>
+                                    <small><i class="bi bi-door-open me-1"></i>{{ schedule.room }}</small><br>
+                                    <small><i class="bi bi-clock me-1"></i>{{ schedule.start_time|time:"H:i" }} - {{
+                                        schedule.end_time|time:"H:i" }}</small>
+                                </div>
+                                {% if user.role == 'director' %}
+                                <div class="btn-group-vertical btn-group-sm">
+                                    <a href="{% url 'schedule_edit' schedule.id %}"
+                                        class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a href="{% url 'schedule_delete' schedule.id %}"
+                                        class="btn btn-sm btn-outline-danger"
+                                        onclick="return confirm('Rostdan ham o\'chirmoqchimisiz?')">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% if not schedule_by_day.monday and not schedule_by_day.tuesday %}
+<div class="alert alert-info text-center">
+    <i class="bi bi-info-circle me-2"></i>Hozircha darslar qo'shilmagan.
+</div>
+{% endif %}
+{% endblock %}

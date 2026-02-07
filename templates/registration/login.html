@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}Kirish - LearnSphere{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-4">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white text-center">
+                <h4>Tizimga Kirish</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {% if form.errors %}
+                    <div class="alert alert-danger">
+                        Login yoki parol noto'g'ri.
+                    </div>
+                    {% endif %}
+
+                    <div class="mb-3">
+                        <label for="id_username" class="form-label">Foydalanuvchi nomi</label>
+                        <input type="text" name="username" class="form-control" id="id_username" required autofocus>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_password" class="form-label">Parol</label>
+                        <input type="password" name="password" class="form-control" id="id_password" required>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Kirish</button>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer text-center">
+                <small class="text-muted">Parolni unutgan bo'lsangiz administratorga murojaat qiling.</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Demo Hisoblar</h5>
+            </div>
+            <div class="card-body">
+                <p>Turli rollarni sinab ko'rish uchun quyidagi hisoblardan foydalaning (parol:
+                    <strong>password123</strong>, admin uchun <strong>admin123</strong>):</p>
+                <div class="list-group">
+                    <div class="list-group-item">
+                        <strong>O'quvchi:</strong> <code>student1</code>
+                    </div>
+                    <div class="list-group-item">
+                        <strong>Ota-ona:</strong> <code>parent1</code>
+                    </div>
+                    <div class="list-group-item">
+                        <strong>O'qituvchi:</strong> <code>teacher1</code>
+                    </div>
+                    <div class="list-group-item">
+                        <strong>Direktor:</strong> <code>director1</code>
+                    </div>
+                    <div class="list-group-item bg-light">
+                        <strong>Admin:</strong> <code>admin</code> (pass: <code>admin123</code>)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

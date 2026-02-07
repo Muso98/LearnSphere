@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}Vazifalar - LearnSphere{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Vazifalar</h2>
+    {% if user.role == 'teacher' %}
+    <a href="{% url 'create_assignment' %}" class="btn btn-success">Yangi Yaratish</a>
+    {% endif %}
+</div>
+
+<div class="row">
+    {% for assignment in assignments %}
+    <div class="col-md-6 mb-3">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between">
+                <span>{{ assignment.subject.name }}</span>
+                <span class="badge bg-danger">{{ assignment.deadline|date:"M d, H:i" }}</span>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">{{ assignment.target_class.name }}</h5>
+                <p class="card-text">{{ assignment.description }}</p>
+
+                <div class="d-flex gap-2">
+                    {% if assignment.file_upload %}
+                    <a href="{{ assignment.file_upload.url }}" class="btn btn-sm btn-outline-primary"
+                        target="_blank">Ilova</a>
+                    {% endif %}
+
+                    {% if user.role == 'student' %}
+                    {% if assignment.is_submitted %}
+                    <span class="btn btn-sm btn-success disabled">Topshirildi</span>
+                    {% else %}
+                    <a href="{% url 'submit_homework' assignment.id %}" class="btn btn-sm btn-primary">Topshirish</a>
+                    {% endif %}
+                    {% elif user.role == 'teacher' %}
+                    <a href="{% url 'view_submissions' assignment.id %}"
+                        class="btn btn-sm btn-outline-info">Topshiriqlarni Ko'rish</a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="card-footer text-muted">
+                Muddat: {{ assignment.deadline|timeuntil }} qoldi
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <p>Faol vazifalar yo'q.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

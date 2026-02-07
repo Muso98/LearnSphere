@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block title %}Jurnal - LearnSphere{% endblock %}
+
+{% block content %}
+<h2>O'qituvchi Jurnali</h2>
+
+<form method="get" class="row g-3 mb-4">
+    <div class="col-auto">
+        <select name="class_id" class="form-select">
+            <option value="">Sinfni tanlang</option>
+            {% for c in classes %}
+            <option value="{{ c.id }}" {% if c.is_selected %}selected{% endif %}>{{ c.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-auto">
+        <select name="subject_id" class="form-select">
+            <option value="">Fanni tanlang</option>
+            {% for s in subjects %}
+            <option value="{{ s.id }}" {% if s.is_selected %}selected{% endif %}>{{ s.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary">Ko'rsatish</button>
+    </div>
+    {% if selected_class and selected_subject %}
+    <div class="col-auto">
+        <a href="{% url 'export_grades' %}?class_id={{ selected_class.id }}&subject_id={{ selected_subject.id }}"
+            class="btn btn-success">
+            <i class="bi bi-file-earmark-excel me-2"></i>Excel yuklab olish
+        </a>
+    </div>
+    {% endif %}
+</form>
+
+{% if selected_class and selected_subject %}
+<div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">{{ selected_class.name }} - {{ selected_subject.name }}</h5>
+        <small>Sana: {{ today }}</small>
+    </div>
+    <div class="card-body p-0">
+        <form method="post" id="bulkGradeForm">
+            {% csrf_token %}
+            <input type="hidden" name="bulk_save" value="1">
+            <input type="hidden" name="date" value="{{ today|date:'Y-m-d' }}">
+
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width: 50px;">#</th>
+                            <th>O'quvchi</th>
+                            <th style="width: 200px;">Baho (1-5)</th>
+                            <th>Izoh (ixtiyoriy)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                        <tr>
+                            <td class="text-center">{{ forloop.counter }}</td>
+                            <td>
+                                <strong>{{ student.first_name }} {{ student.last_name }}</strong>
+                                <br><small class="text-muted">{{ student.username }}</small>
+                            </td>
+                            <td>
+                                <input type="number" name="grade_{{ student.id }}" class="form-control grade-input"
+                                    min="1" max="5" placeholder="1-5" data-student-id="{{ student.id }}">
+                            </td>
+                            <td>
+                                <textarea name="comment_{{ student.id }}" class="form-control" rows="1"
+                                    placeholder="Masalan: Vazifani qisman bajardi"></textarea>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card-footer bg-light">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <small class="text-muted">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Tab tugmasi bilan keyingi o'quvchiga o'ting
+                        </small>
+                    </div>
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-check-circle me-2"></i>Barcha baholarni saqlash
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Klaviatura navigatsiyasi
+    document.querySelectorAll('.grade-input').forEach((input, index, inputs) => {
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                if (index < inputs.length - 1) {
+                    inputs[index + 1].focus();
+                } else {
+                    document.getElementById('bulkGradeForm').submit();
+                }
+            }
+        });
+
+        // Faqat 1-5 raqamlarni qabul qilish
+        input.addEventListener('input', (e) => {
+            const value = parseInt(e.target.value);
+            if (value < 1) e.target.value = '';
+            if (value > 5) e.target.value = '5';
+        });
+    });
+</script>
+
+{% elif classes and subjects %}
+<div class="alert alert-info">
+    <i class="bi bi-info-circle me-2"></i>Sinf va fanni tanlang.
+</div>
+{% else %}
+<div class="alert alert-warning">
+    <i class="bi bi-exclamation-triangle me-2"></i>Sinflar yoki fanlar mavjud emas.
+</div>
+{% endif %}
+{% endblock %}

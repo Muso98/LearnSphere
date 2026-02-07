@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+
+{% block title %}Student Dashboard - LearnSphere{% endblock %}
+
+{% block content %}
+<h2>Student Dashboard</h2>
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card bg-light">
+            <div class="card-body">
+                <h5 class="card-title">Profile</h5>
+                <p><strong>Name:</strong> {{ user.first_name }} {{ user.last_name }}</p>
+                <p><strong>Class:</strong> {{ user.student_class }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="grades-tab" data-bs-toggle="tab" data-bs-target="#grades" type="button"
+            role="tab">Grades</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="attendance-tab" data-bs-toggle="tab" data-bs-target="#attendance" type="button"
+            role="tab">Attendance</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="competencies-tab" data-bs-toggle="tab" data-bs-target="#competencies" type="button"
+            role="tab">Kompetensiyalar (AI)</button>
+    </li>
+</ul>
+
+<div class="tab-content mt-3" id="myTabContent">
+    <div class="tab-pane fade show active" id="grades" role="tabpanel">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Subject</th>
+                        <th>Grade</th>
+                        <th>Comment</th>
+                        <th>Teacher</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for grade in grades %}
+                    <tr>
+                        <td>{{ grade.date }}</td>
+                        <td>{{ grade.subject.name }}</td>
+                        <td><span class="badge bg-{{ grade.value|yesno:'danger,warning,warning,primary,success' }}">{{
+                                grade.value }}</span></td>
+                        <td>{{ grade.comment }}</td>
+                        <td>{{ grade.teacher }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5">No grades yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="attendance" role="tabpanel">
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for att in attendance %}
+                    <tr>
+                        <td>{{ att.date }}</td>
+                        <td>
+                            {% if att.status == 'present' %}<span class="badge bg-success">Present</span>
+                            {% elif att.status == 'absent' %}<span class="badge bg-danger">Absent</span>
+                            {% elif att.status == 'late' %}<span class="badge bg-warning text-dark">Late</span>
+                            {% else %}<span class="badge bg-secondary">Excused</span>{% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="2">No attendance records.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- AI & Competencies Tab -->
+    <div class="tab-pane fade" id="competencies" role="tabpanel">
+        <h4 class="mt-3 mb-3"><i class="bi bi-cpu-fill text-primary"></i> Mening Kompetensiyalarim (AI)</h4>
+
+        {% if competencies %}
+        <div class="row">
+            {% for item in competencies %}
+            <div class="col-md-6 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 text-primary">{{ item.subject }}</h5>
+                        <span class="badge bg-info text-dark">AI Analiz</span>
+                    </div>
+                    <div class="card-body">
+                        <h6>O'zlashtirilishi kerak bo'lgan ko'nikmalar:</h6>
+                        <div class="d-flex flex-wrap gap-2 mb-3">
+                            {% for skill in item.skills %}
+                            <span class="badge rounded-pill bg-light text-dark border">{{ skill }}</span>
+                            {% empty %}
+                            <span class="text-muted small">Maxsus ko'nikmalar kiritilmagan.</span>
+                            {% endfor %}
+                        </div>
+
+                        {% if item.metadata.ai_tutor %}
+                        <div class="alert alert-light border">
+                            <strong><i class="bi bi-robot"></i> AI Tutor Tavsiyasi:</strong>
+                            <p class="mb-0 small">{{ item.metadata.ai_tutor.recommendation|default:"Hozircha tavsiyalar
+                                yo'q." }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle-fill me-2"></i> Hozircha sizning sinfingiz fanlari uchun kompetensiya
+            ma'lumotlari kiritilmagan.
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
