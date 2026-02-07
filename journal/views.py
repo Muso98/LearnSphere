@@ -64,6 +64,16 @@ def gradebook_view(request):
                         date=date,
                         defaults={'value': grade_int, 'comment': comment}
                     )
+                    
+                    # Save competency metadata if selected
+                    competency = request.POST.get(f'competency_{student.id}')
+                    if competency:
+                        # Merge with existing metadata or create new
+                        meta = grade_obj.metadata or {}
+                        meta['competency'] = competency
+                        grade_obj.metadata = meta
+                        grade_obj.save()
+
                     saved_count += 1
                     
                     # Create notification for low grades (3 and below)

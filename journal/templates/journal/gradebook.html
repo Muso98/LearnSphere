@@ -54,6 +54,9 @@
                             <th style="width: 50px;">#</th>
                             <th>O'quvchi</th>
                             <th style="width: 200px;">Baho (1-5)</th>
+                            {% if selected_subject.metadata.competencies %}
+                            <th>Kompetensiya</th>
+                            {% endif %}
                             <th>Izoh (ixtiyoriy)</th>
                         </tr>
                     </thead>
@@ -69,6 +72,16 @@
                                 <input type="number" name="grade_{{ student.id }}" class="form-control grade-input"
                                     min="1" max="5" placeholder="1-5" data-student-id="{{ student.id }}">
                             </td>
+                            {% if selected_subject.metadata.competencies %}
+                            <td>
+                                <select name="competency_{{ student.id }}" class="form-select form-select-sm">
+                                    <option value="">Tanlang...</option>
+                                    {% for comp in selected_subject.metadata.competencies %}
+                                    <option value="{{ comp }}">{{ comp }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            {% endif %}
                             <td>
                                 <textarea name="comment_{{ student.id }}" class="form-control" rows="1"
                                     placeholder="Masalan: Vazifani qisman bajardi"></textarea>
