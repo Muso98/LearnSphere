@@ -1,0 +1,75 @@
+<!-- Subjects Management Partial -->
+{% load i18n %}
+
+<div class="management-header">
+    <h3 class="management-title"><i class="bi bi-book me-2"></i>Fanlar Boshqaruvi</h3>
+    <a href="{% url 'subject_create' %}" class="btn btn-action btn-action-primary">
+        <i class="bi bi-plus-circle"></i> Yangi Fan
+    </a>
+</div>
+
+<!-- Subjects Table -->
+<div class="modern-table">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Fan nomi</th>
+                <th>O'qituvchilar soni</th>
+                <th style="width: 200px;">Harakatlar</th>
+            </tr>
+        </thead>
+        <tbody id="subjectsTableBody">
+            <tr>
+                <td colspan="3" class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status"></div>
+                    <p class="mt-2 text-muted">Yuklanmoqda...</p>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function loadSubjects() {
+        // Placeholder
+        const subjects = [
+            { id: 1, name: 'Matematika', teacher_count: 3 },
+            { id: 2, name: 'Fizika', teacher_count: 2 },
+            { id: 3, name: 'Ona tili', teacher_count: 4 }
+        ];
+
+        const tbody = document.getElementById('subjectsTableBody');
+        tbody.innerHTML = subjects.map(subj => `
+        <tr>
+            <td><strong>${subj.name}</strong></td>
+            <td><span class="badge bg-primary">${subj.teacher_count} o'qituvchi</span></td>
+            <td class="table-actions">
+                <a href="/administration/subjects/${subj.id}/edit/" class="btn btn-sm btn-warning">
+                    <i class="bi bi-pencil"></i> Tahrirlash
+                </a>
+                <button onclick="deleteSubject(${subj.id}, '${subj.name}')" class="btn btn-sm btn-danger">
+                    <i class="bi bi-trash"></i> O'chirish
+                </button>
+            </td>
+        </tr>
+    `).join('');
+    }
+
+    function deleteSubject(id, name) {
+        if (!confirm(`${name} fanini o'chirishga ishonchingiz komilmi?`)) return;
+
+        fetch(`/administration/subjects/${id}/delete/`, {
+            method: 'POST',
+            headers: { 'X-CSRFToken': AdminUtils.csrftoken }
+        })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    AdminUtils.Toast.show('Fan o\'chirildi!', 'success');
+                    loadSubjects();
+                } else {
+                    AdminUtils.Toast.show(data.message || 'Xatolik!', 'error');
+                }
+            });
+    }
+</script>

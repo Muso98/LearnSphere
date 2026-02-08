@@ -1,0 +1,92 @@
+<!-- Teachers Management Partial -->
+{% load i18n %}
+
+<div class="management-header">
+    <h3 class="management-title"><i class="bi bi-person-badge me-2"></i>O'qituvchilarni Boshqarish</h3>
+    <a href="{% url 'teacher_assignment' %}" class="btn btn-action btn-action-primary">
+        <i class="bi bi-plus-circle"></i> Yangi Tayinlash
+    </a>
+</div>
+
+<!-- Search -->
+<div class="filter-panel">
+    <div class="row g-3">
+        <div class="col-md-6">
+            <input type="text" id="teacherSearch" class="form-control" placeholder="O'qituvchi qidirish...">
+        </div>
+        <div class="col-md-3">
+            <select id="teacherSubjectFilter" class="form-select">
+                <option value="">Barcha fanlar</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select id="teacherClassFilter" class="form-select">
+                <option value="">Barcha sinflar</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<!-- Assignments Table -->
+<div class="modern-table">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>O'qituvchi</th>
+                <th>Fan</th>
+                <th>Sinf</th>
+                <th>Tayinlangan sana</th>
+                <th style="width: 100px;">Harakatlar</th>
+            </tr>
+        </thead>
+        <tbody id="teachersTableBody">
+            <tr>
+                <td colspan="5" class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status"></div>
+                    <p class="mt-2 text-muted">Yuklanmoqda...</p>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function loadTeacherAssignments() {
+        // Placeholder
+        const assignments = [
+            { id: 1, teacher: 'Aziz Rahimov', subject: 'Matematika', class: '1-A', created_at: '2024-01-15' },
+            { id: 2, teacher: 'Olim Tursunov', subject: 'Fizika', class: '1-B', created_at: '2024-01-16' }
+        ];
+
+        const tbody = document.getElementById('teachersTableBody');
+        tbody.innerHTML = assignments.map(a => `
+        <tr>
+            <td><strong>${a.teacher}</strong></td>
+            <td><span class="badge bg-primary">${a.subject}</span></td>
+            <td><span class="badge bg-info">${a.class}</span></td>
+            <td>${a.created_at}</td>
+            <td>
+                <button onclick="deleteAssignment(${a.id})" class="btn btn-sm btn-danger">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </td>
+        </tr>
+    `).join('');
+    }
+
+    function deleteAssignment(id) {
+        if (!confirm('Tayinlashni bekor qilishga ishonchingiz komilmi?')) return;
+
+        fetch(`/administration/teachers/assign/${id}/delete/`, {
+            method: 'POST',
+            headers: { 'X-CSRFToken': AdminUtils.csrftoken }
+        })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    AdminUtils.Toast.show('Tayinlash bekor qilindi!', 'success');
+                    loadTeacherAssignments();
+                }
+            });
+    }
+</script>

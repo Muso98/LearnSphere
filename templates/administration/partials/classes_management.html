@@ -1,0 +1,84 @@
+<!-- Classes Management Partial -->
+{% load i18n %}
+
+<div class="management-header">
+    <h3 class="management-title"><i class="bi bi-building me-2"></i>Sinflar Boshqaruvi</h3>
+    <a href="{% url 'class_create' %}" class="btn btn-action btn-action-primary">
+        <i class="bi bi-plus-circle"></i> Yangi Sinf
+    </a>
+</div>
+
+<!-- Classes Grid -->
+<div class="row g-4" id="classesGrid">
+    <div class="col-12">
+        <div class="text-center py-5">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p class="mt-2 text-muted">Yuklanmoqda...</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    function loadClasses() {
+        fetch('/administration/classes/')
+            .then(r => r.text())
+            .then(html => {
+                // For simplicity, we'll render a simple list here
+                // In production, make this an AJAX endpoint that returns JSON
+                renderClassesData();
+            });
+    }
+
+    function renderClassesData() {
+        // Placeholder - in production get from API
+        const classes = [
+            { id: 1, name: '1-A', student_count: 25, school: 'Maktab №1' },
+            { id: 2, name: '1-B', student_count: 22, school: 'Maktab №1' },
+            { id: 3, name: '2-A', student_count: 28, school: 'Maktab №1' }
+        ];
+
+        const grid = document.getElementById('classesGrid');
+        grid.innerHTML = classes.map(cls => `
+        <div class="col-md-4">
+            <div class="glass-card p-4">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <h4 class="fw-bold mb-1">${cls.name}</h4>
+                        <small class="text-muted">${cls.school}</small>
+                    </div>
+                    <span class="badge bg-primary rounded-pill">${cls.student_count} o'quvchi</span>
+                </div>
+                <div class="d-flex gap-2">
+                    <a href="/administration/classes/${cls.id}/students/" class="btn btn-sm btn-info flex-fill">
+                        <i class="bi bi-people"></i> O'quvchilar
+                    </a>
+                    <a href="/administration/classes/${cls.id}/edit/" class="btn btn-sm btn-warning">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                    <button onclick="deleteClass(${cls.id}, '${cls.name}')" class="btn btn-sm btn-danger">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    `).join('');
+    }
+
+    function deleteClass(id, name) {
+        if (!confirm(`${name} sinfni o'chirishga ishonchingiz komilmi?`)) return;
+
+        fetch(`/administration/classes/${id}/delete/`, {
+            method: 'POST',
+            headers: { 'X-CSRFToken': AdminUtils.csrftoken }
+        })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    AdminUtils.Toast.show('Sinf o\'chirildi!', 'success');
+                    loadClasses();
+                } else {
+                    AdminUtils.Toast.show(data.message || 'Xatolik!', 'error');
+                }
+            });
+    }
+</script>

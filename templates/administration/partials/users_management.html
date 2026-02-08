@@ -1,0 +1,349 @@
+<!-- Users Management Partial -->
+{% load i18n %}
+
+<div class="management-header">
+    <h3 class="management-title"><i class="bi bi-people me-2"></i>Foydalanuvchilar Boshqaruvi</h3>
+    <button class="btn btn-action btn-action-primary" onclick="showUserModal('create')">
+        <i class="bi bi-plus-circle"></i> Yangi Foydalanuvchi
+    </button>
+</div>
+
+<!-- Filter Panel -->
+<div class="filter-panel">
+    <div class="row g-3">
+        <div class="col-md-4">
+            <input type="text" id="userSearch" class="form-control" placeholder="Qidirish (ism, username, email)...">
+        </div>
+        <div class="col-md-3">
+            <select id="roleFilter" class="form-select">
+                <option value="">Barcha rollar</option>
+                <option value="student">O'quvchi</option>
+                <option value="teacher">O'qituvchi</option>
+                <option value="parent">Ota-ona</option>
+                <option value="director">Direktor</option>
+                <option value="admin">Admin</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select id="statusFilter" class="form-select">
+                <option value="">Barcha holatlar</option>
+                <option value="active">Faol</option>
+                <option value="inactive">Faol emas</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-secondary w-100" onclick="resetUserFilters()">
+                <i class="bi bi-arrow-clockwise"></i> Tozalash
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Bulk Actions Bar (hidden by default) -->
+<div id="userBulkActions" class="bulk-actions-bar d-none">
+    <div class="selected-info">
+        <span class="selected-count">0</span> ta foydalanuvchi tanlandi
+    </div>
+    <div class="action-buttons">
+        <button class="btn btn-action btn-action-success btn-sm" onclick="bulkActivate()">
+            <i class="bi bi-check-circle"></i> Faollashtirish
+        </button>
+        <button class="btn btn-action btn-action-warning btn-sm" onclick="bulkDeactivate()">
+            <i class="bi bi-x-circle"></i> Faolsizlantirish
+        </button>
+        <button class="btn btn-action btn-action-danger btn-sm" onclick="bulkDelete()">
+            <i class="bi bi-trash"></i> O'chirish
+        </button>
+    </div>
+</div>
+
+<!-- Users Table -->
+<div class="modern-table">
+    <table class="table" id="usersTable">
+        <thead>
+            <tr>
+                <th style="width: 50px;">
+                    <input type="checkbox" class="form-check-input" id="selectAllUsers">
+                </th>
+                <th>Foydalanuvchi</th>
+                <th>Rol</th>
+                <th>Email</th>
+                <th>Telefon</th>
+                <th>Holati</th>
+                <th>Qo'shilgan sana</th>
+                <th style="width: 200px;">Harakatlar</th>
+            </tr>
+        </thead>
+        <tbody id="usersTableBody">
+            <tr>
+                <td colspan="8" class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status"></div>
+                    <p class="mt-2 text-muted">Yuklanmoqda...</p>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Pagination -->
+<nav id="usersPagination" class="pagination-modern mt-3"></nav>
+
+<!-- User Modal -->
+<div class="modal fade" id="userModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="userModalTitle">Foydalanuvchi Qo'shish</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="userForm">
+                    {% csrf_token %}
+                    <input type="hidden" id="userId" name="user_id">
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Username</label>
+                            <input type="text" class="form-control" name="username" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Rol</label>
+                            <select class="form-select" name="role" required>
+                                <option value="student">O'quvchi</option>
+                                <option value="teacher">O'qituvchi</option>
+                                <option value="parent">Ota-ona</option>
+                                <option value="director">Direktor</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Ism</label>
+                            <input type="text" class="form-control" name="first_name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Familiya</label>
+                            <input type="text" class="form-control" name="last_name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" name="email" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Telefon</label>
+                            <input type="text" class="form-control" name="phone">
+                        </div>
+                        <div class="col-md-6" id="passwordField">
+                            <label class="form-label">Parol</label>
+                            <input type="password" class="form-control" name="password1">
+                        </div>
+                        <div class="col-md-6" id="passwordConfirmField">
+                            <label class="form-label">Parolni tasdiqlang</label>
+                            <input type="password" class="form-control" name="password2">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Sinf (faqat o'quvchilar uchun)</label>
+                            <select class="form-select" name="student_class">
+                                <option value="">Tanlash...</option>
+                                <!-- Will be populated dynamically -->
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-check mt-4">
+                                <input class="form-check-input" type="checkbox" name="is_active" id="isActive" checked>
+                                <label class="form-check-label" for="isActive">Faol</label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bekor qilish</button>
+                <button type="button" class="btn btn-action btn-action-primary" onclick="saveUser()">
+                    <i class="bi bi-save"></i> Saqlash
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let usersData = [];
+    let currentPage = 1;
+    const usersPerPage = 20;
+    let userModal;
+
+    function loadUsers() {
+        const search = document.getElementById('userSearch')?.value || '';
+        const role = document.getElementById('roleFilter')?.value || '';
+        const status = document.getElementById('statusFilter')?.value || '';
+
+        fetch(`/administration/users/?search=${search}&role=${role}&status=${status}`)
+            .then(r => r.json())
+            .then(data => {
+                usersData = data.users;
+                renderUsersTable();
+                renderPagination();
+            })
+            .catch(err => {
+                console.error('Error loading users:', err);
+                AdminUtils.Toast.show('Xatolik yuz berdi!', 'error');
+            });
+    }
+
+    function renderUsersTable() {
+        const tbody = document.getElementById('usersTableBody');
+        if (!usersData || usersData.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="8" class="text-center py-5">
+            <div class="empty-state">
+                <i class="bi bi-people"></i>
+                <h3>Foydalanuvchilar topilmadi</h3>
+                <p>Yangi foydalanuvchi qo'shish uchun yuqoridagi tugmani bosing</p>
+            </div>
+        </td></tr>`;
+            return;
+        }
+
+        const start = (currentPage - 1) * usersPerPage;
+        const end = start + usersPerPage;
+        const pageData = usersData.slice(start, end);
+
+        const html = pageData.map(user => `
+        <tr>
+            <td><input type="checkbox" class="form-check-input user-checkbox" value="${user.id}"></td>
+            <td>
+                <div class="d-flex align-items-center">
+                    <div class="avatar-circle me-2">${user.initials}</div>
+                    <div>
+                        <strong>${user.full_name}</strong>
+                        <br><small class="text-muted">@${user.username}</small>
+                    </div>
+                </div>
+            </td>
+            <td><span class="badge badge-modern bg-${getRoleBadgeColor(user.role)}">${user.role_display}</span></td>
+            <td>${user.email || '-'}</td>
+            <td>${user.phone || '-'}</td>
+            <td><span class="badge ${user.is_active ? 'bg-success' : 'bg-secondary'}">${user.is_active ? 'Faol' : 'Faol emas'}</span></td>
+            <td>${user.date_joined}</td>
+            <td class="table-actions">
+                <button class="btn btn-sm btn-info" onclick="editUser(${user.id})" title="Tahrirlash">
+                    <i class="bi bi-pencil"></i>
+                </button>
+                <button class="btn btn-sm btn-danger" onclick="deleteUser(${user.id}, '${user.username}')" title="O'chirish">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </td>
+        </tr>
+    `).join('');
+
+        tbody.innerHTML = html;
+    }
+
+    function getRoleBadgeColor(role) {
+        const colors = {
+            'admin': 'danger',
+            'director': 'warning',
+            'teacher': 'primary',
+            'student': 'info',
+            'parent': 'secondary'
+        };
+        return colors[role] || 'secondary';
+    }
+
+    function showUserModal(mode, userId = null) {
+        if (!userModal) {
+            userModal = new bootstrap.Modal(document.getElementById('userModal'));
+        }
+
+        document.getElementById('userForm').reset();
+        document.getElementById('userId').value = userId || '';
+
+        if (mode === 'create') {
+            document.getElementById('userModalTitle').textContent = 'Yangi Foydalanuvchi';
+            document.getElementById('passwordField').style.display = 'block';
+            document.getElementById('passwordConfirmField').style.display = 'block';
+        } else {
+            document.getElementById('userModalTitle').textContent = 'Foydalanuvchini Tahrirlash';
+            document.getElementById('passwordField').style.display = 'none';
+            document.getElementById('passwordConfirmField').style.display = 'none';
+            // Load user data
+            // TODO: Implement
+        }
+
+        userModal.show();
+    }
+
+    function saveUser() {
+        const form = document.getElementById('userForm');
+        const formData = new FormData(form);
+        const userId = document.getElementById('userId').value;
+
+        const url = userId ? `/administration/users/${userId}/edit/` : '/administration/users/create/';
+
+        fetch(url, {
+            method: 'POST',
+            headers: { 'X-CSRFToken': AdminUtils.csrftoken },
+            body: formData
+        })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    AdminUtils.Toast.show(data.message || 'Muvaffaqiyatli saqlandi!', 'success');
+                    userModal.hide();
+                    loadUsers();
+                } else {
+                    AdminUtils.Toast.show(data.message || 'Xatolik yuz berdi!', 'error');
+                }
+            })
+            .catch(err => {
+                console.error('Save error:', err);
+                AdminUtils.Toast.show('Tarmoq xatosi!', 'error');
+            });
+    }
+
+    function deleteUser(userId, username) {
+        if (!confirm(`${username}ni o'chirishga ishonchingiz komilmi?`)) return;
+
+        fetch(`/administration/users/${userId}/delete/`, {
+            method: 'POST',
+            headers: { 'X-CSRFToken': AdminUtils.csrftoken }
+        })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    AdminUtils.Toast.show(data.message || 'Muvaffaqiyatli o\'chirildi!', 'success');
+                    loadUsers();
+                } else {
+                    AdminUtils.Toast.show(data.message || 'Xatolik yuz berdi!', 'error');
+                }
+            });
+    }
+
+    function resetUserFilters() {
+        document.getElementById('userSearch').value = '';
+        document.getElementById('roleFilter').value = '';
+        document.getElementById('statusFilter').value = '';
+        loadUsers();
+    }
+
+    // Initialize on tab show
+    document.getElementById('users-tab')?.addEventListener('shown.bs.tab', function () {
+        if (!window.usersLoaded) {
+            loadUsers();
+            window.usersLoaded = true;
+        }
+    });
+</script>
+
+<style>
+    .avatar-circle {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+</style>

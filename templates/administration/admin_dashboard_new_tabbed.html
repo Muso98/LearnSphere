@@ -31,14 +31,16 @@
         height: 300px;
     }
 
-    .activity-item {
-        padding: 12px;
-        border-bottom: 1px solid #f1f5f9;
-        transition: background 0.2s;
+    .quick-action-btn {
+        border-radius: 15px;
+        padding: 15px 25px;
+        font-weight: 600;
+        transition: all 0.3s ease;
     }
 
-    .activity-item:hover {
-        background: rgba(102, 126, 234, 0.05);
+    .quick-action-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
     }
 </style>
 {% endblock %}
@@ -125,7 +127,7 @@
         </div>
 
         <!-- Grades Tab -->
-        <div class="tab-pane fade" id="grades" role="tabpanel">
+        <div class="tab-pane fade" id "grades" role="tabpanel">
             {% include 'administration/partials/grades_management.html' %}
         </div>
 
@@ -144,12 +146,41 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="{% static 'js/admin_management.js' %}"></script>
 <script>
-    // Tab initial load tracking
-    window.usersLoaded = false;
-    window.classesLoaded = false;
-    window.subjectsLoaded = false;
-    window.gradesLoaded = false;
-    window.attendanceLoaded = false;
-    window.teachersLoaded = false;
+    // Load tab-specific content when tab is shown
+    document.querySelectorAll('[data-bs-toggle="tab"]').forEach(tab => {
+        tab.addEventListener('shown.bs.tab', function (e) {
+            const targetId = e.target.getAttribute('data-bs-target').replace('#', '');
+            console.log('Tab shown:', targetId);
+
+            // Trigger load events for specific tabs
+            if (targetId === 'users' && !window.usersLoaded) {
+                loadUsers();
+                window.usersLoaded = true;
+            } else if (targetId === 'classes' && !window.classesLoaded) {
+                loadClasses();
+                window.classesLoaded = true;
+            } else if (targetId === 'subjects' && !window.subjectsLoaded) {
+                loadSubjects();
+                window.subjectsLoaded = true;
+            } else if (targetId === 'grades' && !window.gradesLoaded) {
+                loadGrades();
+                window.gradesLoaded = true;
+            } else if (targetId === 'attendance' && !window.attendanceLoaded) {
+                loadAttendance();
+                window.attendanceLoaded = true;
+            } else if (targetId === 'teachers' && !window.teachersLoaded) {
+                loadTeacherAssignments();
+                window.teachersLoaded = true;
+            }
+        });
+    });
+
+    // Load functions will be implemented in partial templates
+    function loadUsers() { console.log('Loading users...'); }
+    function loadClasses() { console.log('Loading classes...'); }
+    function loadSubjects() { console.log('Loading subjects...'); }
+    function loadGrades() { console.log('Loading grades...'); }
+    function loadAttendance() { console.log('Loading attendance...'); }
+    function loadTeacherAssignments() { console.log('Loading teacher assignments...'); }
 </script>
 {% endblock %}

@@ -1,0 +1,243 @@
+<!-- Dashboard Statistics Partial -->
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="glass-card stat-card p-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <p class="text-muted mb-1 small">{% trans "Jami foydalanuvchilar" %}</p>
+                    <h2 class="fw-bold mb-0">{{ total_users }}</h2>
+                    <small class="text-success"><i class="bi bi-arrow-up"></i> {% trans "Faol" %}</small>
+                </div>
+                <div class="stat-icon" style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;"><i
+                        class="bi bi-people-fill"></i></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="glass-card stat-card p-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <p class="text-muted mb-1 small">{% trans "O'quvchilar" %}</p>
+                    <h2 class="fw-bold mb-0">{{ total_students }}</h2>
+                    <small class="text-info"><i class="bi bi-mortarboard-fill"></i> {% trans "Aktiv" %}</small>
+                </div>
+                <div class="stat-icon" style="background:linear-gradient(135deg,#10b981,#059669);color:white;"><i
+                        class="bi bi-person-badge"></i></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="glass-card stat-card p-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <p class="text-muted mb-1 small">{% trans "Bugungi davomat" %}</p>
+                    <h2 class="fw-bold mb-0">{{ attendance_rate }}%</h2>
+                    <small class="text-warning"><i class="bi bi-calendar-check"></i> {% trans "Bugun" %}</small>
+                </div>
+                <div class="stat-icon" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:white;"><i
+                        class="bi bi-clipboard-check"></i></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="glass-card stat-card p-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <p class="text-muted mb-1 small">{% trans "O'rtacha baho" %}</p>
+                    <h2 class="fw-bold mb-0">{{ avg_performance }}</h2>
+                    <small class="text-success"><i class="bi bi-graph-up"></i> {% trans "30 kun" %}</small>
+                </div>
+                <div class="stat-icon" style="background:linear-gradient(135deg,#ef4444,#dc2626);color:white;"><i
+                        class="bi bi-trophy-fill"></i></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row -->
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="glass-card p-4">
+            <h5 class="fw-bold mb-3"><i class="bi bi-pie-chart-fill me-2 text-primary"></i>{% trans "Bugungi davomat" %}
+            </h5>
+            <div class="chart-container">
+                <canvas id="attendanceChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="glass-card p-4">
+            <h5 class="fw-bold mb-3"><i class="bi bi-bar-chart-fill me-2 text-primary"></i>{% trans "Fanlar bo'yicha
+                o'zlashtirish" %}</h5>
+            <div class="chart-container">
+                <canvas id="performanceChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-12">
+        <div class="glass-card p-4">
+            <h5 class="fw-bold mb-3"><i class="bi bi-graph-up me-2 text-primary"></i>{% trans "Haftalik davomat
+                tendensiyasi" %}</h5>
+            <div class="chart-container">
+                <canvas id="trendChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Students and Activity Row -->
+<div class="row g-4 mb-4">
+    <div class="col-md-6">
+        <div class="glass-card p-4">
+            <h5 class="fw-bold mb-3"><i class="bi bi-star-fill me-2 text-warning"></i>{% trans "Eng yaxshi o'quvchilar"
+                %}</h5>
+            <div id="topStudentsList" class="mt-3">
+                <div class="text-center text-muted py-3">
+                    <div class="spinner-border spinner-border-sm" role="status"></div> {% trans "Yuklanmoqda..." %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="glass-card p-4">
+            <h5 class="fw-bold mb-3"><i class="bi bi-exclamation-triangle-fill me-2 text-danger"></i>{% trans "E'tibor
+                talab qiluvchilar" %}</h5>
+            <div id="strugglingStudentsList" class="mt-3">
+                <div class="text-center text-muted py-3">
+                    <div class="spinner-border spinner-border-sm" role="status"></div> {% trans "Yuklanmoqda..." %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-6">
+        <div class="glass-card p-4">
+            <h5 class="fw-bold mb-3"><i class="bi bi-clock-history me-2 text-info"></i>{% trans "Oxirgi baholar" %}</h5>
+            <div class="mt-3" style="max-height:400px;overflow-y:auto;">
+                {% for grade in recent_grades %}
+                <div class="activity-item">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>{{ grade.student.get_full_name }}</strong> - {{ grade.subject.name }}
+                            <br><small class="text-muted">{{ grade.teacher.get_full_name }} | {{ grade.date }}</small>
+                        </div>
+                        <span
+                            class="badge {% if grade.value >= 4 %}bg-success{% elif grade.value >= 3 %}bg-warning{% else %}bg-danger{% endif %} rounded-pill px-3 py-2">{{
+                            grade.value }}</span>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-muted text-center py-3">{% trans "Hozircha baholar yo'q" %}</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="glass-card p-4">
+            <h5 class="fw-bold mb-3"><i class="bi bi-person-plus-fill me-2 text-success"></i>{% trans "Yangi
+                foydalanuvchilar" %}</h5>
+            <div class="mt-3" style="max-height:400px;overflow-y:auto;">
+                {% for user in recent_users %}
+                <div class="activity-item">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>{{ user.get_full_name|default:user.username }}</strong>
+                            <br><small class="text-muted">{{ user.get_role_display }} | {{ user.date_joined|date:"d M Y"
+                                }}</small>
+                        </div>
+                        <span class="badge bg-primary rounded-pill">{{ user.role }}</span>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-muted text-center py-3">Hozircha yangi foydalanuvchilar yo'q</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Attendance Chart
+        fetch('/administration/api/stats/attendance/').then(r => r.json()).then(data => {
+            const ctx1 = document.getElementById('attendanceChart').getContext('2d');
+            new Chart(ctx1, {
+                type: 'doughnut',
+                data: {
+                    labels: ['{% trans "Kelgan" %}', '{% trans "Kelmagan" %}'],
+                    datasets: [{
+                        data: [data.today.present, data.today.absent],
+                        backgroundColor: ['#10b981', '#ef4444'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            });
+
+            // Trend Chart
+            const ctx3 = document.getElementById('trendChart').getContext('2d');
+            new Chart(ctx3, {
+                type: 'line',
+                data: {
+                    labels: data.weekly_trend.map(d => d.date),
+                    datasets: [{
+                        label: '{% trans "Davomat %" %}',
+                        data: data.weekly_trend.map(d => d.rate),
+                        borderColor: '#764ba2',
+                        backgroundColor: 'rgba(118,75,162,0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true, max: 100 } }
+                }
+            });
+        });
+
+        // Performance Chart
+        fetch('/administration/api/stats/performance/').then(r => r.json()).then(data => {
+            const ctx2 = document.getElementById('performanceChart').getContext('2d');
+            new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: data.subjects,
+                    datasets: [{
+                        label: "{% trans "O'rtacha baho" %}",
+                    data: data.averages,
+                        backgroundColor: '#667eea',
+                        borderRadius: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true, max: 5 } }
+                }
+            });
+        });
+
+        // Top Students
+        fetch('/administration/api/stats/top-students/').then(r => r.json()).then(data => {
+            const html = data.top_students.map((s, i) => `<div class="d-flex justify-content-between align-items-center mb-2 p-2 rounded" style="background:rgba(102,126,234,0.05);"><div><strong>${i + 1}. ${s.name}</strong><br><small class="text-muted">${s.grades_count} {% trans "baho" %}</small></div><span class="badge bg-success rounded-pill px-3 py-2">${s.average}</span></div>`).join('');
+            document.getElementById('topStudentsList').innerHTML = html || `<p class="text-muted text-center">{% trans "Ma'lumot yo'q" %}</p>`;
+        });
+
+        // Struggling Students
+        fetch('/administration/api/stats/struggling/').then(r => r.json()).then(data => {
+            const html = data.struggling_students.map(s => `<div class="d-flex justify-content-between align-items-center mb-2 p-2 rounded" style="background:rgba(239,68,68,0.05);"><div><strong>${s.name}</strong><br><small class="text-muted">${s.class} | ${s.grades_count} {% trans "baho" %}</small></div><span class="badge bg-danger rounded-pill px-3 py-2">${s.average}</span></div>`).join('');
+            document.getElementById('strugglingStudentsList').innerHTML = html || `<p class="text-muted text-center">{% trans "Hammasi yaxshi!" %}</p>`;
+        });
+    });
+</script>

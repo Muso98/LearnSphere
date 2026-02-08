@@ -1,0 +1,103 @@
+<!-- Grades Management Partial -->
+{% load i18n %}
+
+<div class="management-header">
+    <h3 class="management-title"><i class="bi bi-mortarboard me-2"></i>Baholar Boshqaruvi</h3>
+    <button class="btn btn-action btn-action-success" onclick="exportGrades()">
+        <i class="bi bi-download"></i> Excel ga eksport
+    </button>
+</div>
+
+<!-- Filter Panel -->
+<div class="filter-panel">
+    <div class="row g-3">
+        <div class="col-md-3">
+            <input type="text" id="studentSearch" class="form-control" placeholder="O'quvchi ismi...">
+        </div>
+        <div class="col-md-3">
+            <select id="gradeClassFilter" class="form-select">
+                <option value="">Barcha sinflar</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select id="gradeSubjectFilter" class="form-select">
+                <option value="">Barcha fanlar</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <input type="date" id="gradeDateFilter" class="form-control">
+        </div>
+    </div>
+</div>
+
+<!-- Grades Table -->
+<div class="modern-table">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>O'quvchi</th>
+                <th>Fan</th>
+                <th>O'qituvchi</th>
+                <th>Baho</th>
+                <th>Sana</th>
+                <th style="width: 100px;">Harakatlar</th>
+            </tr>
+        </thead>
+        <tbody id="gradesTableBody">
+            <tr>
+                <td colspan="6" class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status"></div>
+                    <p class="mt-2 text-muted">Yuklanmoqda...</p>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<nav id="gradesPagination" class="pagination-modern mt-3"></nav>
+
+<script>
+    function loadGrades() {
+        // Placeholder for grades loading
+        const grades = [
+            { id: 1, student: 'Jasur Karimov', subject: 'Matematika', teacher: 'Aziz Rahimov', grade: 5, date: '2024-02-08' },
+            { id: 2, student: 'Madina Aliyeva', subject: 'Fizika', teacher: 'Olim Tursunov', grade: 4, date: '2024-02-08' }
+        ];
+
+        const tbody = document.getElementById('gradesTableBody');
+        tbody.innerHTML = grades.map(g => `
+        <tr>
+            <td><strong>${g.student}</strong></td>
+            <td>${g.subject}</td>
+            <td>${g.teacher}</td>
+            <td><span class="badge ${g.grade >= 4 ? 'bg-success' : g.grade >= 3 ? 'bg-warning' : 'bg-danger'} rounded-pill px-3">${g.grade}</span></td>
+            <td>${g.date}</td>
+            <td>
+                <button onclick="deleteGrade(${g.id})" class="btn btn-sm btn-danger">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </td>
+        </tr>
+    `).join('');
+    }
+
+    function deleteGrade(id) {
+        if (!confirm('Bahoni o\'chirishga ishonchingiz komilmi?')) return;
+
+        fetch(`/administration/grades/${id}/delete/`, {
+            method: 'POST',
+            headers: { 'X-CSRFToken': AdminUtils.csrftoken }
+        })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    AdminUtils.Toast.show('Baho o\'chirildi!', 'success');
+                    loadGrades();
+                }
+            });
+    }
+
+    function exportGrades() {
+        window.location.href = '/administration/grades/export/';
+    }
+</script>

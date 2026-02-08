@@ -379,8 +379,10 @@ def quarter_report(request):
 
 @login_required
 def user_list(request):
-    """List all users with search and filter"""
+    """List all users with search and filter - support both HTML and JSON"""
     if not is_admin_user(request.user):
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'error': 'Unauthorized'}, status=403)
         messages.error(request, "Sizda bu sahifaga kirish huquqi yo'q!")
         return redirect('home')
     
@@ -405,24 +407,43 @@ def user_list(request):
     if role_filter:
         users = users.filter(role=role_filter)
     
-    # Filter by class (for students)
-    class_filter = request.GET.get('class', '')
-    if class_filter:
-        users = users.filter(student_class_id=class_filter)
+    # Filter by status
+    status_filter = request.GET.get('status', '')
+    if status_filter == 'active':
+        users = users.filter(is_active=True)
+    elif status_filter == 'inactive':
+        users = users.filter(is_active=False)
     
-    # Pagination
-    paginator = Paginator(users, 20)  # 20 users per page
+    # Check if AJAX request
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        users_data = [{
+            'id': u.id,
+            'username': u.username,
+            'full_name': u.get_full_name() or u.username,
+            'initials': f"{u.first_name[0] if u.first_name else ''}{u.last_name[0] if u.last_name else ''}".upper() or u.username[0].upper(),
+            'email': u.email,
+            'phone': u.phone or '',
+            'role': u.role,
+            'role_display': u.get_role_display(),
+            'is_active': u.is_active,
+            'date_joined': u.date_joined.strftime('%d.%m.%Y'),
+            'student_class': u.student_class.name if u.student_class else None
+        } for u in users]
+        
+        return JsonResponse({'users': users_data, 'total': users.count()})
+    
+    # Pagination for HTML
+    paginator = Paginator(users, 20)
     page_number = request.GET.get('page')
     users_page = paginator.get_page(page_number)
     
-    # Get all classes for filter
     classes = Class.objects.all()
     
     context = {
         'users': users_page,
         'search_query': search_query,
         'role_filter': role_filter,
-        'class_filter': class_filter,
+        'status_filter': status_filter,
         'classes': classes,
         'total_users': users.count(),
     }
@@ -431,8 +452,10 @@ def user_list(request):
 
 @login_required
 def user_create(request):
-    """Create new user"""
+    """Create new user - support both HTML and JSON"""
     if not is_admin_user(request.user):
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'success': False, 'message': 'Unauthorized'}, status=403)
         messages.error(request, "Sizda bu sahifaga kirish huquqi yo'q!")
         return redirect('home')
     
@@ -440,8 +463,20 @@ def user_create(request):
         form = UserCreateForm(request.POST)
         if form.is_valid():
             user = form.save()
+            
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'success': True,
+                    'message': f"Foydalanuvchi {user.username} muvaffaqiyatli yaratildi!",
+                    'user_id': user.id
+                })
+            
             messages.success(request, f"Foydalanuvchi {user.username} muvaffaqiyatli yaratildi!")
             return redirect('user_list')
+        else:
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                errors = {field: [str(e) for e in errs] for field, errs in form.errors.items()}
+                return JsonResponse({'success': False, 'message': 'Formada xatolar bor', 'errors': errors})
     else:
         form = UserCreateForm()
     
@@ -475,8 +510,10 @@ def user_edit(request, user_id):
 
 @login_required
 def user_delete(request, user_id):
-    """Delete user"""
+    """Delete user - support both HTML and JSON"""
     if not is_admin_user(request.user):
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'success': False, 'message': 'Unauthorized'}, status=403)
         messages.error(request, "Sizda bu sahifaga kirish huquqi yo'q!")
         return redirect('home')
     
@@ -486,12 +523,18 @@ def user_delete(request, user_id):
     
     # Prevent deleting yourself
     if user.id == request.user.id:
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'success': False, 'message': "O'zingizni o'chira olmaysiz!"})
         messages.error(request, "O'zingizni o'chira olmaysiz!")
         return redirect('user_list')
     
     if request.method == 'POST':
         username = user.username
         user.delete()
+        
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'success': True, 'message': f"Foydalanuvchi {username} o'chirildi!"})
+        
         messages.success(request, f"Foydalanuvchi {username} o'chirildi!")
         return redirect('user_list')
     

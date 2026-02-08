@@ -1,0 +1,121 @@
+<!-- Attendance Management Partial -->
+{% load i18n %}
+
+<div class="management-header">
+    <h3 class="management-title"><i class="bi bi-calendar-check me-2"></i>Davomat Boshqaruvi</h3>
+    <button class="btn btn-action btn-action-success" onclick="exportAttendance()">
+        <i class="bi bi-download"></i> Excel ga eksport
+    </button>
+</div>
+
+<!-- Filter Panel -->
+<div class="filter-panel">
+    <div class="row g-3">
+        <div class="col-md-4">
+            <select id="attendanceClassFilter" class="form-select">
+                <option value="">Barcha sinflar</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <input type="date" id="attendanceDateFilter" class="form-control">
+        </div>
+        <div class="col-md-4">
+            <select id="attendanceStatusFilter" class="form-select">
+                <option value="">Barcha holatlar</option>
+                <option value="present">Kelgan</option>
+                <option value="absent">Kelmagan</option>
+                <option value="late">Kechikkan</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<!-- Attendance Table -->
+<div class="modern-table">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>O'quvchi</th>
+                <th>Sinf</th>
+                <th>Sana</th>
+                <th>Holat</th>
+                <th style="width: 150px;">Harakatlar</th>
+            </tr>
+        </thead>
+        <tbody id="attendanceTableBody">
+            <tr>
+                <td colspan="5" class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status"></div>
+                    <p class="mt-2 text-muted">Yuklanmoqda...</p>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<nav id="attendancePagination" class="pagination-modern mt-3"></nav>
+
+<script>
+    function loadAttendance() {
+        // Placeholder
+        const attendance = [
+            { id: 1, student: 'Jasur Karimov', class: '1-A', date: '2024-02-08', status: 'present' },
+            { id: 2, student: 'Madina Aliyeva', class: '1-A', date: '2024-02-08', status: 'absent' }
+        ];
+
+        const tbody = document.getElementById('attendanceTableBody');
+        tbody.innerHTML = attendance.map(a => `
+        <tr>
+            <td><strong>${a.student}</strong></td>
+            <td>${a.class}</td>
+            <td>${a.date}</td>
+            <td><span class="badge ${getStatusBadge(a.status)}">${getStatusText(a.status)}</span></td>
+            <td>
+                <select class="form-select form-select-sm" onchange="updateAttendance(${a.id}, this.value)">
+                    <option value="present" ${a.status === 'present' ? 'selected' : ''}>Kelgan</option>
+                    <option value="absent" ${a.status === 'absent' ? 'selected' : ''}>Kelmagan</option>
+                    <option value="late" ${a.status === 'late' ? 'selected' : ''}>Kechikkan</option>
+                </select>
+            </td>
+        </tr>
+    `).join('');
+    }
+
+    function getStatusBadge(status) {
+        return {
+            'present': 'bg-success',
+            'absent': 'bg-danger',
+            'late': 'bg-warning'
+        }[status] || 'bg-secondary';
+    }
+
+    function getStatusText(status) {
+        return {
+            'present': 'Kelgan',
+            'absent': 'Kelmagan',
+            'late': 'Kechikkan'
+        }[status] || status;
+    }
+
+    function updateAttendance(id, status) {
+        fetch(`/administration/attendance/${id}/update/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': AdminUtils.csrftoken
+            },
+            body: `status=${status}`
+        })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    AdminUtils.Toast.show('Davomat yangilandi!', 'success');
+                    loadAttendance();
+                }
+            });
+    }
+
+    function exportAttendance() {
+        window.location.href = '/administration/attendance/export/';
+    }
+</script>
