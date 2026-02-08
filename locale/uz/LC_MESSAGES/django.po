@@ -229,3 +229,40 @@ msgstr "Hozircha baholar yo'q"
 
 msgid "Yangi foydalanuvchilar"
 msgstr "Yangi foydalanuvchilar"
+
+# Dynamic Content (Roles & Subjects)
+msgid "Admin"
+msgstr "Admin"
+
+msgid "Director"
+msgstr "Direktor"
+
+msgid "Teacher"
+msgstr "O'qituvchi"
+
+msgid "Student"
+msgstr "O'quvchi"
+
+msgid "Parent"
+msgstr "Ota-ona"
+
+msgid "Mathematics"
+msgstr "Matematika"
+
+msgid "English"
+msgstr "Ingliz tili"
+
+msgid "baho"
+msgstr "baho"
+
+msgid "Hammasi yaxshi!"
+msgstr "Hammasi yaxshi!"
+
+msgid "Kelgan"
+msgstr "Kelgan"
+
+msgid "Kelmagan"
+msgstr "Kelmagan"
+
+msgid "Davomat %"
+msgstr "Davomat %"

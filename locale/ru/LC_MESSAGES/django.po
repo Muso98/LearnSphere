@@ -229,3 +229,40 @@ msgstr "Оценок пока нет"
 
 msgid "Yangi foydalanuvchilar"
 msgstr "Новые пользователи"
+
+# Dynamic Content (Roles & Subjects)
+msgid "Admin"
+msgstr "Администратор"
+
+msgid "Director"
+msgstr "Директор"
+
+msgid "Teacher"
+msgstr "Учитель"
+
+msgid "Student"
+msgstr "Ученик"
+
+msgid "Parent"
+msgstr "Родитель"
+
+msgid "Mathematics"
+msgstr "Математика"
+
+msgid "English"
+msgstr "Английский"
+
+msgid "baho"
+msgstr "оценок"
+
+msgid "Hammasi yaxshi!"
+msgstr "Все отлично!"
+
+msgid "Kelgan"
+msgstr "Присутствовал"
+
+msgid "Kelmagan"
+msgstr "Отсутствовал"
+
+msgid "Davomat %"
+msgstr "Посещаемость %"

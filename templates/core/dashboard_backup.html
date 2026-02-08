@@ -55,8 +55,7 @@
                                 <td>{{ grade.student.first_name }} {{ grade.student.last_name }}</td>
                                 <td>{{ grade.subject.name }}</td>
                                 <td><span
-                                        class="badge {% if grade.value >= 4 %}bg-success{% elif grade.value == 3 %}bg-warning{% else %}bg-danger{% endif %}">{{
-                                        grade.value }}</span></td>
+                                        class="badge {% if grade.value >= 4 %}bg-success{% elif grade.value == 3 %}bg-warning{% else %}bg-danger{% endif %}">{{ grade.value }}</span></td>
                                 <td>{{ grade.date|date:"d-M, Y" }}</td>
                                 <td>{% if grade.comment %}<small class="text-muted"><i
                                             class="bi bi-chat-left-text me-1"></i>{{ grade.comment }}</small>{% else
@@ -108,8 +107,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         {% for item in children_with_skills %} {% if item.skill_map %}
-        const ctx{{ forloop.counter }
-    } = document.getElementById('radarChart{{ forloop.counter }}').getContext('2d');
+        const ctx{{ forloop.counter } } = document.getElementById('radarChart{{ forloop.counter }}').getContext('2d');
     new Chart(ctx{{ forloop.counter }}, {
         type: 'radar',
         data: {

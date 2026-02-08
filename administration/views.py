@@ -1,3 +1,4 @@
+from django.utils.translation import gettext as _
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -172,7 +173,7 @@ def stats_performance(request):
     counts = []
     
     for stat in subject_stats:
-        subjects.append(stat['subject__name'])
+        subjects.append(_(stat['subject__name']))
         averages.append(round(stat['avg_grade'], 2))
         counts.append(stat['count'])
     
@@ -239,7 +240,7 @@ def stats_struggling_students(request):
     for student in struggling:
         students.append({
             'name': f"{student['student__first_name']} {student['student__last_name']}",
-            'class': student['student__student_class__name'] or 'N/A',
+            'class': student['student__student_class__name'] or _('N/A'),
             'average': round(student['avg_grade'], 2),
             'grades_count': student['count']
         })

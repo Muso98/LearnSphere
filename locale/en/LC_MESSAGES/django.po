@@ -229,3 +229,25 @@ msgstr "No grades yet"
 
 msgid "Yangi foydalanuvchilar"
 msgstr "New Users"
+
+# Dynamic Content (Roles & Subjects)
+msgid "Admin"
+msgstr "Admin"
+
+msgid "Director"
+msgstr "Director"
+
+msgid "Teacher"
+msgstr "Teacher"
+
+msgid "Student"
+msgstr "Student"
+
+msgid "Parent"
+msgstr "Parent"
+
+msgid "Mathematics"
+msgstr "Mathematics"
+
+msgid "English"
+msgstr "English"

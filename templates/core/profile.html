@@ -78,8 +78,7 @@
                         <h6 class="fw-bold"><i class="bi bi-people me-2"></i>Farzandlar:</h6>
                         <ul class="list-group">
                             {% for child in children %}
-                            <li class="list-group-item">{{ child.first_name }} {{ child.last_name }} - {{
-                                child.student_class }}</li>
+                            <li class="list-group-item">{{ child.first_name }} {{ child.last_name }} - {{ child.student_class }}</li>
                             {% empty %}
                             <li class="list-group-item text-muted">Farzandlar biriktirilmagan.</li>
                             {% endfor %}
@@ -148,8 +147,7 @@
                             </li>
                         </ul>
                         <div class="mt-3 text-muted" style="font-size: 0.8rem;">
-                            <i class="bi bi-info-circle me-1"></i> So'nggi yangilanish: {{
-                            skill_map.updated_at|date:"d.m.Y" }}
+                            <i class="bi bi-info-circle me-1"></i> So'nggi yangilanish: {{ skill_map.updated_at|date:"d.m.Y" }}
                             <br>
                             (O'qituvchi: {{ skill_map.updated_by.get_full_name }})
                         </div>

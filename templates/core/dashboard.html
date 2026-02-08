@@ -119,8 +119,7 @@
     document.addEventListener('DOMContentLoaded', function () {
         {% for item in children_with_skills %}
         {% if item.skill_map %}
-        const ctx{{ forloop.counter }
-    } = document.getElementById('radarChart{{ forloop.counter }}').getContext('2d');
+        const ctx{{ forloop.counter } } = document.getElementById('radarChart{{ forloop.counter }}').getContext('2d');
     new Chart(ctx{{ forloop.counter }}, {
         type: 'radar',
         data: {
