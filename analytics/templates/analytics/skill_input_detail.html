@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ class_obj.name }} - O'quvchilar - LearnSphere{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'skill_input_list' %}">Sinflar</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ class_obj.name }}</li>
+            </ol>
+        </nav>
+        <h2 class="fw-bold">{{ class_obj.name }} sinf o'quvchilari</h2>
+    </div>
+</div>
+
+<div class="glass-card p-4">
+    <div class="list-group list-group-flush">
+        {% for student in students %}
+        <a href="{% url 'update_skills' student.id %}"
+            class="list-group-item list-group-item-action bg-transparent py-3 d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <div class="avatar-circle bg-primary text-white me-3">
+                    {{ student.first_name|make_list|first }}
+                </div>
+                <div>
+                    <h5 class="mb-0 fw-bold">{{ student.get_full_name }}</h5>
+                    <small class="text-muted">ID: {{ student.username }}</small>
+                </div>
+            </div>
+
+            {% if student.skill_map.exists %}
+            <span class="badge bg-success rounded-pill">Baholangan <i class="bi bi-check-circle ms-1"></i></span>
+            {% else %}
+            <span class="badge bg-warning text-dark rounded-pill">Baholanmagan</span>
+            {% endif %}
+        </a>
+        {% empty %}
+        <p class="text-center text-muted col-12 my-4">Sinfda o'quvchilar yo'q.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

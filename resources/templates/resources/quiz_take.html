@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}Test: {{ quiz.title }} - LearnSphere{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="fw-bold mb-0">{{ quiz.title }}</h4>
+            <div class="timer text-primary fw-bold fs-5">
+                <i class="bi bi-stopwatch me-2"></i> <span id="timer">00:00</span>
+            </div>
+        </div>
+
+        <form method="post" id="quizForm">
+            {% csrf_token %}
+
+            {% for question in questions %}
+            <div class="glass-card p-4 mb-4">
+                <h5 class="fw-bold mb-3">
+                    <span class="text-primary me-2">{{ forloop.counter }}.</span>
+                    {{ question.text }}
+                </h5>
+
+                <div class="ps-4">
+                    {% for answer in question.shuffled_answers %}
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="radio" name="question_{{ question.id }}"
+                            id="answer_{{ answer.id }}" value="{{ answer.id }}">
+                        <label class="form-check-label" for="answer_{{ answer.id }}">
+                            {{ answer.text }}
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary btn-lg rounded-pill shadow-sm">
+                    Testni Yakunlash
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Simple timer logic (just counts up for now, functional enhancement could typically refer to duration)
+    let seconds = 0;
+    setInterval(function () {
+        seconds++;
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        document.getElementById('timer').innerText =
+            (mins < 10 ? '0' : '') + mins + ':' + (secs < 10 ? '0' : '') + secs;
+    }, 1000);
+</script>
+{% endblock %}

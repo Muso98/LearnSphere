@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from journal.models import Grade
+from analytics.models import SkillMap
 
 @login_required
 def profile_view(request):
@@ -27,5 +28,9 @@ def profile_view(request):
     
     if request.user.role == 'parent':
         context['children'] = request.user.children.all()
+    
+    # AI Foundation: Get Skill Map
+    skill_map = SkillMap.objects.filter(student=request.user).first()
+    context['skill_map'] = skill_map
     
     return render(request, 'core/profile.html', context)

@@ -1,0 +1,35 @@
+DEBUG: Starting setUp
+DEBUG: Teacher created
+DEBUG: Parent created
+DEBUG: Student created
+DEBUG: School created: Test School
+DEBUG: Class created
+DEBUG: setUp complete
+DEBUG: Starting setUp
+DEBUG: Teacher created
+DEBUG: Parent created
+DEBUG: Student created
+DEBUG: School created: Test School
+DEBUG: Class created
+DEBUG: setUp complete
+DEBUG: Starting setUp
+DEBUG: Teacher created
+DEBUG: Parent created
+DEBUG: Student created
+DEBUG: School created: Test School
+DEBUG: Class created
+DEBUG: setUp complete
+DEBUG: Starting setUp
+DEBUG: Teacher created
+DEBUG: Parent created
+DEBUG: Student created
+DEBUG: School created: Test School
+DEBUG: Class created
+DEBUG: setUp complete
+DEBUG: Starting setUp
+DEBUG: Teacher created
+DEBUG: Parent created
+DEBUG: Student created
+DEBUG: School created: Test School
+DEBUG: Class created
+DEBUG: setUp complete

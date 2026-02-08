@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Xonalar - LearnSphere{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h2 class="fw-bold">Xonalar va Laboratoriyalar</h2>
+        <p class="text-muted">Maktab xonalarini band qilish tizimi</p>
+    </div>
+</div>
+
+<!-- Filter -->
+<div class="glass-card p-4 mb-4">
+    <form method="get" class="row g-3 align-items-end">
+        <div class="col-md-4">
+            <label class="form-label fw-bold">Xona Turi</label>
+            <select name="type" class="form-select rounded-3">
+                <option value="">Barchasi</option>
+                <option value="classroom" {% if selected_type=='classroom' %}selected{% endif %}>Sinf xonasi</option>
+                <option value="lab" {% if selected_type=='lab' %}selected{% endif %}>Laboratoriya</option>
+                <option value="hall" {% if selected_type=='hall' %}selected{% endif %}>Faollar zali</option>
+                <option value="sport" {% if selected_type=='sport' %}selected{% endif %}>Sport zali</option>
+                <option value="meeting" {% if selected_type=='meeting' %}selected{% endif %}>Majlislar xonasi</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100 rounded-pill">Filtrlash</button>
+        </div>
+    </form>
+</div>
+
+<!-- Rooms Grid -->
+<div class="row">
+    {% for room in rooms %}
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="glass-card h-100 d-flex flex-column">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill">
+                        {{ room.get_room_type_display }}
+                    </span>
+                    <span class="text-muted small">
+                        <i class="bi bi-people-fill"></i> {{ room.capacity }}
+                    </span>
+                </div>
+
+                <h4 class="fw-bold mb-2">{{ room.number }}</h4>
+                <p class="text-muted small mb-3">
+                    {% if room.has_projector %}<span class="me-2"><i class="bi bi-projector"></i> Proyektor</span>{%
+                    endif %}
+                    {% if room.has_smartboard %}<span><i class="bi bi-display"></i> Smartboard</span>{% endif %}
+                </p>
+                <p class="small text-muted">{{ room.description|truncatewords:10 }}</p>
+
+                <a href="{% url 'room_detail' room.id %}" class="btn btn-outline-primary w-100 rounded-pill mt-auto">
+                    Band qilish / Ko'rish
+                </a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12 text-center py-5">
+        <p class="text-muted">Xonalar topilmadi</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

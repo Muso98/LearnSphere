@@ -107,6 +107,112 @@
         </div>
     </div>
 </div>
+</div>
+
+<!-- AI Data / Soft Skills Analytics -->
+{% if skill_map %}
+<div class="row justify-content-center mt-4 mb-5">
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h5 class="mb-0 fw-bold text-primary"><i class="bi bi-cpu-fill me-2"></i>AI Tahlil: Qobiliyatlar
+                    Xaritasi</h5>
+            </div>
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-7">
+                        <canvas id="skillRadarChart"></canvas>
+                    </div>
+                    <div class="col-md-5">
+                        <h6 class="text-muted text-uppercase small fw-bold mb-3">Xulosa</h6>
+                        <ul class="list-group list-group-flush small">
+                            <li class="list-group-item d-flex justify-content-between px-0">
+                                <span>Tanqidiy fikrlash</span>
+                                <span class="fw-bold text-primary">{{ skill_map.critical_thinking }}%</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between px-0">
+                                <span>Ijodkorlik</span>
+                                <span class="fw-bold text-success">{{ skill_map.creativity }}%</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between px-0">
+                                <span>Muloqot</span>
+                                <span class="fw-bold text-info">{{ skill_map.communication }}%</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between px-0">
+                                <span>Jamoaviy ishlash</span>
+                                <span class="fw-bold text-warning">{{ skill_map.teamwork }}%</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between px-0">
+                                <span>Moslashuvchanlik</span>
+                                <span class="fw-bold text-secondary">{{ skill_map.adaptive_learning }}%</span>
+                            </li>
+                        </ul>
+                        <div class="mt-3 text-muted" style="font-size: 0.8rem;">
+                            <i class="bi bi-info-circle me-1"></i> So'nggi yangilanish: {{
+                            skill_map.updated_at|date:"d.m.Y" }}
+                            <br>
+                            (O'qituvchi: {{ skill_map.updated_by.get_full_name }})
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const ctx = document.getElementById('skillRadarChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: [
+                    'Tanqidiy Fikrlash',
+                    'Ijodkorlik',
+                    'Muloqot',
+                    'Jamoaviy Ishlash',
+                    'Moslashuvchanlik'
+                ],
+                datasets: [{
+                    label: 'O\'quvchi Ko\'rsatkichlari',
+                    data: [
+                        {{ skill_map.critical_thinking }},
+                {{ skill_map.creativity }},
+                        {{ skill_map.communication }},
+        {{ skill_map.teamwork }},
+        {{ skill_map.adaptive_learning }}
+                    ],
+        fill: true,
+        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+        borderColor: 'rgb(54, 162, 235)',
+        pointBackgroundColor: 'rgb(54, 162, 235)',
+        pointBorderColor: '#fff',
+        pointHoverBackgroundColor: '#fff',
+        pointHoverBorderColor: 'rgb(54, 162, 235)'
+                }]
+            },
+        options: {
+        elements: {
+            line: {
+                borderWidth: 3
+            }
+        },
+        scales: {
+            r: {
+                angleLines: {
+                    display: true
+                },
+                suggestedMin: 0,
+                suggestedMax: 100
+            }
+        }
+    }
+        });
+    });
+</script>
+{% endif %}
 
 <script>
     function previewImage(event) {

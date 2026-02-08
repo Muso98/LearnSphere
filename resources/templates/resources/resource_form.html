@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block title %}Resurs Yuklash - LearnSphere{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="glass-card p-4 p-md-5">
+            <h3 class="fw-bold mb-4 text-center">Yangi Resurs Yuklash</h3>
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label for="title" class="form-label fw-bold">Mavzu (Sarlavha)</label>
+                    <input type="text" class="form-control rounded-3 py-2" id="title" name="title" required
+                        placeholder="Masalan: Fizika 9-sinf darsligi">
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="subject" class="form-label fw-bold">Fan</label>
+                        <select class="form-select rounded-3 py-2" id="subject" name="subject" required>
+                            <option value="">Fanni tanlang</option>
+                            {% for subject in subjects %}
+                            <option value="{{ subject.id }}">{{ subject.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="resource_type" class="form-label fw-bold">Turi</label>
+                        <select class="form-select rounded-3 py-2" id="resource_type" name="resource_type" required
+                            onchange="toggleInputs()">
+                            <option value="">Turini tanlang</option>
+                            <option value="video">Video Dars (Link)</option>
+                            <option value="pdf">PDF Kitob (Fayl)</option>
+                            <option value="link">Foydali Link</option>
+                            <option value="audio">Audio Dars (Fayl)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-3" id="file_input_div" style="display: none;">
+                    <label for="file" class="form-label fw-bold">Fayl Yuklash (PDF/Audio)</label>
+                    <input type="file" class="form-control rounded-3" id="file" name="file">
+                    <div class="form-text">Maksimal hajmi: 10MB</div>
+                </div>
+
+                <div class="mb-3" id="link_input_div" style="display: none;">
+                    <label for="link" class="form-label fw-bold">Link (URL)</label>
+                    <input type="url" class="form-control rounded-3 py-2" id="link" name="link"
+                        placeholder="https://youtube.com/...">
+                </div>
+
+                <div class="mb-4">
+                    <label for="description" class="form-label fw-bold">Qisqacha Tavsif</label>
+                    <textarea class="form-control rounded-3" id="description" name="description" rows="3"
+                        placeholder="Resurs haqida qisqacha ma'lumot..."></textarea>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary rounded-pill py-2 fw-bold shadow-sm">
+                        <i class="bi bi-cloud-upload me-2"></i> Yuklash
+                    </button>
+                    <a href="{% url 'resource_list' %}" class="btn btn-light rounded-pill py-2">Bekor qilish</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleInputs() {
+        const type = document.getElementById('resource_type').value;
+        const fileDiv = document.getElementById('file_input_div');
+        const linkDiv = document.getElementById('link_input_div');
+
+        if (type === 'pdf' || type === 'audio') {
+            fileDiv.style.display = 'block';
+            linkDiv.style.display = 'none';
+        } else if (type === 'video' || type === 'link') {
+            fileDiv.style.display = 'none';
+            linkDiv.style.display = 'block';
+        } else {
+            fileDiv.style.display = 'none';
+            linkDiv.style.display = 'none';
+        }
+    }
+</script>
+{% endblock %}

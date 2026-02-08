@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}Fanlar - Admin Panel{% endblock %}
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold"><i class="bi bi-book me-2"></i>Fanlar boshqaruvi</h2>
+        <div>
+            <a href="{% url 'subject_create' %}" class="btn btn-primary"><i class="bi bi-plus-circle me-2"></i>Yangi
+                fan</a>
+            <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-secondary"><i
+                    class="bi bi-arrow-left me-2"></i>Dashboard</a>
+        </div>
+    </div>
+    <div class="glass-card p-4">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;">
+                    <tr>
+                        <th>Fan nomi</th>
+                        <th>Harakatlar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for subject in subjects %}
+                    <tr>
+                        <td><strong>{{ subject.name }}</strong></td>
+                        <td>
+                            <a href="{% url 'subject_edit' subject.id %}" class="btn btn-sm btn-outline-primary"><i
+                                    class="bi bi-pencil me-1"></i>Tahrirlash</a>
+                            <a href="{% url 'subject_delete' subject.id %}" class="btn btn-sm btn-outline-danger"><i
+                                    class="bi bi-trash me-1"></i>O'chirish</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="2" class="text-center text-muted py-4">Hozircha fanlar yo'q. <a
+                                href="{% url 'subject_create' %}">Birinchi fanni yarating</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,21 +1,18 @@
 {% extends 'base.html' %}
-
-{% block title %}Ota-ona burchagi - LearnSphere{% endblock %}
-
+{% load i18n %}
+{% block title %}{% trans "Ota-ona burchagi" %} - LearnSphere{% endblock %}
 {% block content %}
 <div class="row mb-4">
     <div class="col-md-12">
-        <h2>Xush kelibsiz, {{ user.first_name|default:user.username }}</h2>
-        <p class="text-muted">Farzandlaringizning o'zlashtirish ko'rsatkichlari bu yerda aks etadi.</p>
+        <h2>{% trans "Xush kelibsiz" %}, {{ user.first_name|default:user.username }}</h2>
+        <p class="text-muted">{% trans "Farzandlaringizning o'zlashtirish ko'rsatkichlari bu yerda aks etadi." %}</p>
     </div>
 </div>
-
 <div class="row">
-    <!-- Children List -->
     <div class="col-md-4 mb-4">
         <div class="card shadow-sm h-100">
             <div class="card-header bg-primary text-white">
-                <h5 class="mb-0"><i class="bi bi-people-fill me-2"></i>Farzandlarim</h5>
+                <h5 class="mb-0"><i class="bi bi-people-fill me-2"></i>{% trans "Farzandlarim" %}</h5>
             </div>
             <div class="list-group list-group-flush">
                 {% for child in children %}
@@ -27,19 +24,15 @@
                     <p class="mb-1 small text-muted">Username: {{ child.username }}</p>
                 </div>
                 {% empty %}
-                <div class="list-group-item text-center text-muted">
-                    Farzandlar hali biriktirilmagan.
-                </div>
+                <div class="list-group-item text-center text-muted">{% trans "Farzandlar hali biriktirilmagan." %}</div>
                 {% endfor %}
             </div>
         </div>
     </div>
-
-    <!-- Recent Grades -->
     <div class="col-md-8 mb-4">
         <div class="card shadow-sm h-100">
             <div class="card-header bg-success text-white">
-                <h5 class="mb-0"><i class="bi bi-journal-check me-2"></i>So'nggi Baholar</h5>
+                <h5 class="mb-0"><i class="bi bi-journal-check me-2"></i>{% trans "So'nggi Baholar" %}</h5>
             </div>
             <div class="card-body">
                 {% if recent_grades %}
@@ -47,11 +40,11 @@
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th>O'quvchi</th>
-                                <th>Fan</th>
-                                <th>Baho</th>
-                                <th>Sana</th>
-                                <th>Izoh</th>
+                                <th>{% trans "O'quvchi" %}</th>
+                                <th>{% trans "Fan" %}</th>
+                                <th>{% trans "Baho" %}</th>
+                                <th>{% trans "Sana" %}</th>
+                                <th>{% trans "Izoh" %}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -61,16 +54,21 @@
                                 <td>{{ grade.student.first_name }} {{ grade.student.last_name }}</td>
                                 <td>{{ grade.subject.name }}</td>
                                 <td>
-                                    <span
-                                        class="badge {% if grade.value >= 4 %}bg-success{% elif grade.value == 3 %}bg-warning{% else %}bg-danger{% endif %}">
-                                        {{ grade.value }}
-                                    </span>
+                                    {% if grade.value >= 4 %}
+                                    <span class="badge bg-success">{{ grade.value }}</span>
+                                    {% elif grade.value == 3 %}
+                                    <span class="badge bg-warning">{{ grade.value }}</span>
+                                    {% else %}
+                                    <span class="badge bg-danger">{{ grade.value }}</span>
+                                    {% endif %}
                                 </td>
                                 <td>{{ grade.date|date:"d-M, Y" }}</td>
                                 <td>
                                     {% if grade.comment %}
-                                    <small class="text-muted"><i class="bi bi-chat-left-text me-1"></i>{{ grade.comment
-                                        }}</small>
+                                    <small class="text-muted">
+                                        <i class="bi bi-chat-left-text me-1"></i>
+                                        {{ grade.comment }}
+                                    </small>
                                     {% else %}
                                     <small class="text-muted">-</small>
                                     {% endif %}
@@ -78,17 +76,92 @@
                             </tr>
                             {% empty %}
                             <tr>
-                                <td colspan="6" class="text-center text-muted">So'nggi baholar topilmadi.</td>
+                                <td colspan="6" class="text-center text-muted">{% trans "So'nggi baholar topilmadi." %}
+                                </td>
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
                 {% else %}
-                <p class="text-muted text-center my-4">So'nggi baholar topilmadi.</p>
+                <p class="text-muted text-center my-4">{% trans "So'nggi baholar topilmadi." %}</p>
                 {% endif %}
             </div>
         </div>
     </div>
 </div>
+{% if children_with_skills %}
+<div class="row mt-4">
+    <div class="col-12">
+        <h4 class="mb-3"><i class="bi bi-cpu-fill me-2 text-primary"></i>{% trans "Farzandlarimning Qobiliyatlari (AI Tahlil)" %}</h4>
+    </div>
+    {% for item in children_with_skills %}
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card shadow-sm h-100 border-0">
+            <div class="card-header bg-white border-0 pt-3 px-3">
+                <h6 class="mb-0 fw-bold">{{ item.child.get_full_name }}</h6>
+                <small class="text-muted">{{ item.child.student_class.name|default:_("Sinf yo'q") }}</small>
+            </div>
+            <div class="card-body px-3 pb-3">
+                {% if item.skill_map %}
+                <div style="height: 250px; position: relative;"><canvas id="radarChart{{ forloop.counter }}"></canvas>
+                </div>
+                {% else %}
+                <div class="text-center text-muted py-5"><i class="bi bi-clipboard-data fs-3 d-block mb-2"></i><small>{% trans "Ma'lumot yo'q" %}</small></div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        {% for item in children_with_skills %}
+        {% if item.skill_map %}
+        const ctx{{ forloop.counter }
+    } = document.getElementById('radarChart{{ forloop.counter }}').getContext('2d');
+    new Chart(ctx{{ forloop.counter }}, {
+        type: 'radar',
+        data: {
+            labels: ['Tanqidiy Fikr', 'Ijodkorlik', 'Muloqot', 'Jamoaviy', 'Moslashuv'],
+            datasets: [{
+                label: '{{ item.child.first_name }}',
+                data: [
+                    {{ item.skill_map.critical_thinking }},
+            {{ item.skill_map.creativity }},
+{{ item.skill_map.communication }},
+        {{ item.skill_map.teamwork }},
+        {{ item.skill_map.adaptive_learning }}
+],
+        fill: true,
+        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+        borderColor: 'rgb(54, 162, 235)',
+        pointBackgroundColor: 'rgb(54, 162, 235)',
+        pointBorderColor: '#fff',
+        pointHoverBackgroundColor: '#fff',
+        pointHoverBorderColor: 'rgb(54, 162, 235)'
+}]
+},
+        options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            r: {
+                angleLines: { display: true },
+                suggestedMin: 0,
+                suggestedMax: 100,
+                ticks: { display: false }
+            }
+        },
+        plugins: {
+            legend: { display: false }
+        }
+    }
+});
+    {% endif %}
+    {% endfor %}
+});
+</script>
+{% endif %}
 {% endblock %}

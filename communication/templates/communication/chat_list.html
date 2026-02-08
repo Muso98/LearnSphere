@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+
+{% block title %}Xabarlar - LearnSphere{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2 class="fw-bold">Xabarlar</h2>
+        <p class="text-muted">O'qituvchilar va ota-onalar bilan muloqot</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="glass-card h-100">
+            <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Yangi suhbat</h5>
+                {% if user.role == 'director' or user.role == 'admin' %}
+                <button type="button" class="btn btn-sm btn-primary rounded-pill" data-bs-toggle="modal"
+                    data-bs-target="#broadcastModal">
+                    <i class="bi bi-megaphone-fill me-1"></i> Umumiy
+                </button>
+                {% endif %}
+            </div>
+
+            <div class="p-2 border-bottom">
+                <input type="text" id="userSearch" class="form-control form-control-sm rounded-pill"
+                    placeholder="Qidirish..." onkeyup="filterUsers()">
+            </div>
+
+            <div class="list-group list-group-flush p-2" id="userList" style="max-height: 400px; overflow-y: auto;">
+                {% for u in available_users %}
+                <a href="{% url 'start_chat' u.id %}"
+                    class="list-group-item list-group-item-action border-0 rounded mb-1 user-item">
+                    <div class="d-flex align-items-center">
+                        <div class="rounded-circle bg-light text-primary d-flex align-items-center justify-content-center me-3"
+                            style="width: 40px; height: 40px; flex-shrink: 0;">
+                            {{ u.first_name|first }}
+                        </div>
+                        <div class="overflow-hidden">
+                            <h6 class="mb-0 text-truncate user-name">{{ u.get_full_name|default:u.username }}</h6>
+                            <small class="text-muted user-role">{{ u.role|title }}</small>
+                        </div>
+                    </div>
+                </a>
+                {% empty %}
+                <div class="text-center p-3 text-muted">
+                    <small>Yangi suhbatdoshlar yo'q</small>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="glass-card">
+            <div class="p-3 border-bottom bg-light bg-opacity-50">
+                <h5 class="mb-0">Suhbatlarim</h5>
+            </div>
+            <div class="list-group list-group-flush">
+                {% for conv in conversations %}
+                <a href="{% url 'chat_detail' conv.id %}"
+                    class="list-group-item list-group-item-action p-3 border-0 border-bottom">
+                    <div class="d-flex w-100 justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3 shadow-sm"
+                                style="width: 45px; height: 45px; background: var(--primary-gradient);">
+                                <i class="bi bi-chat-dots-fill"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-1 fw-bold">
+                                    {% for p in conv.participants.all %}
+                                    {% if p != user %}
+                                    {{ p.get_full_name|default:p.username }}
+                                    {% endif %}
+                                    {% endfor %}
+                                </h6>
+                                <p class="mb-0 text-muted small text-truncate" style="max-width: 250px;">
+                                    {{ conv.messages.last.content|default:"No messages yet" }}
+                                </p>
+                            </div>
+                        </div>
+                        <small class="text-muted">{{ conv.updated_at|date:"d M, H:i" }}</small>
+                    </div>
+                </a>
+                {% empty %}
+                <div class="text-center py-5">
+                    <i class="bi bi-chat-square-text fs-1 text-muted opacity-50 mb-3"></i>
+                    <p class="text-muted">Hozircha suhbatlar yo'q.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    {% if user.role == 'director' or user.role == 'admin' %}
+    <!-- Broadcast Modal -->
+    <div class="modal fade" id="broadcastModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content glass-card border-0">
+                <div class="modal-header border-bottom-0">
+                    <h5 class="modal-title fw-bold">Umumiy Xabar Yuborish</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{% url 'broadcast_message' %}" method="post">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Kimlar uchun?</label>
+                            <select name="audience" class="form-select rounded-3" required>
+                                <option value="teachers">Barcha O'qituvchilar</option>
+                                <option value="parents">Barcha Ota-onalar</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Xabar matni</label>
+                            <textarea name="content" class="form-control rounded-3" rows="4" required
+                                placeholder="Xabarni shu yerga yozing..."></textarea>
+                        </div>
+                        <div class="alert alert-info py-2 small">
+                            <i class="bi bi-info-circle me-1"></i> Bu xabar tanlangan guruhdagi har bir foydalanuvchiga
+                            alohida shaxsiy xabar sifatida yuboriladi.
+                        </div>
+                    </div>
+                    <div class="modal-footer border-top-0">
+                        <button type="button" class="btn btn-light rounded-pill" data-bs-dismiss="modal">Bekor
+                            qilish</button>
+                        <button type="submit" class="btn btn-primary rounded-pill">Yuborish</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <script>
+        function filterUsers() {
+            var input, filter, list, items, name, role, i;
+            input = document.getElementById("userSearch");
+            filter = input.value.toUpperCase();
+            list = document.getElementById("userList");
+            items = list.getElementsByClassName("user-item");
+
+            for (i = 0; i < items.length; i++) {
+                name = items[i].querySelector(".user-name").textContent || items[i].querySelector(".user-name").innerText;
+                role = items[i].querySelector(".user-role").textContent || items[i].querySelector(".user-role").innerText;
+
+                if (name.toUpperCase().indexOf(filter) > -1 || role.toUpperCase().indexOf(filter) > -1) {
+                    items[i].style.display = "";
+                } else {
+                    items[i].style.display = "none";
+                }
+            }
+        }
+    </script>
+    {% endblock %}

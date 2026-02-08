@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Virtual Majlislar - LearnSphere{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold">Virtual Majlislar</h2>
+        <p class="text-muted">Onlayn darslar va ota-onalar majlislari</p>
+    </div>
+    {% if user.role == 'teacher' or user.role == 'admin' or user.role == 'director' %}
+    <a href="{% url 'create_meeting' %}" class="btn btn-primary rounded-pill shadow-sm px-4">
+        <i class="bi bi-plus-lg me-2"></i>Majlis yaratish
+    </a>
+    {% endif %}
+</div>
+
+<div class="row">
+    {% for meeting in meetings %}
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="glass-card h-100 position-relative">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill">
+                        <i class="bi bi-camera-video-fill me-1"></i> Video Call
+                    </span>
+                    <small class="text-muted fw-bold">{{ meeting.start_time|date:"d M, H:i" }}</small>
+                </div>
+
+                <h5 class="card-title fw-bold mb-2">{{ meeting.title }}</h5>
+                <p class="text-muted small mb-4">
+                    <i class="bi bi-person-video3 me-1"></i> Tashkilotchi: {{ meeting.organizer.get_full_name }}
+                    <br>
+                    {% if meeting.class_obj %}
+                    <i class="bi bi-people-fill me-1"></i> Sinf: {{ meeting.class_obj.name }}
+                    {% else %}
+                    <i class="bi bi-globe me-1"></i> Umumiy majlis
+                    {% endif %}
+                </p>
+
+                <a href="{{ meeting.meeting_link }}" target="_blank" class="btn btn-primary w-100 rounded-pill">
+                    Qo'shilish <i class="bi bi-box-arrow-up-right ms-2"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12 text-center py-5">
+        <i class="bi bi-camera-video-off fs-1 text-muted opacity-25 mb-3 d-block"></i>
+        <h5 class="text-muted">Rejalashtirilgan majlislar yo'q</h5>
+        <p class="text-muted small">Yangi majlislar paydo bo'lganda shu yerda ko'rasiz.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

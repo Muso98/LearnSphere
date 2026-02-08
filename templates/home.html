@@ -35,11 +35,87 @@
             </div>
         </div>
         <div class="col-lg-6">
+            {% if user.is_authenticated and user.role == 'student' and skill_map %}
+            <!-- AI Skill Radar Widget -->
+            <div class="card shadow-sm h-100 border-0">
+                <div class="card-header bg-white border-0 pt-4 px-4">
+                    <h5 class="mb-0 fw-bold text-primary"><i class="bi bi-cpu-fill me-2"></i>Mening Qobiliyatlarim (AI)
+                    </h5>
+                </div>
+                <div class="card-body px-4 pb-4">
+                    <div style="max-height: 300px; position: relative;">
+                        <canvas id="dashboardRadarChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chart.js -->
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    const ctx = document.getElementById('dashboardRadarChart').getContext('2d');
+                    new Chart(ctx, {
+                        type: 'radar',
+                        data: {
+                            labels: ['Tanqidiy Fikrlash', 'Ijodkorlik', 'Muloqot', 'Jamoaviy', 'Moslashuvchanlik'],
+                            datasets: [{
+                                label: 'Ball',
+                                data: [
+                                    {{ skill_map.critical_thinking }},
+                            {{ skill_map.creativity }},
+                                    {{ skill_map.communication }},
+                    {{ skill_map.teamwork }},
+                    {{ skill_map.adaptive_learning }}
+                                ],
+                    fill: true,
+                    backgroundColor: 'rgba(99, 102, 241, 0.2)',
+                    borderColor: 'rgb(99, 102, 241)',
+                    pointBackgroundColor: 'rgb(99, 102, 241)',
+                    pointBorderColor: '#fff'
+                            }]
+                        },
+                    options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { display: true },
+                            suggestedMin: 0,
+                            suggestedMax: 100,
+                            ticks: { display: false } // Hide numbers for cleaner look
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+                    });
+                });
+            </script>
+            {% elif user.is_authenticated and user.role == 'student' %}
+            <!-- Student Empty State -->
+            <div class="card shadow-sm h-100 border-0">
+                <div class="card-header bg-white border-0 pt-4 px-4">
+                    <h5 class="mb-0 fw-bold text-primary"><i class="bi bi-cpu-fill me-2"></i>Mening Qobiliyatlarim (AI)
+                    </h5>
+                </div>
+                <div class="card-body px-4 pb-4 d-flex align-items-center justify-content-center text-center">
+                    <div>
+                        <div class="mb-3 text-muted">
+                            <i class="bi bi-clipboard-data fs-1"></i>
+                        </div>
+                        <h5>Ma'lumotlar yo'q</h5>
+                        <p class="text-muted small">O'qituvchingiz hali sizning "Soft Skills" ko'rsatkichlaringizni
+                            kiritmagan.</p>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <!-- Default Placeholder -->
             <div class="glass-card p-4 position-relative">
                 <div class="position-absolute top-0 start-0 translate-middle badge rounded-pill bg-danger p-2 shadow">
                     <i class="bi bi-robot fs-4"></i> AI Powered
                 </div>
-                <!-- Mockup / Illustration Placeholder -->
                 <div class="bg-light rounded-3 d-flex align-items-center justify-content-center text-muted"
                     style="height: 300px; border: 2px dashed #ccc;">
                     <div class="text-center">
@@ -49,6 +125,7 @@
                     </div>
                 </div>
             </div>
+            {% endif %}
         </div>
     </div>
 

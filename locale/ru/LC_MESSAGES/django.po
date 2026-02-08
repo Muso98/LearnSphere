@@ -1,0 +1,231 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: LearnSphere\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-02-09 12:00+0500\n"
+"PO-Revision-Date: 2024-02-09 12:00+0500\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
+
+# Base & Navigation
+msgid "Dashboard"
+msgstr "Панель управления"
+
+msgid "Home"
+msgstr "Главная"
+
+msgid "Profile"
+msgstr "Профиль"
+
+msgid "Bosh sahifa"
+msgstr "Главная"
+
+msgid "Dars Jadvali"
+msgstr "Расписание"
+
+msgid "Vazifalar"
+msgstr "Задания"
+
+msgid "Kutubxona"
+msgstr "Библиотека"
+
+msgid "Testlar"
+msgstr "Тесты"
+
+msgid "Bildirishnomalar"
+msgstr "Уведомления"
+
+msgid "Majlislar"
+msgstr "Собрания"
+
+msgid "Reyting"
+msgstr "Рейтинг"
+
+msgid "Do'kon"
+msgstr "Магазин"
+
+msgid "Xabarlar"
+msgstr "Сообщения"
+
+msgid "Jurnal"
+msgstr "Журнал"
+
+msgid "Davomat"
+msgstr "Посещаемость"
+
+msgid "Profil boshqaruvi"
+msgstr "Управление профилем"
+
+msgid "Mening Profilim"
+msgstr "Мой профиль"
+
+msgid "Chiqish"
+msgstr "Выйти"
+
+msgid "Kirish"
+msgstr "Войти"
+
+# Login Page
+msgid "Xush kelibsiz!"
+msgstr "Добро пожаловать!"
+
+msgid "LearnSphere ta'lim platformasiga kirish"
+msgstr "Войти в платформу LearnSphere"
+
+msgid "Login yoki parol noto'g'ri."
+msgstr "Неверный логин или пароль."
+
+msgid "Foydalanuvchi nomi"
+msgstr "Имя пользователя"
+
+msgid "Username"
+msgstr "Имя пользователя"
+
+msgid "Parol"
+msgstr "Пароль"
+
+msgid "Tizimga Kirish"
+msgstr "Войти в систему"
+
+msgid "Demo hisoblar kerakmi?"
+msgstr "Нужны демо-аккаунты?"
+
+msgid "Ko'rish"
+msgstr "Посмотреть"
+
+# Student Dashboard
+msgid "Mening Kabinetim"
+msgstr "Мой Кабинет"
+
+msgid "Biriktirilmagan"
+msgstr "Не прикреплен"
+
+msgid "Sinf"
+msgstr "Класс"
+
+msgid "Xush kelibsiz"
+msgstr "Добро пожаловать"
+
+msgid "Baholarim"
+msgstr "Мои Оценки"
+
+msgid "Fan"
+msgstr "Предмет"
+
+msgid "Baho"
+msgstr "Оценка"
+
+msgid "Sana"
+msgstr "Дата"
+
+msgid "Baholar hali mavjud emas."
+msgstr "Оценок пока нет."
+
+msgid "Status"
+msgstr "Статус"
+
+msgid "Bor"
+msgstr "Присутствовал"
+
+msgid "Yo'q"
+msgstr "Отсутствовал"
+
+msgid "Kechikkan"
+msgstr "Опоздал"
+
+msgid "Davomat ma'lumotlari topilmadi."
+msgstr "Данные о посещаемости не найдены."
+
+# Parent Dashboard
+msgid "Ota-ona burchagi"
+msgstr "Кабинет родителя"
+
+msgid "Farzandlaringizning o'zlashtirish ko'rsatkichlari bu yerda aks etadi."
+msgstr "Здесь отображаются показатели успеваемости ваших детей."
+
+msgid "Farzandlarim"
+msgstr "Мои Дети"
+
+msgid "Farzandlar hali biriktirilmagan."
+msgstr "Дети еще не прикреплены."
+
+msgid "So'nggi Baholar"
+msgstr "Последние Оценки"
+
+msgid "O'quvchi"
+msgstr "Ученик"
+
+msgid "Izoh"
+msgstr "Комментарий"
+
+msgid "So'nggi baholar topilmadi."
+msgstr "Последние оценки не найдены."
+
+msgid "Farzandlarimning Qobiliyatlari (AI Tahlil)"
+msgstr "Навыки моих детей (ИИ Анализ)"
+
+msgid "Sinf yo'q"
+msgstr "Нет класса"
+
+msgid "Ma'lumot yo'q"
+msgstr "Нет данных"
+
+# Admin Dashboard
+msgid "Admin Dashboard"
+msgstr "Панель администратора"
+
+msgid "Asosiy sahifa"
+msgstr "Главная страница"
+
+msgid "Jami foydalanuvchilar"
+msgstr "Всего пользователей"
+
+msgid "Faol"
+msgstr "Активны"
+
+msgid "O'quvchilar"
+msgstr "Ученики"
+
+msgid "Aktiv"
+msgstr "Активен"
+
+msgid "Bugungi davomat"
+msgstr "Посещаемость сегодня"
+
+msgid "Bugun"
+msgstr "Сегодня"
+
+msgid "O'rtacha baho"
+msgstr "Средняя оценка"
+
+msgid "30 kun"
+msgstr "30 дней"
+
+msgid "Fanlar bo'yicha o'zlashtirish"
+msgstr "Успеваемость по предметам"
+
+msgid "Haftalik davomat tendensiyasi"
+msgstr "Еженедельная тенденция посещаемости"
+
+msgid "Eng yaxshi o'quvchilar"
+msgstr "Лучшие ученики"
+
+msgid "Yuklanmoqda..."
+msgstr "Загрузка..."
+
+msgid "E'tibor talab qiluvchilar"
+msgstr "Требует внимания"
+
+msgid "Oxirgi baholar"
+msgstr "Недавние оценки"
+
+msgid "Hozircha baholar yo'q"
+msgstr "Оценок пока нет"
+
+msgid "Yangi foydalanuvchilar"
+msgstr "Новые пользователи"

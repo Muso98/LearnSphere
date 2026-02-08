@@ -1,0 +1,184 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Foydalanuvchilar - Admin Panel{% endblock %}
+{% block extra_css %}
+<style>
+    .user-table {
+        font-size: 0.95rem;
+    }
+
+    .user-table th {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        font-weight: 600;
+        border: none;
+    }
+
+    .user-table td {
+        vertical-align: middle;
+    }
+
+    .badge-role {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.8rem;
+    }
+
+    .search-box {
+        border-radius: 25px;
+        padding: 0.6rem 1.2rem;
+    }
+
+    .filter-card {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        padding: 1.5rem;
+    }
+
+    .action-btn {
+        padding: 0.3rem 0.8rem;
+        font-size: 0.85rem;
+        border-radius: 8px;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold"><i class="bi bi-people-fill me-2"></i>Foydalanuvchilar boshqaruvi</h2>
+        <div>
+            <a href="{% url 'user_create' %}" class="btn btn-primary"><i class="bi bi-person-plus me-2"></i>Yangi
+                foydalanuvchi</a>
+            <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-secondary"><i
+                    class="bi bi-arrow-left me-2"></i>Dashboard</a>
+        </div>
+    </div>
+    <div class="glass-card filter-card mb-4">
+        <form method="get" class="row g-3">
+            <div class="col-md-4">
+                <input type="text" name="search" class="form-control search-box"
+                    placeholder="Qidirish (ism, email, username)..." value="{{ search_query }}">
+            </div>
+            <div class="col-md-3">
+                <select name="role" class="form-select">
+                    <option value="">Barcha rollar</option>
+                    <option value="student" {% if role_filter == 'student' %}selected{% endif %}>O'quvchi</option>
+                    <option value="teacher" {% if role_filter == 'teacher' %}selected{% endif %}>O'qituvchi</option>
+                    <option value="parent" {% if role_filter == 'parent' %}selected{% endif %}>Ota-ona</option>
+                    <option value="director" {% if role_filter == 'director' %}selected{% endif %}>Direktor</option>
+                    <option value="admin" {% if role_filter == 'admin' %}selected{% endif %}>Admin</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select name="class" class="form-select">
+                    <option value="">Barcha sinflar</option>
+                    {% for cls in classes %}
+                    <option value="{{ cls.id }}" {% if class_filter == cls.id|stringformat:"s" %}selected{% endif %}>{{ cls.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100"><i class="bi bi-search me-2"></i>Qidirish</button>
+            </div>
+        </form>
+    </div>
+    <div class="glass-card p-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <p class="mb-0 text-muted">Jami: <strong>{{ total_users }}</strong> foydalanuvchi</p>
+            <div id="bulkActions" style="display:none;">
+                <button class="btn btn-sm btn-danger" onclick="bulkDelete()"><i
+                        class="bi bi-trash me-1"></i>O'chirish</button>
+                <button class="btn btn-sm btn-success" onclick="bulkActivate()"><i
+                        class="bi bi-check-circle me-1"></i>Faollashtirish</button>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover user-table">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" id="selectAll"></th>
+                        <th>Foydalanuvchi</th>
+                        <th>Email</th>
+                        <th>Telefon</th>
+                        <th>Rol</th>
+                        <th>Sinf</th>
+                        <th>Status</th>
+                        <th>Harakatlar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td><input type="checkbox" class="user-checkbox" value="{{ user.id }}"></td>
+                        <td><strong>{{ user.get_full_name|default:user.username }}</strong><br><small
+                                class="text-muted">@{{ user.username }}</small></td>
+                        <td>{{ user.email|default:"-" }}</td>
+                        <td>{{ user.phone|default:"-" }}</td>
+                        <td><span class="badge badge-role {% if user.role == 'student' %}bg-primary{% elif user.role == 'teacher' %}bg-success{% elif user.role == 'parent' %}bg-info{% else %}bg-warning{% endif %}">{{ user.get_role_display }}</span></td>
+                        <td>{{ user.student_class.name|default:"-" }}</td>
+                        <td>{% if user.is_active %}<span class="badge bg-success">Faol</span>{% else %}<span
+                                class="badge bg-secondary">Nofaol</span>{% endif %}</td>
+                        <td>
+                            <a href="{% url 'user_edit' user.id %}" class="btn btn-sm btn-outline-primary action-btn"><i
+                                    class="bi bi-pencil"></i></a>
+                            <a href="{% url 'user_delete' user.id %}"
+                                class="btn btn-sm btn-outline-danger action-btn"><i class="bi bi-trash"></i></a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="text-center text-muted py-4">Foydalanuvchilar topilmadi</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% if users.has_other_pages %}
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if users.has_previous %}
+                <li class="page-item"><a class="page-link"
+                        href="?page=1&search={{ search_query }}&role={{ role_filter }}&class={{ class_filter }}">Birinchi</a>
+                </li>
+                <li class="page-item"><a class="page-link"
+                        href="?page={{ users.previous_page_number }}&search={{ search_query }}&role={{ role_filter }}&class={{ class_filter }}">Oldingi</a>
+                </li>
+                {% endif %}
+                <li class="page-item active"><span class="page-link">{{ users.number }} / {{ users.paginator.num_pages }}</span></li>
+                {% if users.has_next %}
+                <li class="page-item"><a class="page-link"
+                        href="?page={{ users.next_page_number }}&search={{ search_query }}&role={{ role_filter }}&class={{ class_filter }}">Keyingi</a>
+                </li>
+                <li class="page-item"><a class="page-link"
+                        href="?page={{ users.paginator.num_pages }}&search={{ search_query }}&role={{ role_filter }}&class={{ class_filter }}">Oxirgi</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</div>
+<script>
+    document.getElementById('selectAll').addEventListener('change', function () {
+        document.querySelectorAll('.user-checkbox').forEach(cb => cb.checked = this.checked);
+        updateBulkActions();
+    });
+    document.querySelectorAll('.user-checkbox').forEach(cb => {
+        cb.addEventListener('change', updateBulkActions);
+    });
+    function updateBulkActions() {
+        const checked = document.querySelectorAll('.user-checkbox:checked').length;
+        document.getElementById('bulkActions').style.display = checked > 0 ? 'block' : 'none';
+    }
+    function bulkDelete() {
+        const ids = Array.from(document.querySelectorAll('.user-checkbox:checked')).map(cb => parseInt(cb.value));
+        if (!confirm(`${ids.length} ta foydalanuvchini o'chirmoqchimisiz?`)) return;
+        fetch('{% url "user_bulk_action" %}', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRFToken': '{{csrf_token}}' }, body: JSON.stringify({ action: 'delete', user_ids: ids }) })
+            .then(r => r.json()).then(data => { if (data.success) { alert(data.message); location.reload(); } else { alert(data.error); } });
+    }
+    function bulkActivate() {
+        const ids = Array.from(document.querySelectorAll('.user-checkbox:checked')).map(cb => parseInt(cb.value));
+        fetch('{% url "user_bulk_action" %}', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRFToken': '{{csrf_token}}' }, body: JSON.stringify({ action: 'activate', user_ids: ids }) })
+            .then(r => r.json()).then(data => { if (data.success) { alert(data.message); location.reload(); } else { alert(data.error); } });
+    }
+</script>
+{% endblock %}

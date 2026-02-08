@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block title %}O'qituvchilarni biriktirish - Admin Panel{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <div class="glass-card p-4 mb-4">
+                <h4 class="fw-bold mb-3"><i class="bi bi-person-check me-2 text-primary"></i>Yangi biriktiruv</h4>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">O'qituvchi</label>
+                        {{ form.teacher }}
+                        {% if form.teacher.errors %}<div class="text-danger small">{{ form.teacher.errors }}</div>{% endif %}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Fan</label>
+                        {{ form.subject }}
+                        {% if form.subject.errors %}<div class="text-danger small">{{ form.subject.errors }}</div>{% endif %}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Sinf</label>
+                        {{ form.assigned_class }}
+                        {% if form.assigned_class.errors %}<div class="text-danger small">{{ form.assigned_class.errors }}</div>{% endif %}
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100"><i class="bi bi-plus-circle me-2"></i>Biriktirish</button>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="glass-card p-4">
+                <h4 class="fw-bold mb-3"><i class="bi bi-list-check me-2 text-success"></i>Mavjud biriktiruvlar</h4>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>O'qituvchi</th>
+                                <th>Fan</th>
+                                <th>Sinf</th>
+                                <th>Harakat</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for assignment in assignments %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-circle me-2 bg-primary text-white" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-size:0.8rem;">
+                                            {{ assignment.teacher.first_name|first }}{{ assignment.teacher.last_name|first }}
+                                        </div>
+                                        <div>
+                                            <strong>{{ assignment.teacher.get_full_name }}</strong>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="badge bg-info text-dark">{{ assignment.subject.name }}</span></td>
+                                <td><span class="badge bg-warning text-dark">{{ assignment.assigned_class.name }}</span></td>
+                                <td>
+                                    <a href="{% url 'teacher_assignment_delete' assignment.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Haqiqatan ham o\'chirmoqchimisiz?')"><i class="bi bi-trash"></i></a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted py-4">Hozircha biriktiruvlar yo'q</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

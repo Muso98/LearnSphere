@@ -1,3 +1,5 @@
+{% load static %}
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -105,6 +107,7 @@
             z-index: 100;
             /* Below Navbar */
             transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
         }
 
         .sidebar-nav {
@@ -273,7 +276,47 @@
                     <!-- Desktop nav items if needed -->
                 </ul>
                 <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item dropdown me-3">
+                        <a class="nav-link dropdown-toggle btn btn-light rounded-pill shadow-sm px-3" href="#"
+                            id="navbarDropdownLang" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-globe me-1"></i>
+                            {% get_current_language as LANGUAGE_CODE %}
+                            {{ LANGUAGE_CODE|upper }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-4"
+                            aria-labelledby="navbarDropdownLang">
+                            {% get_available_languages as LANGUAGES %}
+                            {% get_language_info_list for LANGUAGES as languages %}
+                            {% for language in languages %}
+                            <li>
+                                <form action="{% url 'set_language' %}" method="post">
+                                    {% csrf_token %}
+                                    <input name="next" type="hidden" value="{{ redirect_to }}">
+                                    <input name="language" type="hidden" value="{{ language.code }}">
+                                    <button type="submit"
+                                        class="dropdown-item d-flex justify-content-between align-items-center {% if language.code == LANGUAGE_CODE %}active{% endif %}">
+                                        {{ language.name_local }}
+                                        {% if language.code == LANGUAGE_CODE %}
+                                        <i class="bi bi-check-lg"></i>
+                                        {% endif %}
+                                    </button>
+                                </form>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
                     {% if user.is_authenticated %}
+                    <li class="nav-item me-3">
+                        <a class="nav-link btn btn-primary shadow-sm px-3 py-2 rounded-pill"
+                            href="{% url 'ai_assistant:chat_interface' %}"
+                            style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-weight: 500;">
+                            <i class="bi bi-robot me-2"></i>
+                            {% if user.role == 'teacher' %}AI Yordamchi
+                            {% elif user.role == 'parent' %}AI Monitor
+                            {% elif user.role == 'student' %}AI O'qituvchi
+                            {% else %}AI Assistant{% endif %}
+                        </a>
+                    </li>
                     <li class="nav-item me-4">
                         <a class="nav-link position-relative btn btn-light rounded-circle shadow-sm"
                             href="{% url 'notifications' %}"
@@ -299,10 +342,11 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-4 mt-2 p-2">
                             <li>
-                                <h6 class="dropdown-header text-uppercase small fw-bold">Profil boshqaruvi</h6>
+                                <h6 class="dropdown-header text-uppercase small fw-bold">{% trans "Profil boshqaruvi" %}
+                                </h6>
                             </li>
                             <li><a class="dropdown-item rounded-3" href="{% url 'profile' %}"><i
-                                        class="bi bi-person-circle me-2"></i>Mening Profilim</a></li>
+                                        class="bi bi-person-circle me-2"></i>{% trans "Mening Profilim" %}</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
@@ -310,7 +354,7 @@
                                 <form action="{% url 'logout' %}" method="post" class="d-inline w-100">
                                     {% csrf_token %}
                                     <button type="submit" class="dropdown-item rounded-3 text-danger"><i
-                                            class="bi bi-box-arrow-right me-2"></i>Chiqish</button>
+                                            class="bi bi-box-arrow-right me-2"></i>{% trans "Chiqish" %}</button>
                                 </form>
                             </li>
                         </ul>
@@ -318,7 +362,7 @@
                     {% else %}
                     <li class="nav-item">
                         <a class="nav-link btn btn-primary text-white px-4 rounded-pill shadow-sm"
-                            href="{% url 'login' %}">Kirish</a>
+                            href="{% url 'login' %}">{% trans "Kirish" %}</a>
                     </li>
                     {% endif %}
                 </ul>
@@ -334,51 +378,122 @@
             {% if user.role == 'student' %}
             <li><a href="{% url 'student_dashboard' %}"
                     class="{% if request.resolver_match.url_name == 'student_dashboard' %}active{% endif %}"><i
-                        class="bi bi-grid-fill"></i> Bosh sahifa</a></li>
+                        class="bi bi-grid-fill"></i> {% trans "Bosh sahifa" %}</a></li>
             <li><a href="{% url 'schedule_list' %}" class="{% if 'schedule' in request.path %}active{% endif %}"><i
-                        class="bi bi-calendar-week"></i> Dars Jadvali</a></li>
+                        class="bi bi-calendar-week"></i> {% trans "Dars Jadvali" %}</a></li>
             <li><a href="{% url 'assignment_list' %}" class="{% if 'assignments' in request.path %}active{% endif %}"><i
-                        class="bi bi-book-half"></i> Vazifalar</a></li>
+                        class="bi bi-book-half"></i> {% trans "Vazifalar" %}</a></li>
+            <li><a href="{% url 'resource_list' %}" class="{% if 'resources' in request.path %}active{% endif %}"><i
+                        class="bi bi-collection-play-fill"></i> {% trans "Kutubxona" %}</a></li>
+            <li><a href="{% url 'quiz_list' %}" class="{% if 'quizzes' in request.path %}active{% endif %}"><i
+                        class="bi bi-clipboard-check-fill"></i> {% trans "Testlar" %}</a></li>
             <li><a href="{% url 'notifications' %}" class="{% if 'notifications' in request.path %}active{% endif %}"><i
-                        class="bi bi-bell-fill"></i> Bildirishnomalar</a></li>
+                        class="bi bi-bell-fill"></i> {% trans "Bildirishnomalar" %}</a></li>
             <li><a href="{% url 'profile' %}" class="{% if 'profile' in request.path %}active{% endif %}"><i
-                        class="bi bi-person-bounding-box"></i> Profil</a></li>
+                        class="bi bi-person-bounding-box"></i> {% trans "Profil" %}</a></li>
+            <li><a href="{% url 'meeting_list' %}"
+                    class="{% if 'meeting' in request.path %}active{% endif %} d-flex align-items-center">
+                    <i class="bi bi-camera-video-fill me-2"></i> {% trans "Majlislar" %}
+                    {% if upcoming_meetings_count > 0 %}
+                    <span class="badge bg-danger rounded-pill ms-auto">{{ upcoming_meetings_count }}</span>
+                    {% endif %}
+                </a></li>
+            <li><a href="{% url 'leaderboard' %}" class="{% if 'leaderboard' in request.path %}active{% endif %}"><i
+                        class="bi bi-trophy-fill"></i> {% trans "Reyting" %}</a></li>
+            <li><a href="{% url 'rewards_shop' %}" class="{% if 'shop' in request.path %}active{% endif %}"><i
+                        class="bi bi-cart-fill"></i> {% trans "Do'kon" %}</a></li>
 
             {% elif user.role == 'parent' %}
             <li><a href="{% url 'parent_dashboard' %}"
                     class="{% if request.resolver_match.url_name == 'parent_dashboard' %}active{% endif %}"><i
-                        class="bi bi-grid-fill"></i> Bosh sahifa</a></li>
+                        class="bi bi-grid-fill"></i> {% trans "Bosh sahifa" %}</a></li>
             <li><a href="{% url 'notifications' %}" class="{% if 'notifications' in request.path %}active{% endif %}"><i
-                        class="bi bi-bell-fill"></i> Bildirishnomalar</a></li>
+                        class="bi bi-bell-fill"></i> {% trans "Bildirishnomalar" %}</a></li>
             <li><a href="{% url 'profile' %}" class="{% if 'profile' in request.path %}active{% endif %}"><i
-                        class="bi bi-person-bounding-box"></i> Profil</a></li>
+                        class="bi bi-person-bounding-box"></i> {% trans "Profil" %}</a></li>
+            <li><a href="{% url 'chat_list' %}"
+                    class="{% if 'chat' in request.path %}active{% endif %} d-flex align-items-center">
+                    <i class="bi bi-chat-dots me-2"></i> {% trans "Xabarlar" %}
+                    {% if unread_messages_count > 0 %}
+                    <span class="badge bg-danger rounded-pill ms-auto">{{ unread_messages_count }}</span>
+                    {% endif %}
+                </a></li>
+            <li><a href="{% url 'meeting_list' %}"
+                    class="{% if 'meeting' in request.path %}active{% endif %} d-flex align-items-center">
+                    <i class="bi bi-camera-video-fill me-2"></i> {% trans "Majlislar" %}
+                    {% if upcoming_meetings_count > 0 %}
+                    <span class="badge bg-danger rounded-pill ms-auto">{{ upcoming_meetings_count }}</span>
+                    {% endif %}
+                </a></li>
+
 
             {% elif user.role == 'teacher' %}
             <li><a href="{% url 'home' %}" class="{% if request.path == '/' %}active{% endif %}"><i
-                        class="bi bi-house-door-fill"></i> Bosh sahifa</a></li>
+                        class="bi bi-house-door-fill"></i> {% trans "Bosh sahifa" %}</a></li>
             <li><a href="{% url 'gradebook' %}" class="{% if 'gradebook' in request.path %}active{% endif %}"><i
-                        class="bi bi-journal-check"></i> Jurnal</a></li>
+                        class="bi bi-journal-check"></i> {% trans "Jurnal" %}</a></li>
             <li><a href="{% url 'attendance' %}" class="{% if 'attendance' in request.path %}active{% endif %}"><i
-                        class="bi bi-calendar-check"></i> Davomat</a></li>
+                        class="bi bi-calendar-check"></i> {% trans "Davomat" %}</a></li>
             <li><a href="{% url 'schedule_list' %}" class="{% if 'schedule' in request.path %}active{% endif %}"><i
-                        class="bi bi-calendar-week"></i> Dars Jadvali</a></li>
+                        class="bi bi-calendar-week"></i> {% trans "Dars Jadvali" %}</a></li>
             <li><a href="{% url 'assignment_list' %}" class="{% if 'assignments' in request.path %}active{% endif %}"><i
-                        class="bi bi-briefcase-fill"></i> Vazifalar</a></li>
+                        class="bi bi-briefcase-fill"></i> {% trans "Vazifalar" %}</a></li>
+            <li><a href="{% url 'resource_list' %}" class="{% if 'resources' in request.path %}active{% endif %}"><i
+                        class="bi bi-collection-play-fill"></i> {% trans "Kutubxona" %}</a></li>
+            <li><a href="{% url 'quiz_list' %}" class="{% if 'quizzes' in request.path %}active{% endif %}"><i
+                        class="bi bi-clipboard-check-fill"></i> {% trans "Testlar" %}</a></li>
             <li><a href="{% url 'notifications' %}" class="{% if 'notifications' in request.path %}active{% endif %}"><i
-                        class="bi bi-bell-fill"></i> Bildirishnomalar</a></li>
+                        class="bi bi-bell-fill"></i> {% trans "Bildirishnomalar" %}</a></li>
             <li><a href="{% url 'profile' %}" class="{% if 'profile' in request.path %}active{% endif %}"><i
-                        class="bi bi-person-bounding-box"></i> Profil</a></li>
+                        class="bi bi-person-bounding-box"></i> {% trans "Profil" %}</a></li>
+            <li><a href="{% url 'chat_list' %}"
+                    class="{% if 'chat' in request.path %}active{% endif %} d-flex align-items-center">
+                    <i class="bi bi-chat-text-fill me-2"></i> {% trans "Xabarlar" %}
+                    {% if unread_messages_count > 0 %}
+                    <span class="badge bg-danger rounded-pill ms-auto">{{ unread_messages_count }}</span>
+                    {% endif %}
+                </a></li>
 
-            {% elif user.role == 'director' %}
+
+            <li><a href="{% url 'meeting_list' %}"
+                    class="{% if 'meeting' in request.path %}active{% endif %} d-flex align-items-center">
+                    <i class="bi bi-camera-video-fill me-2"></i> Majlislar
+                    {% if upcoming_meetings_count > 0 %}
+                    <span class="badge bg-danger rounded-pill ms-auto">{{ upcoming_meetings_count }}</span>
+                    {% endif %}
+                </a></li>
+
+            {% elif user.role == 'director' or user.role == 'admin' %}
             <li><a href="{% url 'director_dashboard' %}"
-                    class="{% if 'dashboard' in request.path %}active{% endif %}"><i class="bi bi-speedometer2"></i>
-                    Dashboard</a></li>
+                    class="{% if 'dashboard' in request.path and 'admin' not in request.path %}active{% endif %}"><i
+                        class="bi bi-speedometer2"></i> Dashboard</a></li>
+            <li><a href="{% url 'admin_dashboard' %}"
+                    class="{% if 'admin' in request.path and 'dashboard' in request.path %}active{% endif %}"><i
+                        class="bi bi-gear-fill"></i> Admin Panel</a></li>
             <li><a href="{% url 'schedule_list' %}" class="{% if 'schedule' in request.path %}active{% endif %}"><i
                         class="bi bi-calendar3"></i> Jadval Boshqaruvi</a></li>
+            <li><a href="{% url 'teacher_assignment' %}" class="{% if 'teachers' in request.path %}active{% endif %}"><i
+                        class="bi bi-person-check-fill"></i> O'qituvchi Biriktiruvi</a></li>
             <li><a href="{% url 'notifications' %}" class="{% if 'notifications' in request.path %}active{% endif %}"><i
                         class="bi bi-bell-fill"></i> Bildirishnomalar</a></li>
             <li><a href="{% url 'profile' %}" class="{% if 'profile' in request.path %}active{% endif %}"><i
                         class="bi bi-shield-lock-fill"></i> Profil</a></li>
+            <li><a href="{% url 'chat_list' %}"
+                    class="{% if 'chat' in request.path %}active{% endif %} d-flex align-items-center">
+                    <i class="bi bi-chat-text-fill me-2"></i> Xabarlar
+                    {% if unread_messages_count > 0 %}
+                    <span class="badge bg-danger rounded-pill ms-auto">{{ unread_messages_count }}</span>
+                    {% endif %}
+                </a></li>
+            <li><a href="{% url 'meeting_list' %}"
+                    class="{% if 'meeting' in request.path %}active{% endif %} d-flex align-items-center">
+                    <i class="bi bi-camera-video-fill me-2"></i> Majlislar
+                    {% if upcoming_meetings_count > 0 %}
+                    <span class="badge bg-danger rounded-pill ms-auto">{{ upcoming_meetings_count }}</span>
+                    {% endif %}
+                </a></li>
+            <li><a href="{% url 'quarter_report' %}" class="{% if 'reports' in request.path %}active{% endif %}"><i
+                        class="bi bi-bar-chart-fill"></i> Hisobotlar</a></li>
             {% endif %}
         </ul>
 

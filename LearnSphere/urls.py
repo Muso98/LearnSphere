@@ -4,6 +4,7 @@ from django.views.generic import TemplateView
 from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
+from core import views as core_views
 from core.views import parent_dashboard, notifications_view
 from core.views_extra import student_dashboard, director_dashboard
 from core.schedule_views import schedule_list, schedule_create, schedule_edit, schedule_delete
@@ -13,9 +14,22 @@ from journal.import_views import download_students_template, import_students
 from homework.views import create_assignment, assignment_list, submit_homework, view_submissions, grade_submission
 from accounts.views import profile_view
 
+from django.conf.urls.i18n import i18n_patterns
+
 urlpatterns = [
+    path('i18n/', include('django.conf.urls.i18n')),
+]
+
+urlpatterns += i18n_patterns(
     path('admin/', admin.site.urls),
-    path('', TemplateView.as_view(template_name='home.html'), name='home'),
+    path('homework/', include('homework.urls')),
+    path('communication/', include('communication.urls')),
+    path('gamification/', include('gamification.urls')),
+    path('resources/', include('resources.urls')),
+    path('administration/', include('administration.urls')),
+    path('analytics/', include('analytics.urls')),
+    path('ai/', include('ai_assistant.urls')),
+    path('', core_views.home_view, name='home'),
     path('login/', auth_views.LoginView.as_view(redirect_authenticated_user=True), name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='home'), name='logout'),
     path('profile/', profile_view, name='profile'),
@@ -43,7 +57,7 @@ urlpatterns = [
     # Excel Import URLs
     path('import/students/', import_students, name='import_students'),
     path('import/students/template/', download_students_template, name='download_students_template'),
-]
+)
 
 # Serve media files in development
 if settings.DEBUG:

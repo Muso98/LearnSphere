@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ student.get_full_name }} - Qobiliyatlar - LearnSphere{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="glass-card p-5">
+            <div class="text-center mb-4">
+                <div class="avatar-circle bg-primary text-white mx-auto mb-3 fs-3"
+                    style="width: 80px; height: 80px; line-height: 80px;">
+                    {{ student.first_name|make_list|first }}
+                </div>
+                <h3 class="fw-bold mb-1">{{ student.get_full_name }}</h3>
+                <p class="text-muted">Soft Skills Baholash</p>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+
+                {% for field in form %}
+                <div class="mb-4">
+                    <label class="form-label fw-bold d-flex justify-content-between">
+                        {{ field.label }}
+                        <span class="text-primary fw-bold" id="val-{{ field.name }}">50</span>
+                    </label>
+                    {{ field }}
+                    <script>
+                        // Simple script to update value display
+                        document.querySelector('input[name="{{ field.name }}"]').addEventListener('input', function (e) {
+                            document.getElementById('val-{{ field.name }}').innerText = e.target.value;
+                        });
+                        // Init value
+                        document.getElementById('val-{{ field.name }}').innerText = document.querySelector('input[name="{{ field.name }}"]').value;
+                    </script>
+                </div>
+                {% endfor %}
+
+                <div class="d-grid gap-2 mt-5">
+                    <button type="submit" class="btn btn-primary rounded-pill py-3 fw-bold">
+                        Saqlash
+                    </button>
+                    <a href="{% url 'skill_input_detail' student.student_class.id %}"
+                        class="btn btn-light rounded-pill py-3">
+                        Bekor qilish
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

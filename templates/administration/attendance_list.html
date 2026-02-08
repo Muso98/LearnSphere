@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% block title %}Davomat - Admin Panel{% endblock %}
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold"><i class="bi bi-calendar-check me-2"></i>Davomat boshqaruvi</h2>
+        <div>
+            <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-secondary"><i
+                    class="bi bi-arrow-left me-2"></i>Dashboard</a>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="glass-card p-3 mb-4">
+        <form method="get" class="row g-2">
+            <div class="col-md-3">
+                <select name="class" class="form-select">
+                    <option value="">Barcha sinflar</option>
+                    {% for cls in classes %}
+                    <option value="{{ cls.id }}" {% if selected_class == cls.id|stringformat:"s" %}selected{% endif %}>{{ cls.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <input type="date" name="date" class="form-control" value="{{ selected_date|default:'' }}">
+            </div>
+            <div class="col-md-3">
+                <select name="status" class="form-select">
+                    <option value="">Barcha holatlar</option>
+                    <option value="present" {% if selected_status == 'present' %}selected{% endif %}>Kelgan</option>
+                    <option value="absent" {% if selected_status == 'absent' %}selected{% endif %}>Kelmagan</option>
+                    <option value="late" {% if selected_status == 'late' %}selected{% endif %}>Kechikkan</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary w-100"><i class="bi bi-search me-2"></i>Qidirish</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Table -->
+    <div class="glass-card p-4">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>O'quvchi</th>
+                        <th>Sinf</th>
+                        <th>Sana</th>
+                        <th>Holat</th>
+                        <th>O'zgartirish</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for att in attendance %}
+                    <tr>
+                        <td><strong>{{ att.student.get_full_name }}</strong></td>
+                        <td>{{ att.student.student_class.name|default:"-" }}</td>
+                        <td>{{ att.date|date:"d.m.Y" }}</td>
+                        <td>
+                            <span id="status-badge-{{ att.id }}" class="badge 
+                                {% if att.status == 'present' %}bg-success
+                                {% elif att.status == 'late' %}bg-warning
+                                {% else %}bg-danger{% endif %}">
+                                {{ att.get_status_display }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <button class="btn btn-outline-success"
+                                    onclick="updateAttendance({{ att.id }}, 'present')">K</button>
+                                <button class="btn btn-outline-warning"
+                                    onclick="updateAttendance({{ att.id }}, 'late')">Kish</button>
+                                <button class="btn btn-outline-danger"
+                                    onclick="updateAttendance({{ att.id }}, 'absent')">Yo'q</button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center py-5 text-muted">Davomat ma'lumotlari topilmadi</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        {% if attendance.has_other_pages %}
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if attendance.has_previous %}
+                <li class="page-item"><a class="page-link"
+                        href="?page={{ attendance.previous_page_number }}&class={{ selected_class }}&date={{ selected_date }}&status={{ selected_status }}">Oldingi</a>
+                </li>
+                {% endif %}
+                <li class="page-item active"><span class="page-link">{{ attendance.number }} / {{ attendance.paginator.num_pages }}</span></li>
+                {% if attendance.has_next %}
+                <li class="page-item"><a class="page-link"
+                        href="?page={{ attendance.next_page_number }}&class={{ selected_class }}&date={{ selected_date }}&status={{ selected_status }}">Keyingi</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    function updateAttendance(id, status) {
+        const formData = new FormData();
+        formData.append('status', status);
+
+        fetch(`/administration/attendance/${id}/update/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+            },
+            body: formData
+        })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload(); // Refresh to update badges easily
+                } else {
+                    alert('Xatolik yuz berdi');
+                }
+            });
+    }
+</script>
+{% endblock %}

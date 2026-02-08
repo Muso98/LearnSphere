@@ -1,0 +1,67 @@
+﻿{% extends 'base.html' %}
+
+{% block title %}Chat - LearnSphere{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center h-100">
+    <div class="col-md-8 h-100">
+        <div class="glass-card d-flex flex-column h-100" style="min-height: 80vh;">
+            <!-- Header -->
+            <div class="p-3 border-bottom d-flex align-items-center bg-white bg-opacity-50 rounded-top">
+                <a href="{% url 'chat_list' %}" class="btn btn-sm btn-light rounded-circle me-3"><i
+                        class="bi bi-arrow-left"></i></a>
+                <div class="d-flex align-items-center">
+                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3"
+                        style="width: 40px; height: 40px; background: var(--primary-gradient);">
+                        {{ other_participant.first_name|first|default:"?" }}
+                    </div>
+                    <div>
+                        <h5 class="mb-0 fw-bold">{{ other_participant.get_full_name|default:other_participant.username }}</h5>
+                        <small class="text-muted">{{ other_participant.role|title }}</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Messages Area -->
+            <div class="flex-grow-1 p-4 overflow-auto d-flex flex-column" style="background: rgba(255,255,255,0.3);">
+                {% for msg in messages %}
+                <div class="d-flex mb-3 {% if msg.sender == user %}justify-content-end{% endif %}">
+                    <div class="card border-0 shadow-sm {% if msg.sender == user %}bg-primary text-white{% else %}bg-white{% endif %}"
+                        style="max-width: 75%; border-radius: 15px; {% if msg.sender == user %}border-bottom-right-radius: 2px;{% else %}border-bottom-left-radius: 2px;{% endif %}">
+                        <div class="card-body p-2 px-3">
+                            <p class="mb-1">{{ msg.content }}</p>
+                            <small class="d-block text-end opacity-75" style="font-size: 0.7rem;">{{ msg.timestamp|date:"H:i" }}</small>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="text-center mt-5">
+                    <span class="badge bg-light text-muted fw-normal px-3 py-2 rounded-pill">Suhbat boshlandi</span>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Input Area -->
+            <div class="p-3 border-top bg-white bg-opacity-50 rounded-bottom">
+                <form method="post" class="d-flex gap-2">
+                    {% csrf_token %}
+                    <input type="text" name="content" class="form-control rounded-pill border-0 shadow-sm px-4"
+                        placeholder="Xabar yozing..." required autofocus autocomplete="off">
+                    <button type="submit" class="btn btn-primary rounded-circle shadow-sm"
+                        style="width: 45px; height: 45px; padding: 0;">
+                        <i class="bi bi-send-fill" style="margin-left: -2px; margin-top: 2px;"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Scroll to bottom on load
+    window.onload = function () {
+        const messagesArea = document.querySelector('.overflow-auto');
+        messagesArea.scrollTop = messagesArea.scrollHeight;
+    }
+</script>
+{% endblock %}

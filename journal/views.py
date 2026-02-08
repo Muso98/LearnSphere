@@ -3,7 +3,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from core.models import Class, Subject
 from accounts.models import User
-from .models import Grade, Attendance
+from core.models import Class, Subject, Schedule
+from accounts.models import User
+from .models import Grade, Attendance, GradeAudit
 from django.utils import timezone
 
 @login_required
@@ -16,8 +18,8 @@ def gradebook_view(request):
     selected_class_id = request.GET.get('class_id')
     selected_subject_id = request.GET.get('subject_id')
     
-    classes = Class.objects.all()
-    subjects = Subject.objects.all()
+    classes = Class.objects.filter(schedules__teacher=request.user).distinct()
+    subjects = Subject.objects.filter(schedules__teacher=request.user).distinct()
     
     # Add is_selected attribute to each class and subject for template
     for cls in classes:
@@ -33,6 +35,12 @@ def gradebook_view(request):
     if selected_class_id and selected_subject_id:
         current_class = get_object_or_404(Class, id=selected_class_id)
         current_subject = get_object_or_404(Subject, id=selected_subject_id)
+        
+        # Verify teacher schedule
+        if not Schedule.objects.filter(teacher=request.user, class_obj=current_class, subject=current_subject).exists():
+             messages.error(request, "Siz bu sinfga bu fandan dars bermaysiz!")
+             return redirect('gradebook')
+
         students = User.objects.filter(student_class=current_class, role='student')
     
     
@@ -58,12 +66,36 @@ def gradebook_view(request):
                         messages.warning(request, f"Student {student.first_name}'s grade '{grade_value}' is not a valid number.")
                         continue
 
+                    previous_value = None
+                    try:
+                        existing_grade = Grade.objects.get(student=student, subject=current_subject, date=date)
+                        previous_value = existing_grade.value
+                    except Grade.DoesNotExist:
+                        pass
+
                     grade_obj, created = Grade.objects.update_or_create(
                         student=student,
                         subject=current_subject,
                         date=date,
-                        defaults={'value': grade_int, 'comment': comment}
+                        defaults={'value': grade_int, 'comment': comment, 'teacher': request.user}
                     )
+                    
+                    # Audit Trail
+                    if created:
+                        action = 'create'
+                    elif previous_value != grade_int:
+                        action = 'update'
+                    else:
+                        action = None # No change
+                    
+                    if action:
+                        GradeAudit.objects.create(
+                            grade=grade_obj,
+                            changed_by=request.user,
+                            previous_value=previous_value,
+                            new_value=grade_int,
+                            action=action
+                        )
                     
                     # Save competency metadata if selected
                     competency = request.POST.get(f'competency_{student.id}')
@@ -101,12 +133,21 @@ def gradebook_view(request):
             
             student = get_object_or_404(User, id=student_id)
             
-            Grade.objects.create(
+            grade = Grade.objects.create(
                 student=student,
                 subject=current_subject,
                 teacher=request.user,
                 value=grade_value,
                 date=date_str or timezone.now()
+            )
+
+            # Audit Trail
+            GradeAudit.objects.create(
+                grade=grade,
+                changed_by=request.user,
+                previous_value=None,
+                new_value=grade_value,
+                action='create'
             )
             
             if request.headers.get('HX-Request'):

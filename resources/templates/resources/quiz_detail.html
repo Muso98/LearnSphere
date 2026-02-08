@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ quiz.title }} - LearnSphere{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 text-center">
+        <div class="glass-card p-5">
+            <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill mb-3 px-3 py-2">
+                {{ quiz.subject.name }}
+            </span>
+            <h1 class="fw-bold mb-4">{{ quiz.title }}</h1>
+            <p class="lead text-muted mb-5">{{ quiz.description }}</p>
+
+            {% if last_result %}
+            <div class="alert alert-info glass-card border-0 mb-4">
+                <h5 class="fw-bold"><i class="bi bi-clock-history me-2"></i> Oxirgi natijangiz</h5>
+                <h2 class="display-4 fw-bold text-primary mb-0">{{ last_result.score }}</h2>
+                <p class="mb-0">ball ({{ last_result.date_taken|date:"d.m.Y H:i" }})</p>
+            </div>
+            {% endif %}
+
+            <a href="{% url 'quiz_take' quiz.id %}" class="btn btn-primary btn-lg rounded-pill px-5 shadow-sm">
+                {% if last_result %}
+                Qayta topshirish
+                {% else %}
+                Testni Boshlash
+                {% endif %}
+                <i class="bi bi-arrow-right ms-2"></i>
+            </a>
+
+            <div class="mt-4">
+                <a href="{% url 'quiz_list' %}" class="text-decoration-none text-muted">
+                    <i class="bi bi-arrow-left me-1"></i> Ortga qaytish
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

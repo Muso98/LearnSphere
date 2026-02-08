@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block title %}Reyting - LearnSphere{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12 text-center">
+        <h2 class="fw-bold mb-3">Eng Faol O'quvchilar Reytingi</h2>
+        <p class="text-muted">Yuqori ball to'plagan o'quvchilar</p>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="glass-card overflow-hidden">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0 align-middle">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="py-3 ps-4" style="width: 50px;">#</th>
+                            <th class="py-3">O'quvchi</th>
+                            <th class="py-3">Yutuqlar (Badges)</th>
+                            <th class="py-3 text-end pe-4">Jami Ball</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for entry in leaderboard %}
+                        <tr class="{% if entry.student == user %}table-active{% endif %}">
+                            <td class="ps-4 fw-bold">
+                                {% if forloop.counter == 1 %}
+                                <i class="bi bi-trophy-fill text-warning fs-5"></i>
+                                {% elif forloop.counter == 2 %}
+                                <i class="bi bi-trophy-fill text-secondary fs-5"></i>
+                                {% elif forloop.counter == 3 %}
+                                <i class="bi bi-trophy-fill text-danger fs-5"></i>
+                                {% else %}
+                                {{ forloop.counter }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3 shadow-sm"
+                                        style="width: 40px; height: 40px; background: var(--primary-gradient);">
+                                        {{ entry.student.first_name|first|default:entry.student.username|first }}
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0 fw-bold">{{ entry.student.get_full_name }}</h6>
+                                        <small class="text-muted">
+                                            {% if entry.student.student_class %}
+                                            {{ entry.student.student_class.name }}
+                                            {% else %}
+                                            Sinf yo'q
+                                            {% endif %}
+                                        </small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex gap-1">
+                                    {% for user_badge in entry.badges %}
+                                    <span class="badge bg-warning text-dark rounded-pill"
+                                        title="{{ user_badge.badge.name }}">
+                                        <i class="{{ user_badge.badge.icon }}"></i>
+                                    </span>
+                                    {% empty %}
+                                    <small class="text-muted">-</small>
+                                    {% endfor %}
+                                </div>
+                            </td>
+                            <td class="text-end pe-4">
+                                <span class="badge bg-primary rounded-pill px-3 py-2 fs-6">
+                                    {{ entry.total_points }} ball
+                                </span>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center py-5 text-muted">Hozircha ma'lumot yo'q</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

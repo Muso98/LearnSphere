@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% block title %}Baholar - Admin Panel{% endblock %}
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold"><i class="bi bi-mortarboard me-2"></i>Baholar boshqaruvi</h2>
+        <div>
+            <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-secondary"><i
+                    class="bi bi-arrow-left me-2"></i>Dashboard</a>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="glass-card p-3 mb-4">
+        <form method="get" class="row g-2">
+            <div class="col-md-3">
+                <select name="class" class="form-select">
+                    <option value="">Barcha sinflar</option>
+                    {% for cls in classes %}
+                    <option value="{{ cls.id }}" {% if selected_class == cls.id|stringformat:"s" %}selected{% endif %}>{{ cls.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select name="subject" class="form-select">
+                    <option value="">Barcha fanlar</option>
+                    {% for sub in subjects %}
+                    <option value="{{ sub.id }}" {% if selected_subject == sub.id|stringformat:"s" %}selected{% endif %}>{{ sub.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <input type="text" name="student" class="form-control" placeholder="O'quvchi ismi..."
+                    value="{{ student_query|default:'' }}">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100"><i class="bi bi-filter me-2"></i>Filter</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Table -->
+    <div class="glass-card p-4">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>O'quvchi</th>
+                        <th>Sinf</th>
+                        <th>Fan</th>
+                        <th>Baho</th>
+                        <th>Sana</th>
+                        <th>O'qituvchi</th>
+                        <th>Harakat</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for grade in grades %}
+                    <tr id="grade-row-{{ grade.id }}">
+                        <td><strong>{{ grade.student.get_full_name }}</strong></td>
+                        <td>{{ grade.student.student_class.name|default:"-" }}</td>
+                        <td>{{ grade.subject.name }}</td>
+                        <td><span class="badge {% if grade.value >= 4 %}bg-success{% elif grade.value == 3 %}bg-warning{% else %}bg-danger{% endif %} fs-6">{{ grade.value }}</span></td>
+                        <td>{{ grade.date|date:"d.m.Y" }}</td>
+                        <td><small>{{ grade.teacher.get_full_name|default:grade.teacher.username }}</small></td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-danger" onclick="deleteGrade({{ grade.id }})"><i
+                                    class="bi bi-trash"></i></button>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center py-5 text-muted">Baholar topilmadi</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        {% if grades.has_other_pages %}
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if grades.has_previous %}
+                <li class="page-item"><a class="page-link"
+                        href="?page={{ grades.previous_page_number }}&class={{ selected_class }}&subject={{ selected_subject }}&student={{ student_query }}">Oldingi</a>
+                </li>
+                {% endif %}
+                <li class="page-item active"><span class="page-link">{{ grades.number }} / {{ grades.paginator.num_pages }}</span></li>
+                {% if grades.has_next %}
+                <li class="page-item"><a class="page-link"
+                        href="?page={{ grades.next_page_number }}&class={{ selected_class }}&subject={{ selected_subject }}&student={{ student_query }}">Keyingi</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    function deleteGrade(id) {
+        if (!confirm('Ushbu bahoni o\'chirib tashlamoqchimisiz?')) return;
+
+        fetch(`/administration/grades/${id}/delete/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+            }
+        })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById(`grade-row-${id}`).remove();
+                } else {
+                    alert('Xatolik yuz berdi');
+                }
+            });
+    }
+</script>
+{% endblock %}

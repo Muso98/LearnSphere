@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Sinf Tanlash - LearnSphere{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2 class="fw-bold">Qobiliyatlar Xaritasi (AI Data)</h2>
+        <p class="text-muted">O'quvchilarning "Soft Skills" ko'rsatkichlarini kiritish uchun sinfni tanlang.</p>
+    </div>
+</div>
+
+<div class="row">
+    {% for class_obj in classes %}
+    <div class="col-md-4 mb-4">
+        <div class="glass-card p-4 h-100 text-center hover-scale">
+            <div class="display-4 mb-3 text-primary">
+                {{ class_obj.name }}
+            </div>
+            <p class="text-muted">{{ class_obj.students.count }} o'quvchi</p>
+            <a href="{% url 'skill_input_detail' class_obj.id %}"
+                class="btn btn-primary w-100 rounded-pill stretched-link">
+                Kirish <i class="bi bi-arrow-right ms-2"></i>
+            </a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

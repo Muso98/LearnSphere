@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}{% if edit_user %}Tahrirlash{% else %}Yangi foydalanuvchi{% endif %} - Admin Panel{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="glass-card p-4">
+                <h3 class="fw-bold mb-4"><i class="bi bi-person-{% if edit_user %}gear{% else %}plus{% endif %} me-2"></i>{% if edit_user %}Foydalanuvchini tahrirlash{% else %}Yangi foydalanuvchi yaratish{% endif %}</h3>
+                <form method="post">
+                    {% csrf_token %}
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+                    {% endif %}
+                    {% for field in form %}
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.help_text %}<small class="form-text text-muted">{{ field.help_text }}</small>{% endif %}
+                        {% if field.errors %}<div class="text-danger small">{{ field.errors }}</div>{% endif %}
+                    </div>
+                    {% endfor %}
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{% url 'user_list' %}" class="btn btn-outline-secondary"><i
+                                class="bi bi-arrow-left me-2"></i>Bekor qilish</a>
+                        <button type="submit" class="btn btn-primary"><i
+                                class="bi bi-check-circle me-2"></i>Saqlash</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -36,7 +36,13 @@ class Grade(models.Model):
     def __str__(self):
         return f"{self.student.username} - {self.subject.name} - {self.value}"
 
-# Notification Signal Logic directly here or in signals.py
-# User asked: "Django Signals-dan foydalanib, yangi baho qo'yilganda 'Notification' yaratish logikasini yoz."
-# I will implement it here for simplicity or separate it. Best practice is signals.py but usually imported in apps.py ready()
-# I'll put it in signals.py as per plan, but for now I'll just write models here.
+class GradeAudit(models.Model):
+    grade = models.ForeignKey(Grade, on_delete=models.CASCADE, related_name='audits')
+    changed_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
+    previous_value = models.IntegerField(null=True, blank=True)
+    new_value = models.IntegerField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+    action = models.CharField(max_length=20) # 'create', 'update', 'delete'
+
+    def __str__(self):
+        return f"{self.grade} - {self.action} by {self.changed_by} at {self.timestamp}"

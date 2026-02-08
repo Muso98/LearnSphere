@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}Ballar Do'koni - LearnSphere{% endblock %}
+
+{% block content %}
+<div class="row align-items-center mb-5">
+    <div class="col-md-8">
+        <h2 class="fw-bold">Ballar Do'koni</h2>
+        <p class="text-muted mb-0">Yig'gan ballaringizni ajoyib imtiyozlarga almashtiring</p>
+    </div>
+    <div class="col-md-4 text-md-end mt-3 mt-md-0">
+        <div class="d-inline-flex align-items-center bg-white rounded-pill px-4 py-2 shadow-sm border border-warning">
+            <span class="text-muted me-2">Balansingiz:</span>
+            <h4 class="mb-0 fw-bold text-primary">{{ user_balance }} <small class="fs-6 text-muted">ball</small></h4>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    {% for reward in rewards %}
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="glass-card h-100 d-flex flex-column">
+            {% if reward.image %}
+            <img src="{{ reward.image.url }}" class="card-img-top" alt="{{ reward.name }}"
+                style="height: 200px; object-fit: cover; border-radius: 20px 20px 0 0;">
+            {% else %}
+            <div class="bg-light d-flex align-items-center justify-content-center"
+                style="height: 200px; border-radius: 20px 20px 0 0;">
+                <i class="bi bi-gift fs-1 text-primary opacity-50"></i>
+            </div>
+            {% endif %}
+
+            <div class="card-body p-4 d-flex flex-column flex-grow-1">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h5 class="card-title fw-bold mb-0">{{ reward.name }}</h5>
+                    <span class="badge bg-warning text-dark rounded-pill">
+                        {{ reward.cost }} ball
+                    </span>
+                </div>
+
+                <p class="card-text text-muted small flex-grow-1">{{ reward.description }}</p>
+
+                <form action="{% url 'redeem_reward' reward.id %}" method="post" class="mt-3">
+                    {% csrf_token %}
+                    {% if user_balance >= reward.cost %}
+                    <button type="submit" class="btn btn-primary w-100 rounded-pill">
+                        Sotib olish
+                    </button>
+                    {% else %}
+                    <button type="button" class="btn btn-secondary w-100 rounded-pill" disabled>
+                        Ball yetmaydi
+                    </button>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12 text-center py-5">
+        <i class="bi bi-shop fs-1 text-muted opacity-25 mb-3 d-block"></i>
+        <h5 class="text-muted">Do'konda hozircha mahsulotlar yo'q</h5>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

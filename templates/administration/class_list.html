@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}Sinflar - Admin Panel{% endblock %}
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold"><i class="bi bi-building me-2"></i>Sinflar boshqaruvi</h2>
+        <div>
+            <a href="{% url 'class_create' %}" class="btn btn-primary"><i class="bi bi-plus-circle me-2"></i>Yangi
+                sinf</a>
+            <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-secondary"><i
+                    class="bi bi-arrow-left me-2"></i>Dashboard</a>
+        </div>
+    </div>
+    <div class="row g-4">
+        {% for item in class_data %}
+        <div class="col-md-4">
+            <div class="glass-card p-4">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <h4 class="fw-bold mb-1">{{ item.class.name }}</h4>
+                        <p class="text-muted mb-0"><i class="bi bi-people-fill me-1"></i>{{ item.student_count }}
+                            o'quvchi</p>
+                    </div>
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="dropdown"><i
+                                class="bi bi-three-dots-vertical"></i></button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'class_students' item.class.id %}"><i
+                                        class="bi bi-people me-2"></i>O'quvchilar</a></li>
+                            <li><a class="dropdown-item" href="{% url 'class_edit' item.class.id %}"><i
+                                        class="bi bi-pencil me-2"></i>Tahrirlash</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item text-danger" href="{% url 'class_delete' item.class.id %}"><i
+                                        class="bi bi-trash me-2"></i>O'chirish</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="d-flex gap-2">
+                    <a href="{% url 'class_students' item.class.id %}"
+                        class="btn btn-sm btn-outline-primary flex-fill"><i class="bi bi-people me-1"></i>Boshqarish</a>
+                    <a href="{% url 'class_edit' item.class.id %}" class="btn btn-sm btn-outline-secondary"><i
+                            class="bi bi-pencil"></i></a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="glass-card p-5 text-center text-muted"><i class="bi bi-inbox display-1 d-block mb-3"></i>
+                <p>Hozircha sinflar yo'q</p><a href="{% url 'class_create' %}" class="btn btn-primary">Birinchi sinfni
+                    yarating</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

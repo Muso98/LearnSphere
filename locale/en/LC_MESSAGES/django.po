@@ -1,0 +1,231 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: LearnSphere\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-02-09 12:00+0500\n"
+"PO-Revision-Date: 2024-02-09 12:00+0500\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+# Base & Navigation
+msgid "Dashboard"
+msgstr "Dashboard"
+
+msgid "Home"
+msgstr "Home"
+
+msgid "Profile"
+msgstr "Profile"
+
+msgid "Bosh sahifa"
+msgstr "Home"
+
+msgid "Dars Jadvali"
+msgstr "Schedule"
+
+msgid "Vazifalar"
+msgstr "Assignments"
+
+msgid "Kutubxona"
+msgstr "Library"
+
+msgid "Testlar"
+msgstr "Quizzes"
+
+msgid "Bildirishnomalar"
+msgstr "Notifications"
+
+msgid "Majlislar"
+msgstr "Meetings"
+
+msgid "Reyting"
+msgstr "Leaderboard"
+
+msgid "Do'kon"
+msgstr "Shop"
+
+msgid "Xabarlar"
+msgstr "Messages"
+
+msgid "Jurnal"
+msgstr "Gradebook"
+
+msgid "Davomat"
+msgstr "Attendance"
+
+msgid "Profil boshqaruvi"
+msgstr "Profile Management"
+
+msgid "Mening Profilim"
+msgstr "My Profile"
+
+msgid "Chiqish"
+msgstr "Logout"
+
+msgid "Kirish"
+msgstr "Login"
+
+# Login Page
+msgid "Xush kelibsiz!"
+msgstr "Welcome!"
+
+msgid "LearnSphere ta'lim platformasiga kirish"
+msgstr "Login to LearnSphere platform"
+
+msgid "Login yoki parol noto'g'ri."
+msgstr "Invalid login or password."
+
+msgid "Foydalanuvchi nomi"
+msgstr "Username"
+
+msgid "Username"
+msgstr "Username"
+
+msgid "Parol"
+msgstr "Password"
+
+msgid "Tizimga Kirish"
+msgstr "Login to System"
+
+msgid "Demo hisoblar kerakmi?"
+msgstr "Need demo accounts?"
+
+msgid "Ko'rish"
+msgstr "View"
+
+# Student Dashboard
+msgid "Mening Kabinetim"
+msgstr "My Cabinet"
+
+msgid "Biriktirilmagan"
+msgstr "Not Assigned"
+
+msgid "Sinf"
+msgstr "Class"
+
+msgid "Xush kelibsiz"
+msgstr "Welcome"
+
+msgid "Baholarim"
+msgstr "My Grades"
+
+msgid "Fan"
+msgstr "Subject"
+
+msgid "Baho"
+msgstr "Grade"
+
+msgid "Sana"
+msgstr "Date"
+
+msgid "Baholar hali mavjud emas."
+msgstr "No grades available yet."
+
+msgid "Status"
+msgstr "Status"
+
+msgid "Bor"
+msgstr "Present"
+
+msgid "Yo'q"
+msgstr "Absent"
+
+msgid "Kechikkan"
+msgstr "Late"
+
+msgid "Davomat ma'lumotlari topilmadi."
+msgstr "No attendance records found."
+
+# Parent Dashboard
+msgid "Ota-ona burchagi"
+msgstr "Parent Dashboard"
+
+msgid "Farzandlaringizning o'zlashtirish ko'rsatkichlari bu yerda aks etadi."
+msgstr "Your children's performance indicators are displayed here."
+
+msgid "Farzandlarim"
+msgstr "My Children"
+
+msgid "Farzandlar hali biriktirilmagan."
+msgstr "No children assigned yet."
+
+msgid "So'nggi Baholar"
+msgstr "Recent Grades"
+
+msgid "O'quvchi"
+msgstr "Student"
+
+msgid "Izoh"
+msgstr "Comment"
+
+msgid "So'nggi baholar topilmadi."
+msgstr "No recent grades found."
+
+msgid "Farzandlarimning Qobiliyatlari (AI Tahlil)"
+msgstr "My Children's Skills (AI Analysis)"
+
+msgid "Sinf yo'q"
+msgstr "No Class"
+
+msgid "Ma'lumot yo'q"
+msgstr "No Data"
+
+# Admin Dashboard
+msgid "Admin Dashboard"
+msgstr "Admin Dashboard"
+
+msgid "Asosiy sahifa"
+msgstr "Home Page"
+
+msgid "Jami foydalanuvchilar"
+msgstr "Total Users"
+
+msgid "Faol"
+msgstr "Active"
+
+msgid "O'quvchilar"
+msgstr "Students"
+
+msgid "Aktiv"
+msgstr "Active"
+
+msgid "Bugungi davomat"
+msgstr "Today's Attendance"
+
+msgid "Bugun"
+msgstr "Today"
+
+msgid "O'rtacha baho"
+msgstr "Average Grade"
+
+msgid "30 kun"
+msgstr "30 days"
+
+msgid "Fanlar bo'yicha o'zlashtirish"
+msgstr "Performance by Subject"
+
+msgid "Haftalik davomat tendensiyasi"
+msgstr "Weekly Attendance Trend"
+
+msgid "Eng yaxshi o'quvchilar"
+msgstr "Top Students"
+
+msgid "Yuklanmoqda..."
+msgstr "Loading..."
+
+msgid "E'tibor talab qiluvchilar"
+msgstr "Needs Attention"
+
+msgid "Oxirgi baholar"
+msgstr "Recent Grades"
+
+msgid "Hozircha baholar yo'q"
+msgstr "No grades yet"
+
+msgid "Yangi foydalanuvchilar"
+msgstr "New Users"
