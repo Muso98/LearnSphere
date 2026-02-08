@@ -97,7 +97,12 @@
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="teachers-tab" data-bs-toggle="tab" data-bs-target="#teachers" type="button"
                 role="tab">
-                <i class="bi bi-person-badge me-2"></i>O'qituvchilar
+                <i class="bi bi-person-badge me-2"></i>{% trans "O'qituvchilar" %}
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="shop-tab" data-bs-toggle="tab" data-bs-target="#shop" type="button" role="tab">
+                <i class="bi bi-shop me-2"></i>{% trans "Do'kon" %}
             </button>
         </li>
     </ul>
@@ -138,9 +143,17 @@
         <div class="tab-pane fade" id="teachers" role="tabpanel">
             {% include 'administration/partials/teachers_management.html' %}
         </div>
+
+        <!-- Shop Tab -->
+        <div class="tab-pane fade" id="shop" role="tabpanel">
+            {% include 'administration/partials/shop_management.html' %}
+        </div>
     </div>
 </div>
 
+{% endblock %}
+
+{% block extra_js %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="{% static 'js/admin_management.js' %}"></script>
 <script>

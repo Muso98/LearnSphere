@@ -8,7 +8,12 @@ from django.db.models import Avg, Count, Q
 from django.conf import settings
 from django.core.paginator import Paginator
 from datetime import datetime, timedelta
+from gamification.models import Reward, Redemption, PointTransaction
+from django.db.models import Sum, Count, Avg
+from django.utils import timezone
+import json
 import pandas as pd
+from django.views.decorators.http import require_POST
 
 from .models import Room, RoomBooking, TeacherAssignment
 from .forms import UserCreateForm, UserEditForm, ClassForm, SubjectForm, TeacherAssignmentForm
@@ -874,3 +879,239 @@ def attendance_update(request, attendance_id):
         attendance.save()
         return JsonResponse({'success': True})
     return JsonResponse({'error': 'Invalid status'}, status=400)
+
+
+# Shop Management Views
+
+@login_required
+def shop_rewards_list(request):
+    """List all rewards"""
+    if not is_admin_user(request.user):
+        return JsonResponse({'error': 'Unauthorized'}, status=403)
+    
+    rewards = Reward.objects.all().order_by('-is_active', 'cost')
+    data = [{
+        'id': r.id,
+        'name': r.name,
+        'description': r.description,
+        'cost': r.cost,
+        'is_active': r.is_active
+    } for r in rewards]
+    
+    return JsonResponse({'rewards': data})
+
+@login_required
+@require_POST
+def shop_reward_create(request):
+    """Create new reward"""
+    if not is_admin_user(request.user):
+        return JsonResponse({'success': False, 'message': 'Unauthorized'}, status=403)
+    
+    try:
+        name = request.POST.get('name')
+        description = request.POST.get('description')
+        cost = int(request.POST.get('cost', 0))
+        is_active = request.POST.get('is_active') == 'on'
+        
+        Reward.objects.create(
+            name=name,
+            description=description,
+            cost=cost,
+            is_active=is_active
+        )
+        return JsonResponse({'success': True, 'message': 'Mahsulot yaratildi'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)})
+
+@login_required
+@require_POST
+def shop_reward_update(request, reward_id):
+    """Update existing reward"""
+    if not is_admin_user(request.user):
+        return JsonResponse({'success': False, 'message': 'Unauthorized'}, status=403)
+    
+    try:
+        reward = get_object_or_404(Reward, id=reward_id)
+        reward.name = request.POST.get('name')
+        reward.description = request.POST.get('description')
+        reward.cost = int(request.POST.get('cost', 0))
+        reward.is_active = request.POST.get('is_active') == 'on'
+        reward.save()
+        
+        return JsonResponse({'success': True, 'message': 'Mahsulot yangilandi'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)})
+
+@login_required
+@require_POST
+def shop_reward_delete(request, reward_id):
+    """Delete reward"""
+    if not is_admin_user(request.user):
+        return JsonResponse({'success': False, 'message': 'Unauthorized'}, status=403)
+    
+    try:
+        reward = get_object_or_404(Reward, id=reward_id)
+        reward.delete()
+        return JsonResponse({'success': True, 'message': "Mahsulot o'chirildi"})
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)})
+
+@login_required
+def shop_redemptions_list(request):
+    """List all redemptions"""
+    if not is_admin_user(request.user):
+        return JsonResponse({'error': 'Unauthorized'}, status=403)
+    
+    redemptions = Redemption.objects.select_related('user', 'reward').order_by('-created_at')
+    
+    data = [{
+        'id': r.id,
+        'student_name': r.user.get_full_name(),
+        'student_username': r.user.username,
+        'reward_name': r.reward.name,
+        'reward_cost': r.reward.cost,
+        'status': r.status,
+        'status_display': r.get_status_display(),
+        'created_at': r.created_at.strftime('%d.%m.%Y %H:%M')
+    } for r in redemptions]
+    
+    return JsonResponse({'redemptions': data})
+
+@login_required
+@require_POST
+def shop_redemption_process(request, redemption_id):
+    """Approve or reject redemption"""
+    if not is_admin_user(request.user):
+        return JsonResponse({'success': False, 'message': 'Unauthorized'}, status=403)
+    
+    try:
+        data = json.loads(request.body)
+        status = data.get('status')
+        
+        redemption = get_object_or_404(Redemption, id=redemption_id)
+        
+        if status == 'approved':
+            redemption.status = 'approved'
+            redemption.processed_at = timezone.now()
+            redemption.save()
+            return JsonResponse({'success': True, 'message': "So'rov tasdiqlandi"})
+            
+        elif status == 'rejected':
+            # Refund points
+            PointTransaction.objects.create(
+                user=redemption.user,
+                amount=redemption.reward.cost,
+                transaction_type='manual',
+                description=f"Qaytarildi: {redemption.reward.name} (Rad etildi)"
+            )
+            
+            redemption.status = 'rejected'
+            redemption.processed_at = timezone.now()
+            redemption.save()
+            return JsonResponse({'success': True, 'message': "So'rov rad etildi va ballar qaytarildi"})
+            
+        return JsonResponse({'success': False, 'message': 'Invalid status'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)})
+
+
+# Dashboard Stats API Views
+
+@login_required
+def api_attendance_stats(request):
+    """Get attendance statistics for charts"""
+    if not is_admin_user(request.user):
+        return JsonResponse({'error': 'Unauthorized'}, status=403)
+
+    today = timezone.now().date()
+    # Weekly trend
+    weekly_trend = []
+    for i in range(6, -1, -1):
+        date = today - timedelta(days=i)
+        total = Attendance.objects.filter(date=date).count()
+        present = Attendance.objects.filter(date=date, status='present').count()
+        rate = round((present / total * 100), 1) if total > 0 else 0
+        weekly_trend.append({
+            'date': date.strftime('%d.%m'),
+            'rate': rate
+        })
+    
+    # Today's stats
+    total_today = Attendance.objects.filter(date=today).count()
+    present_today = Attendance.objects.filter(date=today, status='present').count()
+    absent_today = Attendance.objects.filter(date=today, status='absent').count()
+    late_today = Attendance.objects.filter(date=today, status='late').count()
+    
+    return JsonResponse({
+        'weekly_trend': weekly_trend,
+        'today': {
+            'present': present_today,
+            'absent': absent_today,
+            'late': late_today,
+            'total': total_today
+        }
+    })
+
+@login_required
+def api_performance_stats(request):
+    """Get performance statistics by subject"""
+    if not is_admin_user(request.user):
+        return JsonResponse({'error': 'Unauthorized'}, status=403)
+
+    subjects = Subject.objects.annotate(avg_grade=Avg('grade__value')).order_by('-avg_grade')
+    
+    data = {
+        'subjects': [s.name for s in subjects],
+        'averages': [round(s.avg_grade, 2) if s.avg_grade else 0 for s in subjects]
+    }
+    
+    return JsonResponse(data)
+
+@login_required
+def api_top_students(request):
+    """Get top performing students"""
+    from django.contrib.auth import get_user_model
+    User = get_user_model()
+    
+    if not is_admin_user(request.user):
+        return JsonResponse({'error': 'Unauthorized'}, status=403)
+
+    # Simplified logic: Get students with highest average grades
+    # In a real app, this should be optimized
+    students = User.objects.filter(role='student').annotate(
+        avg_grade=Avg('student_grades__value'),
+        grades_count=Count('student_grades')
+    ).filter(grades_count__gt=0).order_by('-avg_grade')[:5]
+    
+    data = [{
+        'name': s.get_full_name(),
+        'average': round(s.avg_grade, 2),
+        'grades_count': s.grades_count
+    } for s in students]
+    
+    return JsonResponse({'top_students': data})
+
+@login_required
+def api_struggling_students(request):
+    """Get struggling students (avg < 3)"""
+    from django.contrib.auth import get_user_model
+    User = get_user_model()
+    
+    if not is_admin_user(request.user):
+        return JsonResponse({'error': 'Unauthorized'}, status=403)
+
+    students = User.objects.filter(role='student').annotate(
+        avg_grade=Avg('student_grades__value'),
+        grades_count=Count('student_grades')
+    ).filter(grades_count__gt=0, avg_grade__lt=3.0).order_by('avg_grade')[:5]
+    
+    data = [{
+        'name': s.get_full_name(),
+        'class': str(s.student_class) if hasattr(s, 'student_class') else 'N/A',
+        'average': round(s.avg_grade, 2),
+        'grades_count': s.grades_count
+    } for s in students]
+    
+    return JsonResponse({'struggling_students': data})
+
+

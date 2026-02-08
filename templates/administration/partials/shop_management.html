@@ -1,0 +1,383 @@
+{% load i18n %}
+<!-- Shop Management Partial -->
+<div class="management-header">
+    <h3 class="management-title"><i class="bi bi-shop me-2"></i>{% trans "Do'kon Boshqaruvi" %}</h3>
+    <button class="btn btn-primary" type="button" onclick="openRewardModal()">
+        <i class="bi bi-plus-circle me-2"></i>{% trans "Yangi Mahsulot" %}
+    </button>
+</div>
+
+<!-- Shop Tabs -->
+<ul class="nav nav-tabs mb-4" id="shopTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="rewards-tab" data-bs-toggle="tab" data-bs-target="#rewards-content"
+            type="button" role="tab">
+            <i class="bi bi-gift me-2"></i>{% trans "Mahsulotlar" %}
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="redemptions-tab" data-bs-toggle="tab" data-bs-target="#redemptions-content"
+            type="button" role="tab">
+            <i class="bi bi-cart-check me-2"></i>{% trans "So'rovlar" %}
+            <span class="badge bg-danger ms-2" id="pendingRedemptionsCount" style="display:none;">0</span>
+        </button>
+    </li>
+</ul>
+
+<div class="tab-content" id="shopTabContent">
+    <!-- Rewards Tab -->
+    <div class="tab-pane fade show active" id="rewards-content" role="tabpanel">
+        <div class="card glass-card">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="ps-4">{% trans "Nomi" %}</th>
+                                <th>{% trans "Narxi" %}</th>
+                                <th>{% trans "Holati" %}</th>
+                                <th class="text-end pe-4">{% trans "Harakatlar" %}</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rewardsTableBody">
+                            <!-- Rewards will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Redemptions Tab -->
+    <div class="tab-pane fade" id="redemptions-content" role="tabpanel">
+        <div class="card glass-card">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="ps-4">{% trans "O'quvchi" %}</th>
+                                <th>{% trans "Mahsulot" %}</th>
+                                <th>{% trans "Sana" %}</th>
+                                <th>{% trans "Holati" %}</th>
+                                <th class="text-end pe-4">{% trans "Harakatlar" %}</th>
+                            </tr>
+                        </thead>
+                        <tbody id="redemptionsTableBody">
+                            <!-- Redemptions will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Reward Modal -->
+<div class="modal fade" id="rewardModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="rewardModalTitle">{% trans "Yangi Mahsulot" %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="rewardForm">
+                    <input type="hidden" id="rewardId" name="id">
+                    <div class="mb-3">
+                        <label class="form-label">{% trans "Nomi" %}</label>
+                        <input type="text" class="form-control" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{% trans "Tavsif" %}</label>
+                        <textarea class="form-control" name="description" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{% trans "Narxi (ball)" %}</label>
+                        <input type="number" class="form-control" name="cost" required min="0">
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" name="is_active" id="rewardActive" checked>
+                        <label class="form-check-label" for="rewardActive">{% trans "Faol" %}</label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Bekor qilish"
+                    %}</button>
+                <button type="button" class="btn btn-primary" onclick="saveReward()">{% trans "Saqlash" %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        console.log("Shop Management loaded");
+        loadRewards();
+        loadRedemptions();
+
+        const shopTab = document.getElementById('shop-tab');
+        if (shopTab) {
+            shopTab.addEventListener('shown.bs.tab', function (e) {
+                console.log("Shop tab shown");
+                loadRewards();
+                loadRedemptions();
+            });
+        }
+    });
+
+    function getRewardModal() {
+        const el = document.getElementById('rewardModal');
+        if (!el) {
+            console.error("Modal element not found");
+            return null;
+        }
+        if (typeof bootstrap !== 'undefined') {
+            return bootstrap.Modal.getOrCreateInstance(el);
+        } else {
+            console.error("Bootstrap is undefined");
+            alert("Tizim xatosi: Bootstrap yuklanmadi. Sahifani yangilang.");
+            return null;
+        }
+    }
+
+    function openRewardModal() {
+        console.log("Opening reward modal...");
+        const modal = getRewardModal();
+        if (!modal) return;
+
+        const form = document.getElementById('rewardForm');
+        if (form) form.reset();
+
+        const idInput = document.getElementById('rewardId');
+        if (idInput) idInput.value = '';
+
+        const title = document.getElementById('rewardModalTitle');
+        if (title) title.textContent = '{% trans "Yangi Mahsulot" %}';
+
+        const activeCheck = document.getElementById('rewardActive');
+        if (activeCheck) activeCheck.checked = true;
+
+        modal.show();
+    }
+
+    function editReward(reward) {
+        console.log("Editing reward", reward);
+        const modal = getRewardModal();
+        if (!modal) return;
+
+        document.getElementById('rewardId').value = reward.id;
+        document.querySelector('[name="name"]').value = reward.name;
+        document.querySelector('[name="description"]').value = reward.description;
+        document.querySelector('[name="cost"]').value = reward.cost;
+        document.getElementById('rewardActive').checked = reward.is_active;
+        document.getElementById('rewardModalTitle').textContent = '{% trans "Mahsulotni Tahrirlash" %}';
+
+        modal.show();
+    }
+
+    function getSafeCsrfToken() {
+        if (typeof AdminUtils !== 'undefined' && AdminUtils.csrftoken) return AdminUtils.csrftoken;
+        if (typeof getCookie === 'function') return getCookie('csrftoken');
+        const match = document.cookie.match(/csrftoken=([^;]+)/);
+        return match ? match[1] : '';
+    }
+
+    function safeShowToast(msg, type) {
+        if (typeof AdminUtils !== 'undefined' && AdminUtils.Toast) {
+            AdminUtils.Toast.show(msg, type);
+        } else {
+            alert(msg);
+        }
+    }
+
+    function saveReward() {
+        const form = document.getElementById('rewardForm');
+        const formData = new FormData(form);
+        const id = document.getElementById('rewardId').value;
+        const url = id ? `/administration/api/shop/rewards/${id}/update/` : '/administration/api/shop/rewards/create/';
+
+        fetch(url, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': getSafeCsrfToken(),
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const modal = getRewardModal();
+                    if (modal) modal.hide();
+                    loadRewards();
+                    safeShowToast(data.message, 'success');
+                } else {
+                    safeShowToast(data.message || '{% trans "Xatolik yuz berdi" %}', 'error');
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                safeShowToast('Tarmoq xatosi', 'error');
+            });
+    }
+
+    function deleteReward(id) {
+        if (!confirm('{% trans "Haqiqatan ham bu mahsulotni o\'chirmoqchimisiz?" %}')) return;
+
+        fetch(`/administration/api/shop/rewards/${id}/delete/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getSafeCsrfToken(),
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    loadRewards();
+                    safeShowToast(data.message, 'success');
+                } else {
+                    safeShowToast(data.message, 'error');
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                safeShowToast('Tarmoq xatosi', 'error');
+            });
+    }
+
+    // Redemptions Functions
+    function loadRewards() {
+        fetch('/administration/api/shop/rewards/', {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+            .then(response => response.json())
+            .then(data => {
+                const tbody = document.getElementById('rewardsTableBody');
+                if (!tbody) return;
+                tbody.innerHTML = '';
+
+                if (data.rewards.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-muted">{% trans "Mahsulotlar mavjud emas" %}</td></tr>`;
+                    return;
+                }
+
+                data.rewards.forEach(reward => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                    <td class="ps-4">
+                        <div class="fw-bold">${reward.name}</div>
+                        <small class="text-muted">${reward.description || ''}</small>
+                    </td>
+                    <td><span class="badge bg-primary rounded-pill">${reward.cost}</span></td>
+                    <td>
+                        <span class="badge ${reward.is_active ? 'bg-success' : 'bg-secondary'}">
+                            ${reward.is_active ? '{% trans "Faol" %}' : '{% trans "Faol emas" %}'}
+                        </span>
+                    </td>
+                    <td class="text-end pe-4">
+                        <button class="btn btn-sm btn-outline-primary me-1" onclick='editReward(${JSON.stringify(reward)})'>
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteReward(${reward.id})">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                `;
+                    tbody.appendChild(tr);
+                });
+            })
+            .catch(err => console.error(err));
+    }
+
+    function loadRedemptions() {
+        fetch('/administration/api/shop/redemptions/', {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+            .then(response => response.json())
+            .then(data => {
+                const tbody = document.getElementById('redemptionsTableBody');
+                if (!tbody) return;
+                tbody.innerHTML = '';
+
+                // Update pending count
+                const pendingCount = data.redemptions.filter(r => r.status === 'pending').length;
+                const badge = document.getElementById('pendingRedemptionsCount');
+                if (badge) {
+                    if (pendingCount > 0) {
+                        badge.textContent = pendingCount;
+                        badge.style.display = 'inline-block';
+                    } else {
+                        badge.style.display = 'none';
+                    }
+                }
+
+                if (data.redemptions.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">{% trans "So'rovlar mavjud emas" %}</td></tr>`;
+                    return;
+                }
+
+                data.redemptions.forEach(redemption => {
+                    let statusBadge = 'bg-secondary';
+                    if (redemption.status === 'approved') statusBadge = 'bg-success';
+                    else if (redemption.status === 'rejected') statusBadge = 'bg-danger';
+                    else if (redemption.status === 'pending') statusBadge = 'bg-warning text-dark';
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                    <td class="ps-4">
+                        <div class="fw-bold">${redemption.student_name}</div>
+                        <small class="text-muted">@${redemption.student_username}</small>
+                    </td>
+                    <td>
+                        <div class="fw-bold">${redemption.reward_name}</div>
+                        <small class="text-muted"><i class="bi bi-coin me-1"></i>${redemption.reward_cost}</small>
+                    </td>
+                    <td>${redemption.created_at}</td>
+                    <td><span class="badge ${statusBadge}">${redemption.status_display}</span></td>
+                    <td class="text-end pe-4">
+                        ${redemption.status === 'pending' ? `
+                            <button class="btn btn-sm btn-success me-1" onclick="processRedemption(${redemption.id}, 'approved')" title="{% trans 'Tasdiqlash' %}">
+                                <i class="bi bi-check-lg"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger" onclick="processRedemption(${redemption.id}, 'rejected')" title="{% trans 'Rad etish' %}">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        ` : ''}
+                    </td>
+                `;
+                    tbody.appendChild(tr);
+                });
+            })
+            .catch(err => console.error(err));
+    }
+
+    function processRedemption(id, status) {
+        if (!confirm(status === 'approved' ? '{% trans "Tasdiqlaysizmi?" %}' : '{% trans "Rad etasizmi?" %}')) return;
+
+        fetch(`/administration/api/shop/redemptions/${id}/process/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getSafeCsrfToken(),
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({ status: status })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    loadRedemptions();
+                    safeShowToast(data.message, 'success');
+                } else {
+                    safeShowToast(data.message, 'error');
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                safeShowToast('Tarmoq xatosi', 'error');
+            });
+    }
+</script>
