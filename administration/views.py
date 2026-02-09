@@ -65,7 +65,7 @@ def teacher_assignment_delete(request, assignment_id):
 
 def is_admin_user(user):
     """Check if user is admin, director, or superuser"""
-    return user.is_superuser or user.role in ['admin', 'director']
+    return user.is_authenticated and (user.is_superuser or getattr(user, 'role', '') in ['admin', 'director'])
 
 
 @login_required
@@ -895,7 +895,9 @@ def shop_rewards_list(request):
         'name': r.name,
         'description': r.description,
         'cost': r.cost,
-        'is_active': r.is_active
+        'is_active': r.is_active,
+        'type': r.type,
+        'icon': r.icon
     } for r in rewards]
     
     return JsonResponse({'rewards': data})
@@ -917,7 +919,9 @@ def shop_reward_create(request):
             name=name,
             description=description,
             cost=cost,
-            is_active=is_active
+            is_active=is_active,
+            type=request.POST.get('type', 'physical'),
+            icon=request.POST.get('icon', '')
         )
         return JsonResponse({'success': True, 'message': 'Mahsulot yaratildi'})
     except Exception as e:
@@ -936,6 +940,8 @@ def shop_reward_update(request, reward_id):
         reward.description = request.POST.get('description')
         reward.cost = int(request.POST.get('cost', 0))
         reward.is_active = request.POST.get('is_active') == 'on'
+        reward.type = request.POST.get('type', 'physical')
+        reward.icon = request.POST.get('icon', '')
         reward.save()
         
         return JsonResponse({'success': True, 'message': 'Mahsulot yangilandi'})
@@ -1079,8 +1085,8 @@ def api_top_students(request):
     # Simplified logic: Get students with highest average grades
     # In a real app, this should be optimized
     students = User.objects.filter(role='student').annotate(
-        avg_grade=Avg('student_grades__value'),
-        grades_count=Count('student_grades')
+        avg_grade=Avg('grades__value'),
+        grades_count=Count('grades')
     ).filter(grades_count__gt=0).order_by('-avg_grade')[:5]
     
     data = [{
@@ -1101,8 +1107,8 @@ def api_struggling_students(request):
         return JsonResponse({'error': 'Unauthorized'}, status=403)
 
     students = User.objects.filter(role='student').annotate(
-        avg_grade=Avg('student_grades__value'),
-        grades_count=Count('student_grades')
+        avg_grade=Avg('grades__value'),
+        grades_count=Count('grades')
     ).filter(grades_count__gt=0, avg_grade__lt=3.0).order_by('avg_grade')[:5]
     
     data = [{

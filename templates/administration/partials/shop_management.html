@@ -2,7 +2,7 @@
 <!-- Shop Management Partial -->
 <div class="management-header">
     <h3 class="management-title"><i class="bi bi-shop me-2"></i>{% trans "Do'kon Boshqaruvi" %}</h3>
-    <button class="btn btn-primary" type="button" onclick="openRewardModal()">
+    <button class="btn btn-primary" type="button" onclick="window.openRewardModal()">
         <i class="bi bi-plus-circle me-2"></i>{% trans "Yangi Mahsulot" %}
     </button>
 </div>
@@ -34,6 +34,7 @@
                         <thead class="bg-light">
                             <tr>
                                 <th class="ps-4">{% trans "Nomi" %}</th>
+                                <th>{% trans "Turi" %}</th>
                                 <th>{% trans "Narxi" %}</th>
                                 <th>{% trans "Holati" %}</th>
                                 <th class="text-end pe-4">{% trans "Harakatlar" %}</th>
@@ -84,18 +85,42 @@
             <div class="modal-body">
                 <form id="rewardForm">
                     <input type="hidden" id="rewardId" name="id">
-                    <div class="mb-3">
-                        <label class="form-label">{% trans "Nomi" %}</label>
-                        <input type="text" class="form-control" name="name" required>
+
+                    <div class="row">
+                        <div class="col-md-8 mb-3">
+                            <label class="form-label">{% trans "Nomi" %}</label>
+                            <input type="text" class="form-control" name="name" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">{% trans "Turi" %}</label>
+                            <select class="form-select" name="type">
+                                <option value="physical">{% trans "Moddiy narsa" %}</option>
+                                <option value="digital">{% trans "Raqamli rag'bat" %}</option>
+                                <option value="privilege">{% trans "Imkoniyat" %}</option>
+                            </select>
+                        </div>
                     </div>
+
                     <div class="mb-3">
                         <label class="form-label">{% trans "Tavsif" %}</label>
-                        <textarea class="form-control" name="description" rows="3"></textarea>
+                        <textarea class="form-control" name="description" rows="2"></textarea>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">{% trans "Narxi (ball)" %}</label>
-                        <input type="number" class="form-control" name="cost" required min="0">
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">{% trans "Narxi (ball)" %}</label>
+                            <input type="number" class="form-control" name="cost" required min="0">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">{% trans "Ikonka (Bootstrap Icons)" %}</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-star"></i></span>
+                                <input type="text" class="form-control" name="icon" placeholder="bi-star, bi-trophy">
+                            </div>
+                            <div class="form-text">{% trans "Masalan: bi-star, bi-trophy, bi-controller" %}</div>
+                        </div>
                     </div>
+
                     <div class="form-check mb-3">
                         <input class="form-check-input" type="checkbox" name="is_active" id="rewardActive" checked>
                         <label class="form-check-label" for="rewardActive">{% trans "Faol" %}</label>
@@ -103,281 +128,427 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Bekor qilish"
-                    %}</button>
-                <button type="button" class="btn btn-primary" onclick="saveReward()">{% trans "Saqlash" %}</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Bekor qilish" %}</button>
+                <button type="button" class="btn btn-primary" onclick="window.saveReward()">{% trans "Saqlash" %}</button>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        console.log("Shop Management loaded");
-        loadRewards();
-        loadRedemptions();
+    (function () {
+        // Configuration
+        const shopUrls = {
+            rewardsList: "{% url 'shop_rewards_list' %}",
+            rewardCreate: "{% url 'shop_reward_create' %}",
+            rewardsUpdateBase: "{% url 'shop_rewards_list' %}", // We'll append ID manually or use a replace pattern
+            rewardDeleteBase: "{% url 'shop_rewards_list' %}",
+            redemptionsList: "{% url 'shop_redemptions_list' %}",
+            redemptionProcessBase: "{% url 'shop_redemptions_list' %}"
+        };
+        // Note: For update/delete/process, we need to construct the URL since Django url tag needs arguments. 
+        // Better strategy: Use a base path and string replacement in JS, or hardcode the prefix if the structure is known.
+        // Actually, since we are already in a Django template, we can't easily generate valid URLs for all IDs in advance.
+        // But we DO know the pattern. 
+        // 'administration/api/shop/rewards/' is the list.
+        // 'administration/api/shop/rewards/<id>/update/' is the update.
+        // The safest way with i18n is to let Django print the base prefix.
 
-        const shopTab = document.getElementById('shop-tab');
-        if (shopTab) {
-            shopTab.addEventListener('shown.bs.tab', function (e) {
-                console.log("Shop tab shown");
-                loadRewards();
-                loadRedemptions();
-            });
-        }
-    });
+        try {
+            console.log("Initializing Shop Management... (URL Fix Version: 2026-02-09 10:25)");
 
-    function getRewardModal() {
-        const el = document.getElementById('rewardModal');
-        if (!el) {
-            console.error("Modal element not found");
-            return null;
-        }
-        if (typeof bootstrap !== 'undefined') {
-            return bootstrap.Modal.getOrCreateInstance(el);
-        } else {
-            console.error("Bootstrap is undefined");
-            alert("Tizim xatosi: Bootstrap yuklanmadi. Sahifani yangilang.");
-            return null;
-        }
-    }
-
-    function openRewardModal() {
-        console.log("Opening reward modal...");
-        const modal = getRewardModal();
-        if (!modal) return;
-
-        const form = document.getElementById('rewardForm');
-        if (form) form.reset();
-
-        const idInput = document.getElementById('rewardId');
-        if (idInput) idInput.value = '';
-
-        const title = document.getElementById('rewardModalTitle');
-        if (title) title.textContent = '{% trans "Yangi Mahsulot" %}';
-
-        const activeCheck = document.getElementById('rewardActive');
-        if (activeCheck) activeCheck.checked = true;
-
-        modal.show();
-    }
-
-    function editReward(reward) {
-        console.log("Editing reward", reward);
-        const modal = getRewardModal();
-        if (!modal) return;
-
-        document.getElementById('rewardId').value = reward.id;
-        document.querySelector('[name="name"]').value = reward.name;
-        document.querySelector('[name="description"]').value = reward.description;
-        document.querySelector('[name="cost"]').value = reward.cost;
-        document.getElementById('rewardActive').checked = reward.is_active;
-        document.getElementById('rewardModalTitle').textContent = '{% trans "Mahsulotni Tahrirlash" %}';
-
-        modal.show();
-    }
-
-    function getSafeCsrfToken() {
-        if (typeof AdminUtils !== 'undefined' && AdminUtils.csrftoken) return AdminUtils.csrftoken;
-        if (typeof getCookie === 'function') return getCookie('csrftoken');
-        const match = document.cookie.match(/csrftoken=([^;]+)/);
-        return match ? match[1] : '';
-    }
-
-    function safeShowToast(msg, type) {
-        if (typeof AdminUtils !== 'undefined' && AdminUtils.Toast) {
-            AdminUtils.Toast.show(msg, type);
-        } else {
-            alert(msg);
-        }
-    }
-
-    function saveReward() {
-        const form = document.getElementById('rewardForm');
-        const formData = new FormData(form);
-        const id = document.getElementById('rewardId').value;
-        const url = id ? `/administration/api/shop/rewards/${id}/update/` : '/administration/api/shop/rewards/create/';
-
-        fetch(url, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-CSRFToken': getSafeCsrfToken(),
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    const modal = getRewardModal();
-                    if (modal) modal.hide();
-                    loadRewards();
-                    safeShowToast(data.message, 'success');
-                } else {
-                    safeShowToast(data.message || '{% trans "Xatolik yuz berdi" %}', 'error');
+            // Global modal accessor
+            window.getRewardModal = function () {
+                const el = document.getElementById('rewardModal');
+                if (!el) {
+                    console.error("Reward Modal element not found");
+                    return null;
                 }
-            })
-            .catch(err => {
-                console.error(err);
-                safeShowToast('Tarmoq xatosi', 'error');
-            });
-    }
-
-    function deleteReward(id) {
-        if (!confirm('{% trans "Haqiqatan ham bu mahsulotni o\'chirmoqchimisiz?" %}')) return;
-
-        fetch(`/administration/api/shop/rewards/${id}/delete/`, {
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': getSafeCsrfToken(),
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    loadRewards();
-                    safeShowToast(data.message, 'success');
+                if (typeof bootstrap !== 'undefined') {
+                    return bootstrap.Modal.getOrCreateInstance(el);
                 } else {
-                    safeShowToast(data.message, 'error');
+                    console.error("Bootstrap is not loaded");
+                    alert("Bootstrap not loaded");
+                    return null;
                 }
-            })
-            .catch(err => {
-                console.error(err);
-                safeShowToast('Tarmoq xatosi', 'error');
-            });
-    }
+            };
 
-    // Redemptions Functions
-    function loadRewards() {
-        fetch('/administration/api/shop/rewards/', {
-            headers: { 'X-Requested-With': 'XMLHttpRequest' }
-        })
-            .then(response => response.json())
-            .then(data => {
-                const tbody = document.getElementById('rewardsTableBody');
-                if (!tbody) return;
-                tbody.innerHTML = '';
+            window.openRewardModal = function () {
+                console.log("Opening reward modal...");
+                const modal = window.getRewardModal();
+                if (!modal) return;
 
-                if (data.rewards.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-muted">{% trans "Mahsulotlar mavjud emas" %}</td></tr>`;
+                const form = document.getElementById('rewardForm');
+                if (form) form.reset();
+
+                const idInput = document.getElementById('rewardId');
+                if (idInput) idInput.value = '';
+
+                const title = document.getElementById('rewardModalTitle');
+                if (title) title.textContent = "Yangi Mahsulot";
+
+                const activeCheck = document.getElementById('rewardActive');
+                if (activeCheck) activeCheck.checked = true;
+
+                // Reset Selects
+                const typeSelect = form.querySelector('[name="type"]');
+                if (typeSelect) typeSelect.value = 'physical';
+
+                modal.show();
+            };
+
+            window.editReward = function (reward) {
+                console.log("Editing reward", reward);
+                const modal = window.getRewardModal();
+                if (!modal) return;
+
+                document.getElementById('rewardId').value = reward.id;
+                document.querySelector('[name="name"]').value = reward.name;
+                document.querySelector('[name="description"]').value = reward.description || '';
+                document.querySelector('[name="cost"]').value = reward.cost;
+                document.getElementById('rewardActive').checked = reward.is_active;
+
+                // New fields
+                const typeSelect = document.querySelector('[name="type"]');
+                if (typeSelect && reward.type) typeSelect.value = reward.type;
+
+                const iconInput = document.querySelector('[name="icon"]');
+                if (iconInput) iconInput.value = reward.icon || '';
+
+                document.getElementById('rewardModalTitle').textContent = "Mahsulotni Tahrirlash";
+
+                modal.show();
+            };
+
+            function getSafeCsrfToken() {
+                if (typeof AdminUtils !== 'undefined' && AdminUtils.csrftoken) return AdminUtils.csrftoken;
+                if (typeof getCookie === 'function') return getCookie('csrftoken');
+                const match = document.cookie.match(/csrftoken=([^;]+)/);
+                return match ? match[1] : '';
+            }
+
+            function safeShowToast(msg, type) {
+                if (typeof AdminUtils !== 'undefined' && AdminUtils.Toast) {
+                    AdminUtils.Toast.show(msg, type);
+                } else {
+                    alert(msg);
+                }
+            }
+
+            window.saveReward = function () {
+                const form = document.getElementById('rewardForm');
+                if (!form.checkValidity()) {
+                    form.reportValidity();
                     return;
                 }
 
-                data.rewards.forEach(reward => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                    <td class="ps-4">
-                        <div class="fw-bold">${reward.name}</div>
-                        <small class="text-muted">${reward.description || ''}</small>
-                    </td>
-                    <td><span class="badge bg-primary rounded-pill">${reward.cost}</span></td>
-                    <td>
-                        <span class="badge ${reward.is_active ? 'bg-success' : 'bg-secondary'}">
-                            ${reward.is_active ? '{% trans "Faol" %}' : '{% trans "Faol emas" %}'}
-                        </span>
-                    </td>
-                    <td class="text-end pe-4">
-                        <button class="btn btn-sm btn-outline-primary me-1" onclick='editReward(${JSON.stringify(reward)})'>
-                            <i class="bi bi-pencil"></i>
-                        </button>
-                        <button class="btn btn-sm btn-outline-danger" onclick="deleteReward(${reward.id})">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </td>
-                `;
-                    tbody.appendChild(tr);
-                });
-            })
-            .catch(err => console.error(err));
-    }
+                const formData = new FormData(form);
+                const id = document.getElementById('rewardId').value;
+                const url = id
+                    ? `${shopUrls.rewardsList}${id}/update/`
+                    : shopUrls.rewardCreate;
 
-    function loadRedemptions() {
-        fetch('/administration/api/shop/redemptions/', {
-            headers: { 'X-Requested-With': 'XMLHttpRequest' }
-        })
-            .then(response => response.json())
-            .then(data => {
-                const tbody = document.getElementById('redemptionsTableBody');
-                if (!tbody) return;
-                tbody.innerHTML = '';
+                const btn = document.querySelector('#rewardModal .modal-footer .btn-primary');
+                const originalText = btn.textContent;
+                btn.disabled = true;
+                btn.textContent = 'Saqlanmoqda...';
 
-                // Update pending count
-                const pendingCount = data.redemptions.filter(r => r.status === 'pending').length;
-                const badge = document.getElementById('pendingRedemptionsCount');
-                if (badge) {
-                    if (pendingCount > 0) {
-                        badge.textContent = pendingCount;
-                        badge.style.display = 'inline-block';
-                    } else {
-                        badge.style.display = 'none';
+                fetch(url, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': getSafeCsrfToken(),
+                        'X-Requested-With': 'XMLHttpRequest'
                     }
-                }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            const modal = window.getRewardModal();
+                            if (modal) modal.hide();
+                            loadRewards();
+                            safeShowToast(data.message, 'success');
+                        } else {
+                            safeShowToast(data.message || "Xatolik yuz berdi", 'error');
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        safeShowToast('Tarmoq xatosi', 'error');
+                    })
+                    .finally(() => {
+                        btn.disabled = false;
+                        btn.textContent = originalText;
+                    });
+            };
 
-                if (data.redemptions.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">{% trans "So'rovlar mavjud emas" %}</td></tr>`;
-                    return;
-                }
+            window.deleteReward = function (id) {
+                if (!confirm("Haqiqatan ham bu mahsulotni o'chirmoqchimisiz?")) return;
 
-                data.redemptions.forEach(redemption => {
-                    let statusBadge = 'bg-secondary';
-                    if (redemption.status === 'approved') statusBadge = 'bg-success';
-                    else if (redemption.status === 'rejected') statusBadge = 'bg-danger';
-                    else if (redemption.status === 'pending') statusBadge = 'bg-warning text-dark';
+                fetch(`${shopUrls.rewardsList}${id}/delete/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getSafeCsrfToken(),
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            loadRewards();
+                            safeShowToast(data.message, 'success');
+                        } else {
+                            safeShowToast(data.message, 'error');
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        safeShowToast('Tarmoq xatosi', 'error');
+                    });
+            };
 
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                    <td class="ps-4">
-                        <div class="fw-bold">${redemption.student_name}</div>
-                        <small class="text-muted">@${redemption.student_username}</small>
-                    </td>
-                    <td>
-                        <div class="fw-bold">${redemption.reward_name}</div>
-                        <small class="text-muted"><i class="bi bi-coin me-1"></i>${redemption.reward_cost}</small>
-                    </td>
-                    <td>${redemption.created_at}</td>
-                    <td><span class="badge ${statusBadge}">${redemption.status_display}</span></td>
-                    <td class="text-end pe-4">
-                        ${redemption.status === 'pending' ? `
-                            <button class="btn btn-sm btn-success me-1" onclick="processRedemption(${redemption.id}, 'approved')" title="{% trans 'Tasdiqlash' %}">
-                                <i class="bi bi-check-lg"></i>
-                            </button>
-                            <button class="btn btn-sm btn-danger" onclick="processRedemption(${redemption.id}, 'rejected')" title="{% trans 'Rad etish' %}">
-                                <i class="bi bi-x-lg"></i>
-                            </button>
-                        ` : ''}
-                    </td>
-                `;
-                    tbody.appendChild(tr);
+            function loadRewards() {
+                console.log("Loading rewards...");
+                fetch(shopUrls.rewardsList, {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                    .then(response => {
+                        if (!response.ok) throw new Error("HTTP error " + response.status);
+                        return response.json();
+                    })
+                    .then(data => {
+                        const tbody = document.getElementById('rewardsTableBody');
+                        if (!tbody) return;
+                        tbody.innerHTML = '';
+
+                        if (!data.rewards || data.rewards.length === 0) {
+                            tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">Mahsulotlar mavjud emas</td></tr>`;
+                            return;
+                        }
+
+                        data.rewards.forEach(reward => {
+                            const tr = document.createElement('tr');
+
+                            // Icon + Name + Description
+                            const tdName = document.createElement('td');
+                            tdName.className = 'ps-4';
+
+                            const iconClass = reward.icon || 'bi-box-seam';
+                            const iconColor = reward.is_active ? 'text-primary' : 'text-muted';
+
+                            tdName.innerHTML = `
+                            <div class="d-flex align-items-center">
+                                <div class="me-3 bg-light rounded-3 p-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                    <i class="bi ${iconClass} fs-5 ${iconColor}"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold reward-name"></div>
+                                    <small class="text-muted reward-desc"></small>
+                                </div>
+                            </div>
+                        `;
+                            tdName.querySelector('.reward-name').textContent = reward.name;
+                            tdName.querySelector('.reward-desc').textContent = reward.description || '';
+                            tr.appendChild(tdName);
+
+                            // Type
+                            const tdType = document.createElement('td');
+                            let typeBadge = 'bg-secondary';
+                            let typeText = reward.type;
+
+                            // Map type codes to labels (simple mapping)
+                            const typeLabels = {
+                                'physical': 'Moddiy',
+                                'digital': 'Raqamli',
+                                'privilege': 'Imkoniyat'
+                            };
+                            const typeColors = {
+                                'physical': 'bg-info',
+                                'digital': 'bg-purple',
+                                'privilege': 'bg-warning text-dark'
+                            };
+
+                            tdType.innerHTML = `<span class="badge ${typeColors[reward.type] || 'bg-secondary'}">${typeLabels[reward.type] || reward.type}</span>`;
+                            tr.appendChild(tdType);
+
+                            // Cost
+                            const tdCost = document.createElement('td');
+                            tdCost.innerHTML = `<span class="fw-bold text-warning"><i class="bi bi-coin me-1"></i>${reward.cost}</span>`;
+                            tr.appendChild(tdCost);
+
+                            // Status
+                            const tdStatus = document.createElement('td');
+                            const statusBadge = document.createElement('span');
+                            statusBadge.className = `badge ${reward.is_active ? 'bg-success' : 'bg-secondary'}`;
+                            statusBadge.textContent = reward.is_active ? "Faol" : "Faol emas";
+                            tdStatus.appendChild(statusBadge);
+                            tr.appendChild(tdStatus);
+
+                            // Actions
+                            const tdActions = document.createElement('td');
+                            tdActions.className = 'text-end pe-4';
+
+                            const btnEdit = document.createElement('button');
+                            btnEdit.className = 'btn btn-sm btn-outline-primary me-1';
+                            btnEdit.innerHTML = '<i class="bi bi-pencil"></i>';
+                            btnEdit.onclick = function () { window.editReward(reward); };
+
+                            const btnDelete = document.createElement('button');
+                            btnDelete.className = 'btn btn-sm btn-outline-danger';
+                            btnDelete.innerHTML = '<i class="bi bi-trash"></i>';
+                            btnDelete.onclick = function () { window.deleteReward(reward.id); };
+
+                            tdActions.appendChild(btnEdit);
+                            tdActions.appendChild(btnDelete);
+                            tr.appendChild(tdActions);
+
+                            tbody.appendChild(tr);
+                        });
+                    })
+                    .catch(err => console.error("Load rewards error:", err));
+            }
+
+            window.loadRewards = loadRewards;
+
+            function loadRedemptions() {
+                // Same logic as before
+                fetch(shopUrls.redemptionsList, {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        const tbody = document.getElementById('redemptionsTableBody');
+                        if (!tbody) return;
+                        tbody.innerHTML = '';
+
+                        const pendingCount = data.redemptions ? data.redemptions.filter(r => r.status === 'pending').length : 0;
+                        const badge = document.getElementById('pendingRedemptionsCount');
+                        if (badge) {
+                            if (pendingCount > 0) {
+                                badge.textContent = pendingCount;
+                                badge.style.display = 'inline-block';
+                            } else {
+                                badge.style.display = 'none';
+                            }
+                        }
+
+                        if (!data.redemptions || data.redemptions.length === 0) {
+                            tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">So'rovlar mavjud emas</td></tr>`;
+                            return;
+                        }
+
+                        data.redemptions.forEach(redemption => {
+                            let statusBadge = 'bg-secondary';
+                            if (redemption.status === 'approved') statusBadge = 'bg-success';
+                            else if (redemption.status === 'rejected') statusBadge = 'bg-danger';
+                            else if (redemption.status === 'pending') statusBadge = 'bg-warning text-dark';
+
+                            const tr = document.createElement('tr');
+
+                            const tdStudent = document.createElement('td');
+                            tdStudent.className = 'ps-4';
+                            tdStudent.innerHTML = `<div class="fw-bold"></div><small class="text-muted"></small>`;
+                            tdStudent.querySelector('.fw-bold').textContent = redemption.student_name;
+                            tdStudent.querySelector('.text-muted').textContent = '@' + redemption.student_username;
+                            tr.appendChild(tdStudent);
+
+                            const tdReward = document.createElement('td');
+                            tdReward.innerHTML = `<div class="fw-bold"></div><small class="text-muted"><i class="bi bi-coin me-1"></i></small>`;
+                            tdReward.querySelector('.fw-bold').textContent = redemption.reward_name;
+                            tdReward.querySelector('.text-muted').appendChild(document.createTextNode(redemption.reward_cost));
+                            tr.appendChild(tdReward);
+
+                            const tdDate = document.createElement('td');
+                            tdDate.textContent = redemption.created_at;
+                            tr.appendChild(tdDate);
+
+                            const tdStatus = document.createElement('td');
+                            const badgeSpan = document.createElement('span');
+                            badgeSpan.className = `badge ${statusBadge}`;
+                            badgeSpan.textContent = redemption.status_display;
+                            tdStatus.appendChild(badgeSpan);
+                            tr.appendChild(tdStatus);
+
+                            const tdActions = document.createElement('td');
+                            tdActions.className = 'text-end pe-4';
+
+                            if (redemption.status === 'pending') {
+                                const btnApprove = document.createElement('button');
+                                btnApprove.className = 'btn btn-sm btn-success me-1';
+                                btnApprove.title = "Tasdiqlash";
+                                btnApprove.innerHTML = '<i class="bi bi-check-lg"></i>';
+                                btnApprove.onclick = function () { window.processRedemption(redemption.id, 'approved'); };
+
+                                const btnReject = document.createElement('button');
+                                btnReject.className = 'btn btn-sm btn-danger';
+                                btnReject.title = "Rad etish";
+                                btnReject.innerHTML = '<i class="bi bi-x-lg"></i>';
+                                btnReject.onclick = function () { window.processRedemption(redemption.id, 'rejected'); };
+
+                                tdActions.appendChild(btnApprove);
+                                tdActions.appendChild(btnReject);
+                            }
+                            tr.appendChild(tdActions);
+
+                            tbody.appendChild(tr);
+                        });
+                    })
+                    .catch(err => console.error(err));
+            }
+
+            window.loadRedemptions = loadRedemptions;
+
+            window.processRedemption = function (id, status) {
+                const msg = status === 'approved' ? 'Tasdiqlaysizmi?' : 'Rad etasizmi?';
+                if (!confirm(msg)) return;
+
+                fetch(`${shopUrls.redemptionsList}${id}/process/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getSafeCsrfToken(),
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({ status: status })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            loadRedemptions();
+                            safeShowToast(data.message, 'success');
+                        } else {
+                            safeShowToast(data.message, 'error');
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        safeShowToast('Tarmoq xatosi', 'error');
+                    });
+            };
+
+            // Initial load
+            console.log("Calling initial load...");
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', function () {
+                    window.loadRewards();
+                    window.loadRedemptions();
                 });
-            })
-            .catch(err => console.error(err));
-    }
+            } else {
+                window.loadRewards();
+                window.loadRedemptions();
+            }
 
-    function processRedemption(id, status) {
-        if (!confirm(status === 'approved' ? '{% trans "Tasdiqlaysizmi?" %}' : '{% trans "Rad etasizmi?" %}')) return;
+            const shopTab = document.getElementById('shop-tab');
+            if (shopTab) {
+                shopTab.addEventListener('shown.bs.tab', function (e) {
+                    window.loadRewards();
+                    window.loadRedemptions();
+                });
+            }
 
-        fetch(`/administration/api/shop/redemptions/${id}/process/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getSafeCsrfToken(),
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            body: JSON.stringify({ status: status })
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    loadRedemptions();
-                    safeShowToast(data.message, 'success');
-                } else {
-                    safeShowToast(data.message, 'error');
-                }
-            })
-            .catch(err => {
-                console.error(err);
-                safeShowToast('Tarmoq xatosi', 'error');
-            });
-    }
+        } catch (e) {
+            console.error("CRITICAL ERROR IN SHOP MANAGEMENT SCRIPT:", e);
+            alert("Tizim xatosi: " + e.message);
+        }
+    })();
 </script>

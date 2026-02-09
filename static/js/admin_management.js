@@ -32,16 +32,16 @@ class Toast {
                 <span>${message}</span>
             </div>
         `;
-        
+
         document.body.appendChild(toast);
-        
+
         setTimeout(() => toast.classList.add('show'), 10);
         setTimeout(() => {
             toast.classList.remove('show');
             setTimeout(() => toast.remove(), 300);
         }, 3000);
     }
-    
+
     static getIcon(type) {
         const icons = {
             success: 'check-circle-fill',
@@ -59,25 +59,25 @@ class Modal {
         this.modal = document.getElementById(modalId);
         this.bsModal = new bootstrap.Modal(this.modal);
     }
-    
+
     show() {
         this.bsModal.show();
     }
-    
+
     hide() {
         this.bsModal.hide();
     }
-    
+
     setTitle(title) {
         const titleEl = this.modal.querySelector('.modal-title');
         if (titleEl) titleEl.textContent = title;
     }
-    
+
     setContent(content) {
         const bodyEl = this.modal.querySelector('.modal-body');
         if (bodyEl) bodyEl.innerHTML = content;
     }
-    
+
     onSave(callback) {
         const saveBtn = this.modal.querySelector('.btn-save');
         if (saveBtn) {
@@ -93,25 +93,25 @@ class AjaxForm {
         this.submitBtn = options.submitBtn;
         this.onSuccess = options.onSuccess;
         this.onError = options.onError;
-        
+
         if (this.form) {
             this.form.addEventListener('submit', (e) => this.handleSubmit(e));
         }
     }
-    
+
     async handleSubmit(e) {
         e.preventDefault();
-        
+
         const formData = new FormData(this.form);
         const url = this.form.action;
         const method = this.form.method || 'POST';
-        
+
         // Disable submit button
         if (this.submitBtn) {
             this.submitBtn.disabled = true;
             this.submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Yuklanmoqda...';
         }
-        
+
         try {
             const response = await fetch(url, {
                 method: method,
@@ -120,9 +120,9 @@ class AjaxForm {
                 },
                 body: formData
             });
-            
+
             const data = await response.json();
-            
+
             if (data.success) {
                 Toast.show(data.message || 'Muvaffaqiyatli saqlandi!', 'success');
                 if (this.onSuccess) this.onSuccess(data);
@@ -142,14 +142,14 @@ class AjaxForm {
             }
         }
     }
-    
+
     reset() {
         if (this.form) this.form.reset();
     }
-    
+
     setValues(data) {
         if (!this.form) return;
-        
+
         for (const [key, value] of Object.entries(data)) {
             const input = this.form.querySelector(`[name="${key}"]`);
             if (input) {
@@ -172,29 +172,29 @@ class DataTable {
         this.paginationContainer = options.paginationContainer;
         this.currentPage = 1;
         this.itemsPerPage = options.itemsPerPage || 20;
-        
+
         this.init();
     }
-    
+
     init() {
         if (this.searchInput) {
             document.getElementById(this.searchInput).addEventListener('input', (e) => {
                 this.handleSearch(e.target.value);
             });
         }
-        
+
         this.filterSelects.forEach(selectId => {
             document.getElementById(selectId)?.addEventListener('change', () => {
                 this.handleFilter();
             });
         });
     }
-    
+
     handleSearch(query) {
         // Implement search logic
         this.reload({ search: query });
     }
-    
+
     handleFilter() {
         const filters = {};
         this.filterSelects.forEach(selectId => {
@@ -205,7 +205,7 @@ class DataTable {
         });
         this.reload({ filters });
     }
-    
+
     async reload(params = {}) {
         // To be implemented with actual AJAX call
         console.log('Reloading table with params:', params);
@@ -219,10 +219,10 @@ class BulkActions {
         this.selectAllCheckbox = options.selectAllCheckbox;
         this.bulkActionsContainer = options.bulkActionsContainer;
         this.selectedItems = new Set();
-        
+
         this.init();
     }
-    
+
     init() {
         // Select all checkbox
         if (this.selectAllCheckbox) {
@@ -230,7 +230,7 @@ class BulkActions {
                 this.toggleSelectAll(e.target.checked);
             });
         }
-        
+
         // Individual checkboxes
         document.querySelectorAll(this.checkboxSelector).forEach(checkbox => {
             checkbox.addEventListener('change', (e) => {
@@ -238,7 +238,7 @@ class BulkActions {
             });
         });
     }
-    
+
     toggleSelectAll(checked) {
         document.querySelectorAll(this.checkboxSelector).forEach(checkbox => {
             checkbox.checked = checked;
@@ -246,7 +246,7 @@ class BulkActions {
         });
         this.updateUI();
     }
-    
+
     toggleItem(itemId, selected) {
         if (selected) {
             this.selectedItems.add(itemId);
@@ -255,25 +255,26 @@ class BulkActions {
         }
         this.updateUI();
     }
-    
+
     updateUI() {
         const count = this.selectedItems.size;
         const container = document.getElementById(this.bulkActionsContainer);
-        
+
         if (container) {
             if (count > 0) {
                 container.classList.remove('d-none');
-                container.querySelector('.selected-count')?.textContent = count;
+                const countEl = container.querySelector('.selected-count');
+                if (countEl) countEl.textContent = count;
             } else {
                 container.classList.add('d-none');
             }
         }
     }
-    
+
     getSelectedItems() {
         return Array.from(this.selectedItems);
     }
-    
+
     clearSelection() {
         this.selectedItems.clear();
         document.querySelectorAll(this.checkboxSelector).forEach(checkbox => {
@@ -281,14 +282,14 @@ class BulkActions {
         });
         this.updateUI();
     }
-    
+
     async executeAction(action, url) {
         const items = this.getSelectedItems();
         if (items.length === 0) {
             Toast.show('Hech narsa tanlanmagan!', 'warning');
             return;
         }
-        
+
         try {
             const response = await fetch(url, {
                 method: 'POST',
@@ -298,9 +299,9 @@ class BulkActions {
                 },
                 body: JSON.stringify({ action, items })
             });
-            
+
             const data = await response.json();
-            
+
             if (data.success) {
                 Toast.show(data.message, 'success');
                 this.clearSelection();
@@ -330,7 +331,7 @@ async function deleteItem(url, itemName, onSuccess) {
     if (!confirm(`${itemName}ni o'chirishga ishonchingiz komilmi?`)) {
         return;
     }
-    
+
     try {
         const response = await fetch(url, {
             method: 'DELETE',
@@ -338,9 +339,9 @@ async function deleteItem(url, itemName, onSuccess) {
                 'X-CSRFToken': csrftoken
             }
         });
-        
+
         const data = await response.json();
-        
+
         if (data.success) {
             Toast.show(data.message || 'Muvaffaqiyatli o\'chirildi!', 'success');
             if (onSuccess) onSuccess(data);

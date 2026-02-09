@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}{% trans "Mening Buyumlarim" %} - LearnSphere{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="mb-4">
+        <i class="bi bi-backpack-fill me-2 text-primary"></i>{% trans "Mening Buyumlarim" %}
+    </h1>
+
+    {% if inventory %}
+    <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
+        {% for item in inventory %}
+        <div class="col">
+            <div class="card h-100 glass-card border-0 shadow-sm {% if item.is_equipped %}border-primary{% endif %}">
+                <div class="card-body text-center">
+                    <div class="mb-3 position-relative">
+                        {% if item.reward.image %}
+                        <img src="{{ item.reward.image.url }}" class="img-fluid rounded" style="max-height: 100px;">
+                        {% elif item.reward.icon %}
+                        <i class="bi {{ item.reward.icon }} display-1 text-primary"></i>
+                        {% else %}
+                        <i class="bi bi-box-seam display-1 text-secondary"></i>
+                        {% endif %}
+
+                        {% if item.is_equipped %}
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success"
+                            title="{% trans 'Qadalgan' %}">
+                            <i class="bi bi-check-lg"></i>
+                        </span>
+                        {% endif %}
+
+                        <div class="mt-2">
+                            {% if item.status == 'approved' %}
+                            <span class="badge bg-success">{% trans "Tasdiqlangan" %}</span>
+                            {% elif item.status == 'pending' %}
+                            <span class="badge bg-warning text-dark">{% trans "Kutilmoqda" %}</span>
+                            {% elif item.status == 'rejected' %}
+                            <span class="badge bg-danger">{% trans "Rad etilgan" %}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <h5 class="card-title">{{ item.reward.name }}</h5>
+                    <p class="card-text small text-muted">{{ item.reward.type|title }}</p>
+
+                    {% if item.status == 'approved' %}
+                    {% if item.reward.type == 'digital' or item.reward.type == 'badge' or item.reward.icon %}
+                    {% if item.is_equipped %}
+                    <form method="post" action="{% url 'unequip_item' item.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-outline-danger w-100">
+                            <i class="bi bi-x-circle me-1"></i>{% trans "Olib tashlash" %}
+                        </button>
+                    </form>
+                    {% else %}
+                    <form method="post" action="{% url 'equip_item' item.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-primary w-100">
+                            <i class="bi bi-pin-angle-fill me-1"></i>{% trans "Qadash" %}
+                        </button>
+                    </form>
+                    {% endif %}
+                    {% else %}
+                    <button class="btn btn-sm btn-secondary w-100" disabled>
+                        {% trans "Faqat raqamli" %}
+                    </button>
+                    {% endif %}
+                    {% else %}
+                    <button class="btn btn-sm btn-secondary w-100" disabled>
+                        {% if item.status == 'pending' %}
+                        <i class="bi bi-hourglass-split me-1"></i>{% trans "Kutilmoqda..." %}
+                        {% else %}
+                        <i class="bi bi-x-circle me-1"></i>{% trans "Rad etilgan" %}
+                        {% endif %}
+                    </button>
+                    {% endif %}
+                </div>
+                <div class="card-footer bg-transparent border-0 text-muted small">
+                    <i class="bi bi-calendar3 me-1"></i>{{ item.created_at|date:"d M, Y" }}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <i class="bi bi-box-seam display-1 text-muted mb-3"></i>
+        <h3>{% trans "Sizda hali hech narsa yo'q" %}</h3>
+        <p class="text-muted">{% trans "Do'konga o'ting va ballaringizga ajoyib narsalar sotib oling!" %}</p>
+        <a href="{% url 'rewards_shop' %}" class="btn btn-primary btn-lg mt-3">
+            <i class="bi bi-shop me-2"></i>{% trans "Do'konga o'tish" %}
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

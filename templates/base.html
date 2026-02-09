@@ -1,5 +1,6 @@
 {% load static %}
 {% load i18n %}
+{% load gamification_tags %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -334,11 +335,29 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown"
                             role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            {% get_equipped_item user as equipped_item %}
+
+                            {% if equipped_item and equipped_item.reward.image %}
+                            <img src="{{ equipped_item.reward.image.url }}"
+                                class="rounded-circle me-2 shadow-sm bg-white"
+                                style="width: 40px; height: 40px; object-fit: cover;">
+                            {% elif user.profile_picture %}
+                            <img src="{{ user.profile_picture.url }}" class="rounded-circle me-2 shadow-sm bg-white"
+                                style="width: 40px; height: 40px; object-fit: cover;">
+                            {% else %}
                             <div class="rounded-circle text-white d-flex align-items-center justify-content-center me-2 shadow-sm"
                                 style="width: 40px; height: 40px; background: var(--primary-gradient);">
                                 {{ user.first_name|first|default:user.username|first }}
                             </div>
-                            <span class="fw-bold d-none d-md-block">{{ user.first_name|default:user.username }}</span>
+                            {% endif %}
+
+                            <span class="fw-bold d-none d-md-block">
+                                {{ user.first_name|default:user.username }}
+                                {% if equipped_item and equipped_item.reward.icon %}
+                                <i class="bi {{ equipped_item.reward.icon }} text-warning ms-1"
+                                    title="{{ equipped_item.reward.name }}"></i>
+                                {% endif %}
+                            </span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-4 mt-2 p-2">
                             <li>
@@ -398,6 +417,8 @@
                     <span class="badge bg-danger rounded-pill ms-auto">{{ upcoming_meetings_count }}</span>
                     {% endif %}
                 </a></li>
+            <li><a href="{% url 'student_inventory' %}" class="{% if 'inventory' in request.path %}active{% endif %}"><i
+                        class="bi bi-backpack-fill"></i> {% trans "Mening Buyumlarim" %}</a></li>
             <li><a href="{% url 'leaderboard' %}" class="{% if 'leaderboard' in request.path %}active{% endif %}"><i
                         class="bi bi-trophy-fill"></i> {% trans "Reyting" %}</a></li>
             <li><a href="{% url 'rewards_shop' %}" class="{% if 'shop' in request.path %}active{% endif %}"><i

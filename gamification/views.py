@@ -64,10 +64,14 @@ def redeem_reward(request, reward_id):
         )
         
         # Create redemption record
+        status = 'approved' if reward.type in ['digital', 'privilege'] else 'pending'
+        processed_at = timezone.now() if status == 'approved' else None
+        
         Redemption.objects.create(
             user=request.user,
             reward=reward,
-            status='pending'
+            status=status,
+            processed_at=processed_at
         )
         
         messages.success(request, f"{reward.name} muvaffaqiyatli sotib olindi!")
@@ -75,3 +79,41 @@ def redeem_reward(request, reward_id):
         messages.error(request, "Ballar yetarli emas!")
         
     return redirect('rewards_shop')
+
+@login_required
+def student_inventory(request):
+    # Get approved redemptions (purchased items)
+    inventory = Redemption.objects.filter(
+        user=request.user
+    ).select_related('reward').order_by('-created_at')
+    
+    return render(request, 'gamification/inventory.html', {'inventory': inventory})
+
+@login_required
+def equip_item(request, redemption_id):
+    if request.method != 'POST':
+        return redirect('student_inventory')
+        
+    item = get_object_or_404(Redemption, id=redemption_id, user=request.user, status='approved')
+    
+    # Unequip all other items first (ensure only one is equipped)
+    Redemption.objects.filter(user=request.user, is_equipped=True).update(is_equipped=False)
+    
+    # Equip the selected item
+    item.is_equipped = True
+    item.save()
+    
+    messages.success(request, f"{item.reward.name} muvaffaqiyatli qadaldi!")
+    return redirect('student_inventory')
+
+@login_required
+def unequip_item(request, redemption_id):
+    if request.method != 'POST':
+        return redirect('student_inventory')
+        
+    item = get_object_or_404(Redemption, id=redemption_id, user=request.user)
+    item.is_equipped = False
+    item.save()
+    
+    messages.success(request, f"{item.reward.name} olib tashlandi!")
+    return redirect('student_inventory')

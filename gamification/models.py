@@ -40,11 +40,19 @@ class PointTransaction(models.Model):
         return f"{self.user.username}: {self.amount} ({self.transaction_type})"
 
 class Reward(models.Model):
+    REWARD_TYPES = (
+        ('physical', 'Moddiy narsa'),
+        ('digital', 'Raqamli rag\'bat'),
+        ('privilege', 'Imkoniyat'),
+    )
+
     name = models.CharField(max_length=100)
     description = models.TextField()
     cost = models.IntegerField()
     image = models.ImageField(upload_to='rewards/', null=True, blank=True)
     is_active = models.BooleanField(default=True)
+    type = models.CharField(max_length=20, choices=REWARD_TYPES, default='physical')
+    icon = models.CharField(max_length=50, blank=True, help_text="Bootstrap icon class (e.g., bi-star)")
     
     def __str__(self):
         return self.name
@@ -61,6 +69,7 @@ class Redemption(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
     processed_at = models.DateTimeField(null=True, blank=True)
+    is_equipped = models.BooleanField(default=False)
     
     def __str__(self):
         return f"{self.user.username} redeemed {self.reward.name}"
