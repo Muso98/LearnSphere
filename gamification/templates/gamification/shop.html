@@ -23,6 +23,11 @@
             {% if reward.image %}
             <img src="{{ reward.image.url }}" class="card-img-top" alt="{{ reward.name }}"
                 style="height: 200px; object-fit: cover; border-radius: 20px 20px 0 0;">
+            {% elif reward.icon %}
+            <div class="bg-light d-flex align-items-center justify-content-center"
+                style="height: 200px; border-radius: 20px 20px 0 0;">
+                <i class="bi {{ reward.icon }} display-1 text-primary"></i>
+            </div>
             {% else %}
             <div class="bg-light d-flex align-items-center justify-content-center"
                 style="height: 200px; border-radius: 20px 20px 0 0;">
