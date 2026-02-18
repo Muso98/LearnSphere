@@ -43,6 +43,22 @@ class UserCreateForm(UserCreationForm):
             if field_name in ['password1', 'password2']:
                 field.widget.attrs['placeholder'] = '••••••••'
 
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        if user.role == 'admin':
+            user.is_staff = True
+            user.is_superuser = True
+        elif user.role in ['director', 'vice_director']:
+            # Optional: Give staff access to directors if needed for admin panel
+            pass 
+        else:
+            user.is_staff = False
+            user.is_superuser = False
+            
+        if commit:
+            user.save()
+        return user
+
 
 class UserEditForm(forms.ModelForm):
     """Form for editing existing users"""
@@ -82,6 +98,19 @@ class UserEditForm(forms.ModelForm):
                 field.widget.attrs['class'] = 'form-check-input'
             else:
                 field.widget.attrs['class'] = 'form-control'
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        if user.role == 'admin':
+            user.is_staff = True
+            user.is_superuser = True
+        else:
+            user.is_staff = False
+            user.is_superuser = False
+            
+        if commit:
+            user.save()
+        return user
 
 
 class ClassForm(forms.ModelForm):

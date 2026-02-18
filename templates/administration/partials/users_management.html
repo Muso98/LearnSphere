@@ -179,7 +179,11 @@
         const role = document.getElementById('roleFilter')?.value || '';
         const status = document.getElementById('statusFilter')?.value || '';
 
-        fetch(`/administration/users/?search=${search}&role=${role}&status=${status}`)
+        fetch(`{% url 'user_list' %}?search=${search}&role=${role}&status=${status}`, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
             .then(r => r.json())
             .then(data => {
                 usersData = data.users;
@@ -280,11 +284,14 @@
         const formData = new FormData(form);
         const userId = document.getElementById('userId').value;
 
-        const url = userId ? `/administration/users/${userId}/edit/` : '/administration/users/create/';
+        const url = userId ? "{% url 'user_update' 0 %}".replace('0', userId) : "{% url 'user_create' %}";
 
         fetch(url, {
             method: 'POST',
-            headers: { 'X-CSRFToken': AdminUtils.csrftoken },
+            headers: {
+                'X-CSRFToken': AdminUtils.csrftoken,
+                'X-Requested-With': 'XMLHttpRequest'
+            },
             body: formData
         })
             .then(r => r.json())
@@ -294,7 +301,16 @@
                     userModal.hide();
                     loadUsers();
                 } else {
-                    AdminUtils.Toast.show(data.message || 'Xatolik yuz berdi!', 'error');
+                    if (data.errors) {
+                        let errorMsg = 'Xatoliklar:<br>';
+                        for (const [field, errors] of Object.entries(data.errors)) {
+                            errorMsg += `- <b>${field}:</b> ${errors.join(', ')}<br>`;
+                        }
+                        AdminUtils.Toast.show(errorMsg, 'error');
+                        console.error('Form errors:', data.errors);
+                    } else {
+                        AdminUtils.Toast.show(data.message || 'Xatolik yuz berdi!', 'error');
+                    }
                 }
             })
             .catch(err => {
@@ -306,9 +322,13 @@
     function deleteUser(userId, username) {
         if (!confirm(`${username}ni o'chirishga ishonchingiz komilmi?`)) return;
 
-        fetch(`/administration/users/${userId}/delete/`, {
+        const url = "{% url 'user_delete' 0 %}".replace('0', userId);
+        fetch(url, {
             method: 'POST',
-            headers: { 'X-CSRFToken': AdminUtils.csrftoken }
+            headers: {
+                'X-CSRFToken': AdminUtils.csrftoken,
+                'X-Requested-With': 'XMLHttpRequest'
+            }
         })
             .then(r => r.json())
             .then(data => {
