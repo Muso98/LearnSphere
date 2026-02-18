@@ -5,6 +5,7 @@ All AI agents inherit from this class
 from abc import ABC, abstractmethod
 from ai_assistant.rag.retriever import ContextRetriever
 from ai_assistant.rag.prompt_builder import PromptBuilder
+from datetime import datetime
 
 
 class BaseAgent(ABC):
@@ -57,20 +58,51 @@ class BaseAgent(ABC):
     
     def call_llm(self, messages):
         """
-        Call LLM API (placeholder - will implement with actual API)
+        Call LLM API using Google Gemini
         
         Args:
-            messages: List of message dictionaries
+            messages: List of message dictionaries [{'role': 'user'/'assistant', 'content': '...'}]
         
         Returns:
-            LLM response text
+            Dictionary with response text and usage stats
         """
-        # TODO: Implement actual LLM API call (OpenAI, Claude, etc.)
-        # For now, return a placeholder
-        return {
-            'response': "AI response placeholder - LLM API not yet integrated",
-            'tokens_used': 0
-        }
+        try:
+            import google.generativeai as genai
+            from django.conf import settings
+            
+            genai.configure(api_key=settings.GEMINI_API_KEY)
+            model = genai.GenerativeModel('gemini-flash-latest')
+            
+            # Format history for Gemini
+            # Gemini expects [{'role': 'user'/'model', 'parts': ['...']}]
+            gemini_history = []
+            for msg in messages[:-1]: # Exclude last message which is the prompt
+                role = 'user' if msg['role'] == 'user' else 'model'
+                gemini_history.append({'role': role, 'parts': [msg['content']]})
+            
+            # Start chat session
+            chat = model.start_chat(history=gemini_history)
+            
+            # Send last message
+            current_message = messages[-1]['content']
+            response = chat.send_message(current_message)
+            
+            return {
+                'response': response.text,
+                'tokens_used': 0 # Gemini doesn't always return token usage easily in sync mode, setting 0 for now
+            }
+            
+        except Exception as e:
+            error_msg = f"Gemini API Error: {str(e)}"
+            print(error_msg)
+            with open('debug_view.log', 'a') as f:
+                f.write(f"{datetime.now()}: {error_msg}\n")
+            
+            return {
+                'response': "Kechirasiz, hozircha AI xizmatida muammo bor. Iltimos keyinroq urinib ko'ring.",
+                'tokens_used': 0,
+                'error': str(e)
+            }
     
     def log_action(self, action_type, description, action_data=None, success=True, error_message=''):
         """

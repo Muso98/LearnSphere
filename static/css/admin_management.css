@@ -4,29 +4,45 @@
  */
 
 /* ===== Tab Navigation ===== */
+/* ===== Tab Navigation ===== */
 .admin-tabs {
     border-bottom: 2px solid #e2e8f0;
     margin-bottom: 2rem;
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    /* Firefox */
+    gap: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.admin-tabs::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Safari, Opera */
 }
 
 .admin-tabs .nav-link {
     color: #64748b;
     border: none;
     border-bottom: 3px solid transparent;
-    padding: 1rem 1.5rem;
+    padding: 0.75rem 1rem;
     font-weight: 600;
     transition: all 0.3s ease;
+    white-space: nowrap;
+    border-radius: 8px;
 }
 
 .admin-tabs .nav-link:hover {
     color: #667eea;
-    border-bottom-color: #667eea;
     background: rgba(102, 126, 234, 0.05);
 }
 
 .admin-tabs .nav-link.active {
     color: #667eea;
-    border-bottom-color: #667eea;
+    border-bottom-color: transparent;
+    /* Remove bottom border in favor of background */
     background: rgba(102, 126, 234, 0.1);
 }
 
@@ -351,6 +367,23 @@
     .management-header {
         flex-direction: column;
         align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .management-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .management-header div {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        width: 100%;
+    }
+
+    .management-header .btn {
+        flex: 1;
+        justify-content: center;
     }
 
     .filter-panel {
@@ -359,6 +392,8 @@
 
     .modern-table {
         font-size: 0.875rem;
+        overflow-x: auto;
+        display: block;
     }
 
     .modern-table thead th,

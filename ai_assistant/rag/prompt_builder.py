@@ -181,7 +181,12 @@ Current date: {current_date}
         # Insert history after system prompt but before current user message
         user_message = messages.pop()  # Remove current user message
         
-        for msg in history[-10:]:  # Last 10 messages for context
+        
+        # Get last 10 messages (newest first)
+        last_messages = history.order_by('-timestamp')[:10]
+        
+        # Add in chronological order (oldest first)
+        for msg in reversed(last_messages):
             messages.append({
                 "role": msg.role,
                 "content": msg.content

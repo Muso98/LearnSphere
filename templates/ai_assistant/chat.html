@@ -97,8 +97,9 @@
     });
 
     async function startNewConversation() {
+        let response;
         try {
-            const response = await fetch('/ai/api/conversation/start/', {
+            response = await fetch("{% url 'ai_assistant:start_conversation' %}", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -119,7 +120,13 @@
             }
         } catch (error) {
             console.error('Error:', error);
-            alert('Failed to start conversation');
+            if (response) {
+                alert(`Failed to start conversation. Status: ${response.status} ${response.statusText}. Error: ${error.message}`);
+                // Try to get text if JSON failed
+                response.text().then(text => console.error('Response text:', text));
+            } else {
+                alert('Failed to start conversation. Network error or code issue: ' + error.message);
+            }
         }
     }
 
@@ -131,8 +138,13 @@
         addMessageToChat('user', message);
         input.value = '';
         document.getElementById('typingIndicator').style.display = 'block';
+
+        // Construct URL dynamically since we need conversation ID
+        // We'll use a placeholder and replace it
+        const url = "{% url 'ai_assistant:send_message' 0 %}".replace('0', currentConversationId);
+
         try {
-            const response = await fetch(`/ai/api/conversation/${currentConversationId}/send/`, {
+            const response = await fetch(url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -159,7 +171,8 @@
 
     async function loadConversation(convId) {
         try {
-            const response = await fetch(`/ai/api/conversation/${convId}/history/`);
+            const url = "{% url 'ai_assistant:conversation_history' 0 %}".replace('0', convId);
+            const response = await fetch(url);
             const data = await response.json();
             if (response.ok) {
                 currentConversationId = data.conversation_id;

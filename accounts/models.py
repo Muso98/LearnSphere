@@ -6,6 +6,7 @@ class User(AbstractUser):
     ROLE_CHOICES = (
         ('admin', _('Admin')),
         ('director', _('Director')),
+        ('vice_director', _('Direktor o\'rinbosari')),
         ('teacher', _('Teacher')),
         ('student', _('Student')),
         ('parent', _('Parent')),
