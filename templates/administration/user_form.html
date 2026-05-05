@@ -1,11 +1,12 @@
 {% extends 'base.html' %}
-{% block title %}{% if edit_user %}Tahrirlash{% else %}Yangi foydalanuvchi{% endif %} - Admin Panel{% endblock %}
+{% load i18n %}
+{% block title %}{% if edit_user %}{% trans "Tahrirlash" %}{% else %}{% trans "Yangi foydalanuvchi" %}{% endif %} - Admin Panel{% endblock %}
 {% block content %}
 <div class="container py-4">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="glass-card p-4">
-                <h3 class="fw-bold mb-4"><i class="bi bi-person-{% if edit_user %}gear{% else %}plus{% endif %} me-2"></i>{% if edit_user %}Foydalanuvchini tahrirlash{% else %}Yangi foydalanuvchi yaratish{% endif %}</h3>
+                <h3 class="fw-bold mb-4"><i class="bi bi-person-{% if edit_user %}gear{% else %}plus{% endif %} me-2"></i>{% if edit_user %}{% trans "Foydalanuvchini tahrirlash" %}{% else %}{% trans "Yangi foydalanuvchi yaratish" %}{% endif %}</h3>
                 <form method="post">
                     {% csrf_token %}
                     {% if form.non_field_errors %}
@@ -21,9 +22,9 @@
                     {% endfor %}
                     <div class="d-flex justify-content-between mt-4">
                         <a href="{% url 'user_list' %}" class="btn btn-outline-secondary"><i
-                                class="bi bi-arrow-left me-2"></i>Bekor qilish</a>
+                                class="bi bi-arrow-left me-2"></i>{% trans "Bekor qilish" %}</a>
                         <button type="submit" class="btn btn-primary"><i
-                                class="bi bi-check-circle me-2"></i>Saqlash</button>
+                                class="bi bi-check-circle me-2"></i>{% trans "Saqlash" %}</button>
                     </div>
                 </form>
             </div>

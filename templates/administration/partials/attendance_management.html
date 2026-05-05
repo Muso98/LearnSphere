@@ -2,9 +2,9 @@
 <!-- Attendance Management Partial -->
 
 <div class="management-header">
-    <h3 class="management-title"><i class="bi bi-calendar-check me-2"></i>Davomat Boshqaruvi</h3>
+    <h3 class="management-title"><i class="bi bi-calendar-check me-2"></i>{% trans "Davomat Boshqaruvi" %}</h3>
     <button class="btn btn-action btn-action-success" onclick="exportAttendance()">
-        <i class="bi bi-download"></i> Excel ga eksport
+        <i class="bi bi-download"></i> {% trans "Excel ga eksport" %}
     </button>
 </div>
 
@@ -13,7 +13,7 @@
     <div class="row g-3">
         <div class="col-md-4">
             <select id="attendanceClassFilter" class="form-select">
-                <option value="">Barcha sinflar</option>
+                <option value="">{% trans "Barcha sinflar" %}</option>
             </select>
         </div>
         <div class="col-md-4">
@@ -21,10 +21,10 @@
         </div>
         <div class="col-md-4">
             <select id="attendanceStatusFilter" class="form-select">
-                <option value="">Barcha holatlar</option>
-                <option value="present">Kelgan</option>
-                <option value="absent">Kelmagan</option>
-                <option value="late">Kechikkan</option>
+                <option value="">{% trans "Barcha holatlar" %}</option>
+                <option value="present">{% trans "Kelgan" %}</option>
+                <option value="absent">{% trans "Kelmagan" %}</option>
+                <option value="late">{% trans "Kechikkan" %}</option>
             </select>
         </div>
     </div>
@@ -35,18 +35,18 @@
     <table class="table">
         <thead>
             <tr>
-                <th>O'quvchi</th>
-                <th>Sinf</th>
-                <th>Sana</th>
-                <th>Holat</th>
-                <th style="width: 150px;">Harakatlar</th>
+                <th>{% trans "O'quvchi" %}</th>
+                <th>{% trans "Sinf" %}</th>
+                <th>{% trans "Sana" %}</th>
+                <th>{% trans "Holat" %}</th>
+                <th style="width: 150px;">{% trans "Harakatlar" %}</th>
             </tr>
         </thead>
         <tbody id="attendanceTableBody">
             <tr>
                 <td colspan="5" class="text-center py-5">
                     <div class="spinner-border text-primary" role="status"></div>
-                    <p class="mt-2 text-muted">Yuklanmoqda...</p>
+                    <p class="mt-2 text-muted">{% trans "Yuklanmoqda..." %}</p>
                 </td>
             </tr>
         </tbody>
@@ -72,9 +72,9 @@
             <td><span class="badge ${getStatusBadge(a.status)}">${getStatusText(a.status)}</span></td>
             <td>
                 <select class="form-select form-select-sm" onchange="updateAttendance(${a.id}, this.value)">
-                    <option value="present" ${a.status === 'present' ? 'selected' : ''}>Kelgan</option>
-                    <option value="absent" ${a.status === 'absent' ? 'selected' : ''}>Kelmagan</option>
-                    <option value="late" ${a.status === 'late' ? 'selected' : ''}>Kechikkan</option>
+                    <option value="present" ${a.status === 'present' ? 'selected' : ''}>{% trans "Kelgan" %}</option>
+                    <option value="absent" ${a.status === 'absent' ? 'selected' : ''}>{% trans "Kelmagan" %}</option>
+                    <option value="late" ${a.status === 'late' ? 'selected' : ''}>{% trans "Kechikkan" %}</option>
                 </select>
             </td>
         </tr>
@@ -91,9 +91,9 @@
 
     function getStatusText(status) {
         return {
-            'present': 'Kelgan',
-            'absent': 'Kelmagan',
-            'late': 'Kechikkan'
+            'present': '{% trans "Kelgan" %}',
+            'absent': '{% trans "Kelmagan" %}',
+            'late': '{% trans "Kechikkan" %}'
         }[status] || status;
     }
 

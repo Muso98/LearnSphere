@@ -2,9 +2,9 @@
 <!-- Teachers Management Partial -->
 
 <div class="management-header">
-    <h3 class="management-title"><i class="bi bi-person-badge me-2"></i>O'qituvchilarni Boshqarish</h3>
+    <h3 class="management-title"><i class="bi bi-person-badge me-2"></i>{% trans "O'qituvchilarni Boshqarish" %}</h3>
     <a href="{% url 'teacher_assignment' %}" class="btn btn-action btn-action-primary">
-        <i class="bi bi-plus-circle"></i> Yangi Tayinlash
+        <i class="bi bi-plus-circle"></i> {% trans "Yangi Tayinlash" %}
     </a>
 </div>
 
@@ -12,16 +12,16 @@
 <div class="filter-panel">
     <div class="row g-3">
         <div class="col-md-6">
-            <input type="text" id="teacherSearch" class="form-control" placeholder="O'qituvchi qidirish...">
+            <input type="text" id="teacherSearch" class="form-control" placeholder="{% trans 'O\'qituvchi qidirish...' %}">
         </div>
         <div class="col-md-3">
             <select id="teacherSubjectFilter" class="form-select">
-                <option value="">Barcha fanlar</option>
+                <option value="">{% trans "Barcha fanlar" %}</option>
             </select>
         </div>
         <div class="col-md-3">
             <select id="teacherClassFilter" class="form-select">
-                <option value="">Barcha sinflar</option>
+                <option value="">{% trans "Barcha sinflar" %}</option>
             </select>
         </div>
     </div>
@@ -32,18 +32,18 @@
     <table class="table">
         <thead>
             <tr>
-                <th>O'qituvchi</th>
-                <th>Fan</th>
-                <th>Sinf</th>
-                <th>Tayinlangan sana</th>
-                <th style="width: 100px;">Harakatlar</th>
+                <th>{% trans "O'qituvchi" %}</th>
+                <th>{% trans "Fan" %}</th>
+                <th>{% trans "Sinf" %}</th>
+                <th>{% trans "Tayinlangan sana" %}</th>
+                <th style="width: 100px;">{% trans "Harakatlar" %}</th>
             </tr>
         </thead>
         <tbody id="teachersTableBody">
             <tr>
                 <td colspan="5" class="text-center py-5">
                     <div class="spinner-border text-primary" role="status"></div>
-                    <p class="mt-2 text-muted">Yuklanmoqda...</p>
+                    <p class="mt-2 text-muted">{% trans "Yuklanmoqda..." %}</p>
                 </td>
             </tr>
         </tbody>
@@ -75,7 +75,7 @@
     }
 
     function deleteAssignment(id) {
-        if (!confirm('Tayinlashni bekor qilishga ishonchingiz komilmi?')) return;
+        if (!confirm('{% trans "Tayinlashni bekor qilishga ishonchingiz komilmi?" %}')) return;
 
         fetch(`/administration/teachers/assign/${id}/delete/`, {
             method: 'POST',

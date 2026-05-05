@@ -179,7 +179,7 @@
                 if (idInput) idInput.value = '';
 
                 const title = document.getElementById('rewardModalTitle');
-                if (title) title.textContent = "Yangi Mahsulot";
+                if (title) title.textContent = "{% trans 'Yangi Mahsulot' %}";
 
                 const activeCheck = document.getElementById('rewardActive');
                 if (activeCheck) activeCheck.checked = true;
@@ -209,7 +209,7 @@
                 const iconInput = document.querySelector('[name="icon"]');
                 if (iconInput) iconInput.value = reward.icon || '';
 
-                document.getElementById('rewardModalTitle').textContent = "Mahsulotni Tahrirlash";
+                document.getElementById('rewardModalTitle').textContent = "{% trans 'Mahsulotni Tahrirlash' %}";
 
                 modal.show();
             };
@@ -245,7 +245,7 @@
                 const btn = document.querySelector('#rewardModal .modal-footer .btn-primary');
                 const originalText = btn.textContent;
                 btn.disabled = true;
-                btn.textContent = 'Saqlanmoqda...';
+                btn.textContent = '{% trans "Saqlanmoqda..." %}';
 
                 fetch(url, {
                     method: 'POST',
@@ -263,12 +263,12 @@
                             loadRewards();
                             safeShowToast(data.message, 'success');
                         } else {
-                            safeShowToast(data.message || "Xatolik yuz berdi", 'error');
+                            safeShowToast(data.message || "{% trans 'Xatolik yuz berdi' %}", 'error');
                         }
                     })
                     .catch(err => {
                         console.error(err);
-                        safeShowToast('Tarmoq xatosi', 'error');
+                        safeShowToast('{% trans "Tarmoq xatosi" %}', 'error');
                     })
                     .finally(() => {
                         btn.disabled = false;
@@ -277,7 +277,7 @@
             };
 
             window.deleteReward = function (id) {
-                if (!confirm("Haqiqatan ham bu mahsulotni o'chirmoqchimisiz?")) return;
+                if (!confirm("{% trans 'Haqiqatan ham bu mahsulotni o\'chirmoqchimisiz?' %}")) return;
 
                 fetch(`${shopUrls.rewardsList}${id}/delete/`, {
                     method: 'POST',
@@ -297,7 +297,7 @@
                     })
                     .catch(err => {
                         console.error(err);
-                        safeShowToast('Tarmoq xatosi', 'error');
+                        safeShowToast('{% trans "Tarmoq xatosi" %}', 'error');
                     });
             };
 
@@ -316,7 +316,7 @@
                         tbody.innerHTML = '';
 
                         if (!data.rewards || data.rewards.length === 0) {
-                            tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">Mahsulotlar mavjud emas</td></tr>`;
+                            tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">{% trans "Mahsulotlar mavjud emas" %}</td></tr>`;
                             return;
                         }
 
@@ -352,9 +352,9 @@
 
                             // Map type codes to labels (simple mapping)
                             const typeLabels = {
-                                'physical': 'Moddiy',
-                                'digital': 'Raqamli',
-                                'privilege': 'Imkoniyat'
+                                'physical': '{% trans "Moddiy" %}',
+                                'digital': '{% trans "Raqamli" %}',
+                                'privilege': '{% trans "Imkoniyat" %}'
                             };
                             const typeColors = {
                                 'physical': 'bg-info',
@@ -374,7 +374,7 @@
                             const tdStatus = document.createElement('td');
                             const statusBadge = document.createElement('span');
                             statusBadge.className = `badge ${reward.is_active ? 'bg-success' : 'bg-secondary'}`;
-                            statusBadge.textContent = reward.is_active ? "Faol" : "Faol emas";
+                            statusBadge.textContent = reward.is_active ? "{% trans 'Faol' %}" : "{% trans 'Faol emas' %}";
                             tdStatus.appendChild(statusBadge);
                             tr.appendChild(tdStatus);
 
@@ -427,7 +427,7 @@
                         }
 
                         if (!data.redemptions || data.redemptions.length === 0) {
-                            tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">So'rovlar mavjud emas</td></tr>`;
+                            tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">{% trans "So'rovlar mavjud emas" %}</td></tr>`;
                             return;
                         }
 
@@ -469,13 +469,13 @@
                             if (redemption.status === 'pending') {
                                 const btnApprove = document.createElement('button');
                                 btnApprove.className = 'btn btn-sm btn-success me-1';
-                                btnApprove.title = "Tasdiqlash";
+                                btnApprove.title = "{% trans 'Tasdiqlash' %}";
                                 btnApprove.innerHTML = '<i class="bi bi-check-lg"></i>';
                                 btnApprove.onclick = function () { window.processRedemption(redemption.id, 'approved'); };
 
                                 const btnReject = document.createElement('button');
                                 btnReject.className = 'btn btn-sm btn-danger';
-                                btnReject.title = "Rad etish";
+                                btnReject.title = "{% trans 'Rad etish' %}";
                                 btnReject.innerHTML = '<i class="bi bi-x-lg"></i>';
                                 btnReject.onclick = function () { window.processRedemption(redemption.id, 'rejected'); };
 
@@ -493,7 +493,7 @@
             window.loadRedemptions = loadRedemptions;
 
             window.processRedemption = function (id, status) {
-                const msg = status === 'approved' ? 'Tasdiqlaysizmi?' : 'Rad etasizmi?';
+                const msg = status === 'approved' ? '{% trans "Tasdiqlaysizmi?" %}' : '{% trans "Rad etasizmi?" %}';
                 if (!confirm(msg)) return;
 
                 fetch(`${shopUrls.redemptionsList}${id}/process/`, {

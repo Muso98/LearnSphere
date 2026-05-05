@@ -1,21 +1,21 @@
 {% extends 'base.html' %}
-
-{% block title %}Dars Jadvali - LearnSphere{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Dars Jadvali" %} - LearnSphere{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4 unprintable">
     <div>
-        <h2 class="fw-bold text-dark">Dars Jadvali</h2>
-        <p class="text-muted mb-0">Haftalik o'quv rejasi va mashg'ulotlar</p>
+        <h2 class="fw-bold text-dark">{% trans "Dars Jadvali" %}</h2>
+        <p class="text-muted mb-0">{% trans "Haftalik o'quv rejasi va mashg'ulotlar" %}</p>
     </div>
     <div class="d-flex gap-2">
         <button onclick="window.print()" class="btn btn-outline-secondary rounded-pill shadow-sm bg-white">
-            <i class="bi bi-printer me-2"></i>Chop etish
+            <i class="bi bi-printer me-2"></i>{% trans "Chop etish" %}
         </button>
         {% if user.role == 'director' %}
         <a href="{% url 'schedule_create' %}" class="btn btn-primary rounded-pill shadow-sm text-white"
             style="background: var(--primary-gradient); border: none;">
-            <i class="bi bi-plus-lg me-2"></i>Yangi Dars
+            <i class="bi bi-plus-lg me-2"></i>{% trans "Yangi Dars" %}
         </a>
         {% endif %}
     </div>
@@ -27,12 +27,12 @@
 <div class="glass-card p-4 mb-4 unprintable">
     <form method="get" class="row g-3 align-items-end">
         <div class="col-md-5">
-            <label class="form-label text-secondary small fw-bold text-uppercase">Sinf</label>
+            <label class="form-label text-secondary small fw-bold text-uppercase">{% trans "Sinf" %}</label>
             <div class="input-group">
                 <span class="input-group-text bg-white border-0 ps-3"><i class="bi bi-people text-muted"></i></span>
                 <select name="class_id" class="form-select border-0 bg-white shadow-none" onchange="this.form.submit()"
                     style="cursor: pointer;">
-                    <option value="">Barcha sinflar</option>
+                    <option value="">{% trans "Barcha sinflar" %}</option>
                     {% for class in classes %}
                     <option value="{{ class.id }}" {% if class.is_selected %}selected{% endif %}>{{ class.name }}
                     </option>
@@ -41,13 +41,13 @@
             </div>
         </div>
         <div class="col-md-5">
-            <label class="form-label text-secondary small fw-bold text-uppercase">O'qituvchi</label>
+            <label class="form-label text-secondary small fw-bold text-uppercase">{% trans "O'qituvchi" %}</label>
             <div class="input-group">
                 <span class="input-group-text bg-white border-0 ps-3"><i
                         class="bi bi-person-badge text-muted"></i></span>
                 <select name="teacher_id" class="form-select border-0 bg-white shadow-none"
                     onchange="this.form.submit()" style="cursor: pointer;">
-                    <option value="">Barcha o'qituvchilar</option>
+                    <option value="">{% trans "Barcha o'qituvchilar" %}</option>
                     {% for teacher in teachers %}
                     <option value="{{ teacher.id }}" {% if teacher.is_selected %}selected{% endif %}>{{ teacher.first_name }} {{ teacher.last_name }}</option>
                     {% endfor %}
@@ -57,7 +57,7 @@
         <div class="col-md-2">
             <a href="{% url 'schedule_list' %}" class="btn btn-light w-100 border text-muted shadow-sm"
                 style="padding: 0.7rem;">
-                <i class="bi bi-arrow-counterclockwise me-1"></i> Tozalash
+                <i class="bi bi-arrow-counterclockwise me-1"></i> {% trans "Tozalash" %}
             </a>
         </div>
     </form>
@@ -117,7 +117,7 @@
                                 class="btn btn-sm btn-light text-primary shadow-sm"><i class="bi bi-pencil"></i></a>
                             <a href="{% url 'schedule_delete' schedule.id %}"
                                 class="btn btn-sm btn-light text-danger shadow-sm"
-                                onclick="return confirm('O\'chirilsinmi?')"><i class="bi bi-trash"></i></a>
+                                onclick="return confirm('{% trans 'O\'chirilsinmi?' %}')"><i class="bi bi-trash"></i></a>
                         </div>
                         {% endif %}
                     </div>
@@ -129,8 +129,8 @@
                 <div class="mb-3 text-muted opacity-25">
                     <i class="bi bi-calendar-x fs-1"></i>
                 </div>
-                <h5 class="text-muted fw-bold">Darslar yo'q</h5>
-                <p class="text-muted small">Bu kun uchun dars jadvali hali tuzilmagan.</p>
+                <h5 class="text-muted fw-bold">{% trans "Darslar yo'q" %}</h5>
+                <p class="text-muted small">{% trans "Bu kun uchun dars jadvali hali tuzilmagan." %}</p>
             </div>
             {% endif %}
         </div>

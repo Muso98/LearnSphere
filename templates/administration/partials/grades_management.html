@@ -2,9 +2,9 @@
 <!-- Grades Management Partial -->
 
 <div class="management-header">
-    <h3 class="management-title"><i class="bi bi-mortarboard me-2"></i>Baholar Boshqaruvi</h3>
+    <h3 class="management-title"><i class="bi bi-mortarboard me-2"></i>{% trans "Baholar Boshqaruvi" %}</h3>
     <button class="btn btn-action btn-action-success" onclick="exportGrades()">
-        <i class="bi bi-download"></i> Excel ga eksport
+        <i class="bi bi-download"></i> {% trans "Excel ga eksport" %}
     </button>
 </div>
 
@@ -12,16 +12,16 @@
 <div class="filter-panel">
     <div class="row g-3">
         <div class="col-md-3">
-            <input type="text" id="studentSearch" class="form-control" placeholder="O'quvchi ismi...">
+            <input type="text" id="studentSearch" class="form-control" placeholder="{% trans 'O\'quvchi ismi...' %}">
         </div>
         <div class="col-md-3">
             <select id="gradeClassFilter" class="form-select">
-                <option value="">Barcha sinflar</option>
+                <option value="">{% trans "Barcha sinflar" %}</option>
             </select>
         </div>
         <div class="col-md-3">
             <select id="gradeSubjectFilter" class="form-select">
-                <option value="">Barcha fanlar</option>
+                <option value="">{% trans "Barcha fanlar" %}</option>
             </select>
         </div>
         <div class="col-md-3">
@@ -35,19 +35,19 @@
     <table class="table">
         <thead>
             <tr>
-                <th>O'quvchi</th>
-                <th>Fan</th>
-                <th>O'qituvchi</th>
-                <th>Baho</th>
-                <th>Sana</th>
-                <th style="width: 100px;">Harakatlar</th>
+                <th>{% trans "O'quvchi" %}</th>
+                <th>{% trans "Fan" %}</th>
+                <th>{% trans "O'qituvchi" %}</th>
+                <th>{% trans "Baho" %}</th>
+                <th>{% trans "Sana" %}</th>
+                <th style="width: 100px;">{% trans "Harakatlar" %}</th>
             </tr>
         </thead>
         <tbody id="gradesTableBody">
             <tr>
                 <td colspan="6" class="text-center py-5">
                     <div class="spinner-border text-primary" role="status"></div>
-                    <p class="mt-2 text-muted">Yuklanmoqda...</p>
+                    <p class="mt-2 text-muted">{% trans "Yuklanmoqda..." %}</p>
                 </td>
             </tr>
         </tbody>
@@ -82,7 +82,7 @@
     }
 
     function deleteGrade(id) {
-        if (!confirm('Bahoni o\'chirishga ishonchingiz komilmi?')) return;
+        if (!confirm('{% trans "Bahoni o\'chirishga ishonchingiz komilmi?" %}')) return;
 
         fetch(`/administration/grades/${id}/delete/`, {
             method: 'POST',
