@@ -7,7 +7,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'LearnSphere.settings')
 django.setup()
 
 from accounts.models import User
-from core.models import School, Class, Subject
+from core.models import School, Class, Subject, Schedule
 from journal.models import Grade, Attendance
 from administration.models import TeacherAssignment
 from django.utils import timezone
@@ -75,6 +75,41 @@ def populate():
         for s in random.sample(subjects, 2):
             for c in random.sample(classes, 2):
                 TeacherAssignment.objects.get_or_create(teacher=teacher, subject=s, assigned_class=c)
+                
+    # Create Schedule for each class
+    print("Creating schedules...")
+    days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday']
+    times = [
+        ("08:30", "09:15"),
+        ("09:25", "10:10"),
+        ("10:20", "11:05"),
+        ("11:25", "12:10"),
+        ("12:20", "13:05")
+    ]
+    
+    for cls in classes:
+        # Get assignments for this class to know which teachers/subjects to use
+        class_assignments = TeacherAssignment.objects.filter(assigned_class=cls)
+        if not class_assignments.exists():
+            continue
+            
+        for day in days:
+            # Randomly pick 4-5 lessons for this day
+            daily_lessons = random.sample(list(class_assignments), min(len(class_assignments), random.randint(4, 5)))
+            for i, assignment in enumerate(daily_lessons):
+                if i >= len(times): break
+                start, end = times[i]
+                Schedule.objects.get_or_create(
+                    class_obj=cls,
+                    day_of_week=day,
+                    start_time=start,
+                    defaults={
+                        'end_time': end,
+                        'subject': assignment.subject,
+                        'teacher': assignment.teacher,
+                        'room': f"{random.randint(101, 305)}"
+                    }
+                )
 
     # Create Students and Parents
     all_students = []
