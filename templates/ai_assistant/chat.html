@@ -74,27 +74,45 @@
     let currentAgentType = '{{ default_agent }}';
 
     document.addEventListener('DOMContentLoaded', function () {
+        const userRole = '{{ user.role }}';
         const agentButtons = document.querySelectorAll('[data-agent]');
+        
         agentButtons.forEach(btn => {
+            // Hide irrelevant agents for roles other than admin/director
+            if (userRole !== 'admin' && userRole !== 'director') {
+                if (btn.dataset.agent !== userRole) {
+                    btn.style.display = 'none';
+                }
+            }
+
             btn.addEventListener('click', function () {
                 agentButtons.forEach(b => b.classList.remove('active'));
                 this.classList.add('active');
                 currentAgentType = this.dataset.agent;
             });
         });
+
         agentButtons.forEach(btn => {
             if (btn.dataset.agent === currentAgentType) {
                 btn.classList.add('active');
             }
         });
+
         document.getElementById('newChatBtn').addEventListener('click', startNewConversation);
         document.getElementById('messageForm').addEventListener('submit', sendMessage);
-        document.querySelectorAll('.conversation-item').forEach(item => {
+        
+        const convItems = document.querySelectorAll('.conversation-item');
+        convItems.forEach(item => {
             item.addEventListener('click', function (e) {
                 e.preventDefault();
                 loadConversation(this.dataset.convId);
             });
         });
+
+        // Auto-load most recent conversation if available
+        if (convItems.length > 0) {
+            loadConversation(convItems[0].dataset.convId);
+        }
     });
 
     async function startNewConversation() {

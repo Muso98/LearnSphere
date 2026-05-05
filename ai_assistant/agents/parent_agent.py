@@ -46,8 +46,8 @@ class ParentAgent(BaseAgent):
         context = {}
         
         # Get parent's children
-        if hasattr(self.user, 'parent'):
-            children = self.user.parent.children.all()
+        if self.user.role == 'parent':
+            children = self.user.children.all()
             
             if children.exists():
                 # Get first child's data (or all children if multiple)
