@@ -69,6 +69,8 @@
     </div>
 </div>
 
+<!-- Marked.js for Markdown rendering -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
     let currentConversationId = null;
     let currentAgentType = '{{ default_agent }}';
@@ -224,11 +226,23 @@
     function addMessageToChat(role, content) {
         const chatDiv = document.getElementById('chatMessages');
         const msgDiv = document.createElement('div');
-        msgDiv.className = `mb-3 ${role === 'user' ? 'text-end' : ''}`;
+        msgDiv.className = `mb-4 ${role === 'user' ? 'text-end' : ''}`;
+        
         const bubble = document.createElement('div');
-        bubble.className = `d-inline-block p-3 rounded ${role === 'user' ? 'bg-primary text-white' : 'bg-light'}`;
-        bubble.style.maxWidth = '70%';
-        bubble.textContent = content;
+        bubble.className = `d-inline-block p-3 rounded-4 shadow-sm ${role === 'user' ? 'bg-primary text-white' : 'bg-white border'}`;
+        bubble.style.maxWidth = '85%';
+        bubble.style.textAlign = 'left';
+        
+        if (role === 'assistant') {
+            // Use marked.js for assistant messages
+            bubble.innerHTML = marked.parse(content);
+            // Style paragraphs inside bubbles
+            bubble.querySelectorAll('p').forEach(p => p.classList.add('mb-2'));
+            bubble.querySelectorAll('ul, ol').forEach(list => list.classList.add('mb-2', 'ps-3'));
+        } else {
+            bubble.textContent = content;
+        }
+        
         msgDiv.appendChild(bubble);
         chatDiv.appendChild(msgDiv);
         chatDiv.scrollTop = chatDiv.scrollHeight;
