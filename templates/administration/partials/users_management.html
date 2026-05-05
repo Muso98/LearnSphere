@@ -201,13 +201,7 @@
     window.renderUsersTable = function() {
         const tbody = document.getElementById('usersTableBody');
         if (!usersData || usersData.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="8" class="text-center py-5">
-            <div class="empty-state">
-                <i class="bi bi-people"></i>
-                <h3>{% trans "Foydalanuvchilar topilmadi" %}</h3>
-                <p>{% trans "Yangi foydalanuvchi qo'shish uchun yuqoridagi tugmani bosing" %}</p>
-            </div>
-        </td></tr>`;
+            tbody.innerHTML = '<tr><td colspan="8" class="text-center py-5"><div class="empty-state"><i class="bi bi-people"></i><h3>{% trans "Foydalanuvchilar topilmadi"|escapejs %}</h3><p>{% trans "Yangi foydalanuvchi qo'shish uchun yuqoridagi tugmani bosing"|escapejs %}</p></div></td></tr>';
             return;
         }
 
@@ -383,7 +377,7 @@
                     AdminUtils.Toast.show(data.message || '{% trans "Muvaffaqiyatli o\'chirildi!"|escapejs %}', 'success');
                     window.loadUsers();
                 } else {
-                    AdminUtils.Toast.show(data.message || '{% trans "Xatolik yuz berdi!" %}', 'error');
+                    AdminUtils.Toast.show(data.message || '{% trans "Xatolik yuz berdi!"|escapejs %}', 'error');
                 }
             });
     }

@@ -36,7 +36,7 @@
     window.renderClassesData = function(classes) {
         const grid = document.getElementById('classesGrid');
         if (!classes || classes.length === 0) {
-            grid.innerHTML = '<div class="col-12 text-center py-5"><p class="text-muted">{% trans "Sinflar topilmadi" %}</p></div>';
+            grid.innerHTML = '<div class="col-12 text-center py-5"><p class="text-muted">{% trans "Sinflar topilmadi"|escapejs %}</p></div>';
             return;
         }
 

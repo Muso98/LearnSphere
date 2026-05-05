@@ -80,7 +80,7 @@
     window.renderGradesData = function(grades) {
         const tbody = document.getElementById('gradesTableBody');
         if (!grades || grades.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" class="text-center py-5"><p class="text-muted">{% trans "Baholar topilmadi" %}</p></td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center py-5"><p class="text-muted">{% trans "Baholar topilmadi"|escapejs %}</p></td></tr>';
             return;
         }
 

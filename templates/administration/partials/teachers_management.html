@@ -17,11 +17,17 @@
         <div class="col-md-3">
             <select id="teacherSubjectFilter" class="form-select">
                 <option value="">{% trans "Barcha fanlar" %}</option>
+                {% for subject in subjects %}
+                <option value="{{ subject.id }}">{{ subject.name }}</option>
+                {% endfor %}
             </select>
         </div>
         <div class="col-md-3">
             <select id="teacherClassFilter" class="form-select">
                 <option value="">{% trans "Barcha sinflar" %}</option>
+                {% for class in classes %}
+                <option value="{{ class.id }}">{{ class.name }}</option>
+                {% endfor %}
             </select>
         </div>
     </div>
@@ -51,42 +57,78 @@
 </div>
 
 <script>
-    function loadTeacherAssignments() {
-        // Placeholder
-        const assignments = [
-            { id: 1, teacher: 'Aziz Rahimov', subject: 'Matematika', class: '1-A', created_at: '2024-01-15' },
-            { id: 2, teacher: 'Olim Tursunov', subject: 'Fizika', class: '1-B', created_at: '2024-01-16' }
-        ];
-
+    window.loadTeacherAssignments = function() {
         const tbody = document.getElementById('teachersTableBody');
-        tbody.innerHTML = assignments.map(a => `
-        <tr>
-            <td><strong>${a.teacher}</strong></td>
-            <td><span class="badge bg-primary">${a.subject}</span></td>
-            <td><span class="badge bg-info">${a.class}</span></td>
-            <td>${a.created_at}</td>
-            <td>
-                <button onclick="deleteAssignment(${a.id})" class="btn btn-sm btn-danger">
-                    <i class="bi bi-trash"></i>
-                </button>
-            </td>
-        </tr>
-    `).join('');
+        if (!tbody) return;
+
+        const search = document.getElementById('teacherSearch')?.value || '';
+        const subject = document.getElementById('teacherSubjectFilter')?.value || '';
+        const cls = document.getElementById('teacherClassFilter')?.value || '';
+
+        fetch(`/administration/teacher-assignment/?search=${search}&subject=${subject}&class=${cls}`, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+            .then(r => r.json())
+            .then(data => {
+                if (!data.assignments || data.assignments.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">{% trans "Tayinlovlar mavjud emas"|escapejs %}</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = data.assignments.map(a => `
+                    <tr>
+                        <td><strong>${a.teacher}</strong></td>
+                        <td><span class="badge bg-primary">${a.subject}</span></td>
+                        <td><span class="badge bg-info">${a.class}</span></td>
+                        <td>${a.created_at}</td>
+                        <td>
+                            <button onclick="deleteAssignment(${a.id})" class="btn btn-sm btn-danger">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            })
+            .catch(err => {
+                console.error('Error loading teachers:', err);
+                AdminUtils.Toast.show('{% trans "Xatolik yuz berdi!"|escapejs %}', 'error');
+            });
     }
 
-    function deleteAssignment(id) {
+    // Filters event listeners
+    document.getElementById('teacherSearch')?.addEventListener('input', AdminUtils.debounce(() => window.loadTeacherAssignments(), 500));
+    document.getElementById('teacherSubjectFilter')?.addEventListener('change', () => window.loadTeacherAssignments());
+    document.getElementById('teacherClassFilter')?.addEventListener('change', () => window.loadTeacherAssignments());
+
+    window.deleteAssignment = function(id) {
         if (!confirm('{% trans "Tayinlashni bekor qilishga ishonchingiz komilmi?"|escapejs %}')) return;
 
-        fetch(`/administration/teachers/assign/${id}/delete/`, {
+        fetch(`/administration/teacher-assignment/${id}/delete/`, {
             method: 'POST',
             headers: { 'X-CSRFToken': AdminUtils.csrftoken }
         })
             .then(r => r.json())
             .then(data => {
-                if (data.success) {
+                // The delete view currently redirects, but if we make it return JSON:
+                if (data.success || !data.error) {
                     AdminUtils.Toast.show('{% trans "Tayinlash bekor qilindi!"|escapejs %}', 'success');
-                    loadTeacherAssignments();
+                    window.loadTeacherAssignments();
                 }
+            })
+            .catch(() => {
+                // If it redirected, it might fail to parse as JSON, but the action might have succeeded
+                window.loadTeacherAssignments();
             });
+    }
+
+    // Initial load when tab is shown
+    const teachersTab = document.getElementById('teachers-tab');
+    if (teachersTab) {
+        teachersTab.addEventListener('shown.bs.tab', function() {
+            if (!window.teachersLoaded) {
+                window.loadTeacherAssignments();
+                window.teachersLoaded = true;
+            }
+        });
     }
 </script>

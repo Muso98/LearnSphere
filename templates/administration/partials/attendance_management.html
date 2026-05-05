@@ -78,7 +78,7 @@
     window.renderAttendanceData = function(attendance) {
         const tbody = document.getElementById('attendanceTableBody');
         if (!attendance || attendance.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" class="text-center py-5"><p class="text-muted">{% trans "Davomat ma\'lumotlari topilmadi" %}</p></td></tr>';
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center py-5"><p class="text-muted">{% trans "Davomat ma\'lumotlari topilmadi"|escapejs %}</p></td></tr>';
             return;
         }
 
@@ -90,9 +90,9 @@
             <td><span class="badge ${getStatusBadge(a.status)}">${getStatusText(a.status)}</span></td>
             <td>
                 <select class="form-select form-select-sm" onchange="window.updateAttendance(${a.id}, this.value)">
-                    <option value="present" ${a.status === 'present' ? 'selected' : ''}>{% trans "Kelgan" %}</option>
-                    <option value="absent" ${a.status === 'absent' ? 'selected' : ''}>{% trans "Kelmagan" %}</option>
-                    <option value="late" ${a.status === 'late' ? 'selected' : ''}>{% trans "Kechikkan" %}</option>
+                    <option value="present" ${a.status === 'present' ? 'selected' : ''}>{% trans "Kelgan"|escapejs %}</option>
+                    <option value="absent" ${a.status === 'absent' ? 'selected' : ''}>{% trans "Kelmagan"|escapejs %}</option>
+                    <option value="late" ${a.status === 'late' ? 'selected' : ''}>{% trans "Kechikkan"|escapejs %}</option>
                 </select>
             </td>
         </tr>
@@ -144,9 +144,9 @@
 
     function getStatusText(status) {
         return {
-            'present': '{% trans "Kelgan" %}',
-            'absent': '{% trans "Kelmagan" %}',
-            'late': '{% trans "Kechikkan" %}'
+            'present': '{% trans "Kelgan"|escapejs %}',
+            'absent': '{% trans "Kelmagan"|escapejs %}',
+            'late': '{% trans "Kechikkan"|escapejs %}'
         }[status] || status;
     }
 

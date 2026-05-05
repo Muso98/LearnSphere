@@ -354,6 +354,19 @@ async function deleteItem(url, itemName, onSuccess) {
     }
 }
 
+// Debounce utility
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
 // Export global utilities
 window.AdminUtils = {
     Toast,
@@ -363,5 +376,6 @@ window.AdminUtils = {
     BulkActions,
     confirmAction,
     deleteItem,
-    csrftoken
+    csrftoken,
+    debounce
 };

@@ -47,7 +47,7 @@
     window.renderSubjectsData = function(subjects) {
         const tbody = document.getElementById('subjectsTableBody');
         if (!subjects || subjects.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="3" class="text-center py-5"><p class="text-muted">{% trans "Fanlar topilmadi" %}</p></td></tr>';
+            tbody.innerHTML = '<tr><td colspan="3" class="text-center py-5"><p class="text-muted">{% trans "Fanlar topilmadi"|escapejs %}</p></td></tr>';
             return;
         }
 

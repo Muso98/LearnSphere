@@ -23,8 +23,10 @@ from journal.models import Grade, Attendance
 
 @login_required
 def teacher_assignment(request):
-    """View to assign subjects and classes to teachers"""
+    """View to assign subjects and classes to teachers - support both HTML and JSON"""
     if not is_admin_user(request.user):
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'error': 'Unauthorized'}, status=403)
         messages.error(request, "Sizda bu sahifaga kirish huquqi yo'q!")
         return redirect('home')
         
@@ -33,20 +35,55 @@ def teacher_assignment(request):
         if form.is_valid():
             try:
                 form.save()
+                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                    return JsonResponse({'success': True, 'message': "O'qituvchiga fan va sinf muvaffaqiyatli biriktirildi!"})
                 messages.success(request, "O'qituvchiga fan va sinf muvaffaqiyatli biriktirildi!")
                 return redirect('teacher_assignment')
             except Exception as e:
+                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                    return JsonResponse({'success': False, 'message': str(e)})
                 messages.error(request, f"Xatolik yuz berdi: {str(e)}")
         else:
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'success': False, 'message': "Iltimos, ma'lumotlarni to'g'ri kiriting."})
             messages.error(request, "Iltimos, ma'lumotlarni to'g'ri kiriting.")
     else:
         form = TeacherAssignmentForm()
     
     assignments = TeacherAssignment.objects.all().order_by('-created_at')
     
+    # Filtering for AJAX
+    search_query = request.GET.get('search', '')
+    subject_id = request.GET.get('subject', '')
+    class_id = request.GET.get('class', '')
+    
+    if search_query:
+        assignments = assignments.filter(
+            Q(teacher__first_name__icontains=search_query) |
+            Q(teacher__last_name__icontains=search_query) |
+            Q(teacher__username__icontains=search_query)
+        )
+    if subject_id:
+        assignments = assignments.filter(subject_id=subject_id)
+    if class_id:
+        assignments = assignments.filter(assigned_class_id=class_id)
+    
+    # Check if AJAX request
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        data = [{
+            'id': a.id,
+            'teacher': a.teacher.get_full_name(),
+            'subject': a.subject.name,
+            'class': a.assigned_class.name,
+            'created_at': a.created_at.strftime('%d.%m.%Y')
+        } for a in assignments]
+        return JsonResponse({'assignments': data})
+    
     context = {
         'form': form,
         'assignments': assignments,
+        'classes': Class.objects.all(),
+        'subjects': Subject.objects.all(),
     }
     return render(request, 'administration/teacher_assignment.html', context)
 
