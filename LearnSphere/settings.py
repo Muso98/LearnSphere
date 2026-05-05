@@ -41,6 +41,7 @@ CSRF_TRUSTED_ORIGINS = [
     'https://www.learnsphere.uz',
     'http://learnsphere.uz',
     'http://www.learnsphere.uz',
+    'https://84.247.161.165',
     'http://84.247.161.165',
 ]
 
