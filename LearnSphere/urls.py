@@ -13,11 +13,18 @@ from journal.export_views import export_grades_excel, export_attendance_excel, e
 from journal.import_views import download_students_template, import_students
 from homework.views import create_assignment, assignment_list, submit_homework, view_submissions, grade_submission
 from accounts.views import profile_view
+from django.contrib.sitemaps.views import sitemap
+from core.sitemaps import sitemaps
+from django.http import HttpResponse
 
 from django.conf.urls.i18n import i18n_patterns
 
 urlpatterns = [
     path('i18n/', include('django.conf.urls.i18n')),
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
+    path('robots.txt', lambda r: HttpResponse("User-agent: *\nDisallow: /admin/\nSitemap: https://learnsphere.uz/sitemap.xml", content_type="text/plain")),
+    path('a5748bb5ff4f0777.txt', lambda r: HttpResponse("Verification: a5748bb5ff4f0777", content_type="text/plain")),
+    path('google7ff36e6ec85ffce7.html', lambda r: HttpResponse("google-site-verification: google7ff36e6ec85ffce7.html", content_type="text/plain")),
 ]
 
 urlpatterns += i18n_patterns(
