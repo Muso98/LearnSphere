@@ -68,8 +68,27 @@ def resource_create(request):
 # --- Quiz Views ---
 @login_required
 def quiz_list(request):
-    quizzes = Quiz.objects.filter(is_active=True).order_by('-created_at')
+    quizzes = Quiz.objects.filter(is_active=True)
+    
+    if request.user.role == 'student':
+        # Only show quizzes for student's class
+        if request.user.student_class:
+            quizzes = quizzes.filter(target_class=request.user.student_class)
+        else:
+            quizzes = Quiz.objects.none()
+    elif request.user.role == 'teacher':
+        # Teachers see their own quizzes or quizzes for their subjects
+        from administration.models import TeacherAssignment
+        assigned_subjects = TeacherAssignment.objects.filter(teacher=request.user).values_list('subject_id', flat=True)
+        quizzes = quizzes.filter(Q(created_by=request.user) | Q(subject_id__in=assigned_subjects))
+    
+    quizzes = quizzes.order_by('-created_at')
     subjects = Subject.objects.all()
+    
+    if request.user.role == 'teacher':
+        from administration.models import TeacherAssignment
+        assigned_subjects = TeacherAssignment.objects.filter(teacher=request.user).values_list('subject_id', flat=True)
+        subjects = subjects.filter(id__in=assigned_subjects)
     
     subject_id = request.GET.get('subject')
     if subject_id:
@@ -187,8 +206,16 @@ def quiz_create(request):
             messages.success(request, "Test yaratildi! Endi savollarni qo'shing.")
             return redirect('quiz_edit', quiz_id=quiz.id)
             
-    subjects = Subject.objects.all()
-    return render(request, 'resources/quiz_form.html', {'subjects': subjects})
+    if request.user.role == 'teacher':
+        from administration.models import TeacherAssignment
+        assigned_subjects = TeacherAssignment.objects.filter(teacher=request.user).values_list('subject_id', flat=True)
+        subjects = Subject.objects.filter(id__in=assigned_subjects)
+        classes = Class.objects.filter(id__in=TeacherAssignment.objects.filter(teacher=request.user).values_list('assigned_class_id', flat=True))
+    else:
+        subjects = Subject.objects.all()
+        classes = Class.objects.all()
+        
+    return render(request, 'resources/quiz_form.html', {'subjects': subjects, 'classes': classes})
 
 @login_required
 def quiz_edit(request, quiz_id):

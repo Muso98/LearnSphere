@@ -12,9 +12,10 @@ def skill_input_list(request):
         return redirect('home')
         
     # Get classes where logged in user is a teacher
-    # Assuming logic: teacher sees all classes or filtered by their schedule.
-    # For now, list all classes for simplicity, or filter if Schedule model allows.
-    classes = Class.objects.all() 
+    from administration.models import TeacherAssignment
+    classes = Class.objects.filter(
+        id__in=TeacherAssignment.objects.filter(teacher=request.user).values_list('assigned_class_id', flat=True)
+    ).distinct()
     
     return render(request, 'analytics/skill_input_list.html', {'classes': classes})
 

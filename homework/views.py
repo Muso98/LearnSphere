@@ -34,8 +34,15 @@ def create_assignment(request):
         messages.success(request, "Assignment created successfully!")
         return redirect('assignment_list')
 
-    classes = Class.objects.all()
-    subjects = Subject.objects.all()
+    if request.user.role == 'teacher':
+        from administration.models import TeacherAssignment
+        assignments = TeacherAssignment.objects.filter(teacher=request.user)
+        classes = Class.objects.filter(id__in=assignments.values_list('assigned_class_id', flat=True))
+        subjects = Subject.objects.filter(id__in=assignments.values_list('subject_id', flat=True))
+    else:
+        classes = Class.objects.all()
+        subjects = Subject.objects.all()
+        
     return render(request, 'homework/create_assignment.html', {'classes': classes, 'subjects': subjects})
 
 @login_required
@@ -51,7 +58,15 @@ def assignment_list(request):
                 a.is_submitted = is_submitted
                 assignments.append(a)
     elif request.user.role == 'teacher':
-        assignments = Assignment.objects.filter(deadline__gte=today).order_by('deadline')
+        from administration.models import TeacherAssignment
+        teacher_assignments = TeacherAssignment.objects.filter(teacher=request.user)
+        assigned_classes = teacher_assignments.values_list('assigned_class_id', flat=True)
+        assigned_subjects = teacher_assignments.values_list('subject_id', flat=True)
+        
+        assignments = Assignment.objects.filter(
+            target_class_id__in=assigned_classes,
+            subject_id__in=assigned_subjects
+        ).order_by('deadline')
         print(f"DEBUG: Found {assignments.count()} assignments for teacher")
         
     return render(request, 'homework/assignment_list.html', {'assignments': assignments, 'today': today})
