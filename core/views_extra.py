@@ -33,10 +33,22 @@ def student_dashboard(request):
                     'metadata': sub.metadata # Pass full metadata for other uses
                 })
     
+    # Get Schedule for today
+    from django.utils import timezone
+    day_name = timezone.now().strftime('%A').lower()
+    day_map = {
+        'monday': 'monday', 'tuesday': 'tuesday', 'wednesday': 'wednesday',
+        'thursday': 'thursday', 'friday': 'friday', 'saturday': 'saturday', 'sunday': 'monday' # Default to mon if sun
+    }
+    today_schedule = []
+    if request.user.student_class:
+        today_schedule = request.user.student_class.schedules.filter(day_of_week=day_map.get(day_name, 'monday')).order_by('start_time')
+
     context = {
         'grades': grades,
         'attendance': attendance,
         'competencies': competencies_data,
+        'today_schedule': today_schedule,
     }
     return render(request, 'core/student_dashboard.html', context)
 

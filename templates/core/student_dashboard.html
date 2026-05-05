@@ -11,6 +11,36 @@
     </div>
 </div>
 
+<div class="row mb-4">
+    <!-- Today's Schedule -->
+    <div class="col-12">
+        <div class="glass-card p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0 fw-bold"><i class="bi bi-calendar-event me-2 text-primary"></i>{% trans "Bugungi dars jadvali" %}</h5>
+                <a href="{% url 'schedule_list' %}" class="btn btn-sm btn-outline-primary rounded-pill">{% trans "Haftalik jadval" %}</a>
+            </div>
+            <div class="row g-3">
+                {% for schedule in today_schedule %}
+                <div class="col-md-4">
+                    <div class="bg-light p-3 rounded-4 border border-white shadow-sm">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="badge bg-primary bg-opacity-10 text-primary">{{ schedule.start_time|time:"H:i" }} - {{ schedule.end_time|time:"H:i" }}</span>
+                            <span class="small text-muted"><i class="bi bi-geo-alt me-1"></i>{{ schedule.room }}</span>
+                        </div>
+                        <h6 class="fw-bold mb-1">{{ schedule.subject.name }}</h6>
+                        <small class="text-muted">{{ schedule.teacher.get_full_name }}</small>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12 text-center py-4 text-muted">
+                    <i class="bi bi-emoji-smile me-2"></i>{% trans "Bugun darslar yo'q." %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="row">
     <!-- Grades -->
     <div class="col-md-6 mb-4">

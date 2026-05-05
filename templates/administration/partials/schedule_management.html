@@ -1,0 +1,37 @@
+{% load i18n %}
+<!-- Schedule Management Partial -->
+
+<div class="management-header">
+    <h3 class="management-title"><i class="bi bi-calendar3 me-2"></i>{% trans "Dars Jadvalini Boshqarish" %}</h3>
+    <a href="{% url 'schedule_create' %}" class="btn btn-action btn-action-primary">
+        <i class="bi bi-plus-circle"></i> {% trans "Yangi Dars" %}
+    </a>
+</div>
+
+<!-- Quick Schedule View -->
+<div class="glass-card p-4">
+    <p class="text-muted mb-4">{% trans "Bu bo'lim orqali haftalik dars jadvallarini ko'rishingiz va yangilashingiz mumkin." %}</p>
+    
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card bg-light border-0 p-4 h-100">
+                <i class="bi bi-calendar-check fs-1 text-primary mb-3"></i>
+                <h5>{% trans "Haftalik Jadvalni Ko'rish" %}</h5>
+                <p class="small text-muted">{% trans "Barcha sinflar va o'qituvchilarning dars jadvallarini bir joyda ko'ring." %}</p>
+                <a href="{% url 'schedule_list' %}" class="btn btn-outline-primary mt-auto rounded-pill">
+                    {% trans "Jadvalga o'tish" %}
+                </a>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card bg-light border-0 p-4 h-100">
+                <i class="bi bi-clock-history fs-1 text-success mb-3"></i>
+                <h5>{% trans "Yangi Dars Qo'shish" %}</h5>
+                <p class="small text-muted">{% trans "Yangi dars soatlarini belgilang va konfliktlarni tekshiring." %}</p>
+                <a href="{% url 'schedule_create' %}" class="btn btn-outline-success mt-auto rounded-pill">
+                    {% trans "Dars qo'shish" %}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

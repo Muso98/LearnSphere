@@ -13,7 +13,7 @@ from django.utils.decorators import method_decorator
 def schedule_list(request):
     """Display weekly schedule"""
     # Allow students, teachers, and directors
-    allowed_roles = ['student', 'teacher', 'director']
+    allowed_roles = ['student', 'teacher', 'director', 'admin', 'vice_director']
     if request.user.role not in allowed_roles:
         messages.error(request, "Ruxsat yo'q!")
         return redirect('home')
@@ -45,8 +45,8 @@ def schedule_list(request):
         # Class filtering is still allowed if valid logic permits, but UI is hidden.
         # For simplicity, we just show their full schedule.
 
-    # Apply explicit filters (Only relevant for Director now)
-    if request.user.role == 'director':
+    # Apply explicit filters (For Admin/Director roles)
+    if request.user.role in ['admin', 'director', 'vice_director']:
         if class_filter_int:
             schedules = schedules.filter(class_obj_id=class_filter_int)
         if teacher_filter_int:
@@ -79,8 +79,8 @@ def schedule_list(request):
 @login_required
 def schedule_create(request):
     """Create new schedule entry"""
-    if request.user.role != 'director':
-        messages.error(request, "Faqat direktor jadval qo'sha oladi!")
+    if request.user.role not in ['admin', 'director', 'vice_director']:
+        messages.error(request, "Faqat ma'muriyat jadval qo'sha oladi!")
         return redirect('schedule_list')
     
     if request.method == 'POST':
@@ -114,8 +114,8 @@ def schedule_create(request):
 @login_required
 def schedule_edit(request, schedule_id):
     """Edit existing schedule entry"""
-    if request.user.role != 'director':
-        messages.error(request, "Faqat direktor jadval tahrirlashi mumkin!")
+    if request.user.role not in ['admin', 'director', 'vice_director']:
+        messages.error(request, "Faqat ma'muriyat jadval tahrirlashi mumkin!")
         return redirect('schedule_list')
     
     schedule = get_object_or_404(Schedule, id=schedule_id)
@@ -150,8 +150,8 @@ def schedule_edit(request, schedule_id):
 @login_required
 def schedule_delete(request, schedule_id):
     """Delete schedule entry"""
-    if request.user.role != 'director':
-        messages.error(request, "Faqat direktor jadval o'chira oladi!")
+    if request.user.role not in ['admin', 'director', 'vice_director']:
+        messages.error(request, "Faqat ma'muriyat jadval o'chira oladi!")
         return redirect('schedule_list')
     
     schedule = get_object_or_404(Schedule, id=schedule_id)

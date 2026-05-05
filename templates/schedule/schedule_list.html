@@ -12,7 +12,7 @@
         <button onclick="window.print()" class="btn btn-outline-secondary rounded-pill shadow-sm bg-white">
             <i class="bi bi-printer me-2"></i>{% trans "Chop etish" %}
         </button>
-        {% if user.role == 'director' %}
+        {% if user.role == 'director' or user.role == 'admin' or user.role == 'vice_director' %}
         <a href="{% url 'schedule_create' %}" class="btn btn-primary rounded-pill shadow-sm text-white"
             style="background: var(--primary-gradient); border: none;">
             <i class="bi bi-plus-lg me-2"></i>{% trans "Yangi Dars" %}
@@ -22,8 +22,8 @@
 </div>
 
 <!-- Filters -->
-<!-- Filters (Director Only) -->
-{% if user.role == 'director' %}
+<!-- Filters (Admin/Director Only) -->
+{% if user.role == 'director' or user.role == 'admin' or user.role == 'vice_director' %}
 <div class="glass-card p-4 mb-4 unprintable">
     <form method="get" class="row g-3 align-items-end">
         <div class="col-md-5">
@@ -111,7 +111,7 @@
                             <i class="bi bi-geo-alt-fill me-1"></i> {{ schedule.room|default:"Xona yo'q" }}
                         </div>
 
-                        {% if user.role == 'director' %}
+                        {% if user.role == 'director' or user.role == 'admin' or user.role == 'vice_director' %}
                         <div class="btn-group">
                             <a href="{% url 'schedule_edit' schedule.id %}"
                                 class="btn btn-sm btn-light text-primary shadow-sm"><i class="bi bi-pencil"></i></a>
