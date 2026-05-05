@@ -1,12 +1,12 @@
-{% extends 'base.html' %}
-{% block title %}Baholar - Admin Panel{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Baholar" %} - Admin Panel{% endblock %}
 {% block content %}
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold"><i class="bi bi-mortarboard me-2"></i>Baholar boshqaruvi</h2>
+        <h2 class="fw-bold"><i class="bi bi-mortarboard me-2"></i>{% trans "Baholar boshqaruvi" %}</h2>
         <div>
             <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-secondary"><i
-                    class="bi bi-arrow-left me-2"></i>Dashboard</a>
+                    class="bi bi-arrow-left me-2"></i>{% trans "Dashboard" %}</a>
         </div>
     </div>
 
@@ -15,7 +15,7 @@
         <form method="get" class="row g-2">
             <div class="col-md-3">
                 <select name="class" class="form-select">
-                    <option value="">Barcha sinflar</option>
+                    <option value="">{% trans "Barcha sinflar" %}</option>
                     {% for cls in classes %}
                     <option value="{{ cls.id }}" {% if selected_class == cls.id|stringformat:"s" %}selected{% endif %}>{{ cls.name }}</option>
                     {% endfor %}
@@ -23,18 +23,18 @@
             </div>
             <div class="col-md-3">
                 <select name="subject" class="form-select">
-                    <option value="">Barcha fanlar</option>
+                    <option value="">{% trans "Barcha fanlar" %}</option>
                     {% for sub in subjects %}
                     <option value="{{ sub.id }}" {% if selected_subject == sub.id|stringformat:"s" %}selected{% endif %}>{{ sub.name }}</option>
                     {% endfor %}
                 </select>
             </div>
             <div class="col-md-4">
-                <input type="text" name="student" class="form-control" placeholder="O'quvchi ismi..."
+                <input type="text" name="student" class="form-control" placeholder="{% trans "O'quvchi ismi..." %}"
                     value="{{ student_query|default:'' }}">
             </div>
             <div class="col-md-2">
-                <button type="submit" class="btn btn-primary w-100"><i class="bi bi-filter me-2"></i>Filter</button>
+                <button type="submit" class="btn btn-primary w-100"><i class="bi bi-filter me-2"></i>{% trans "Filter" %}</button>
             </div>
         </form>
     </div>
@@ -45,13 +45,13 @@
             <table class="table table-hover align-middle">
                 <thead>
                     <tr>
-                        <th>O'quvchi</th>
-                        <th>Sinf</th>
-                        <th>Fan</th>
-                        <th>Baho</th>
-                        <th>Sana</th>
-                        <th>O'qituvchi</th>
-                        <th>Harakat</th>
+                        <th>{% trans "O'quvchi" %}</th>
+                        <th>{% trans "Sinf" %}</th>
+                        <th>{% trans "Fan" %}</th>
+                        <th>{% trans "Baho" %}</th>
+                        <th>{% trans "Sana" %}</th>
+                        <th>{% trans "O'qituvchi" %}</th>
+                        <th>{% trans "Harakat" %}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -70,7 +70,7 @@
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="7" class="text-center py-5 text-muted">Baholar topilmadi</td>
+                        <td colspan="7" class="text-center py-5 text-muted">{% trans "Baholar topilmadi" %}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -83,13 +83,13 @@
             <ul class="pagination justify-content-center">
                 {% if grades.has_previous %}
                 <li class="page-item"><a class="page-link"
-                        href="?page={{ grades.previous_page_number }}&class={{ selected_class }}&subject={{ selected_subject }}&student={{ student_query }}">Oldingi</a>
+                        href="?page={{ grades.previous_page_number }}&class={{ selected_class }}&subject={{ selected_subject }}&student={{ student_query }}">{% trans "Oldingi" %}</a>
                 </li>
                 {% endif %}
                 <li class="page-item active"><span class="page-link">{{ grades.number }} / {{ grades.paginator.num_pages }}</span></li>
                 {% if grades.has_next %}
                 <li class="page-item"><a class="page-link"
-                        href="?page={{ grades.next_page_number }}&class={{ selected_class }}&subject={{ selected_subject }}&student={{ student_query }}">Keyingi</a>
+                        href="?page={{ grades.next_page_number }}&class={{ selected_class }}&subject={{ selected_subject }}&student={{ student_query }}">{% trans "Keyingi" %}</a>
                 </li>
                 {% endif %}
             </ul>

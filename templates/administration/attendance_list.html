@@ -1,12 +1,12 @@
-{% extends 'base.html' %}
-{% block title %}Davomat - Admin Panel{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Davomat" %} - Admin Panel{% endblock %}
 {% block content %}
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold"><i class="bi bi-calendar-check me-2"></i>Davomat boshqaruvi</h2>
+        <h2 class="fw-bold"><i class="bi bi-calendar-check me-2"></i>{% trans "Davomat boshqaruvi" %}</h2>
         <div>
             <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-secondary"><i
-                    class="bi bi-arrow-left me-2"></i>Dashboard</a>
+                    class="bi bi-arrow-left me-2"></i>{% trans "Dashboard" %}</a>
         </div>
     </div>
 
@@ -15,7 +15,7 @@
         <form method="get" class="row g-2">
             <div class="col-md-3">
                 <select name="class" class="form-select">
-                    <option value="">Barcha sinflar</option>
+                    <option value="">{% trans "Barcha sinflar" %}</option>
                     {% for cls in classes %}
                     <option value="{{ cls.id }}" {% if selected_class == cls.id|stringformat:"s" %}selected{% endif %}>{{ cls.name }}</option>
                     {% endfor %}
@@ -26,14 +26,14 @@
             </div>
             <div class="col-md-3">
                 <select name="status" class="form-select">
-                    <option value="">Barcha holatlar</option>
-                    <option value="present" {% if selected_status == 'present' %}selected{% endif %}>Kelgan</option>
-                    <option value="absent" {% if selected_status == 'absent' %}selected{% endif %}>Kelmagan</option>
-                    <option value="late" {% if selected_status == 'late' %}selected{% endif %}>Kechikkan</option>
+                    <option value="">{% trans "Barcha holatlar" %}</option>
+                    <option value="present" {% if selected_status == 'present' %}selected{% endif %}>{% trans "Kelgan" %}</option>
+                    <option value="absent" {% if selected_status == 'absent' %}selected{% endif %}>{% trans "Kelmagan" %}</option>
+                    <option value="late" {% if selected_status == 'late' %}selected{% endif %}>{% trans "Kechikkan" %}</option>
                 </select>
             </div>
             <div class="col-md-3">
-                <button type="submit" class="btn btn-primary w-100"><i class="bi bi-search me-2"></i>Qidirish</button>
+                <button type="submit" class="btn btn-primary w-100"><i class="bi bi-search me-2"></i>{% trans "Qidirish" %}</button>
             </div>
         </form>
     </div>
@@ -44,11 +44,11 @@
             <table class="table table-hover align-middle">
                 <thead>
                     <tr>
-                        <th>O'quvchi</th>
-                        <th>Sinf</th>
-                        <th>Sana</th>
-                        <th>Holat</th>
-                        <th>O'zgartirish</th>
+                        <th>{% trans "O'quvchi" %}</th>
+                        <th>{% trans "Sinf" %}</th>
+                        <th>{% trans "Sana" %}</th>
+                        <th>{% trans "Holat" %}</th>
+                        <th>{% trans "O'zgartirish" %}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -78,7 +78,7 @@
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="5" class="text-center py-5 text-muted">Davomat ma'lumotlari topilmadi</td>
+                        <td colspan="5" class="text-center py-5 text-muted">{% trans "Davomat ma'lumotlari topilmadi" %}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -91,13 +91,13 @@
             <ul class="pagination justify-content-center">
                 {% if attendance.has_previous %}
                 <li class="page-item"><a class="page-link"
-                        href="?page={{ attendance.previous_page_number }}&class={{ selected_class }}&date={{ selected_date }}&status={{ selected_status }}">Oldingi</a>
+                        href="?page={{ attendance.previous_page_number }}&class={{ selected_class }}&date={{ selected_date }}&status={{ selected_status }}">{% trans "Oldingi" %}</a>
                 </li>
                 {% endif %}
                 <li class="page-item active"><span class="page-link">{{ attendance.number }} / {{ attendance.paginator.num_pages }}</span></li>
                 {% if attendance.has_next %}
                 <li class="page-item"><a class="page-link"
-                        href="?page={{ attendance.next_page_number }}&class={{ selected_class }}&date={{ selected_date }}&status={{ selected_status }}">Keyingi</a>
+                        href="?page={{ attendance.next_page_number }}&class={{ selected_class }}&date={{ selected_date }}&status={{ selected_status }}">{% trans "Keyingi" %}</a>
                 </li>
                 {% endif %}
             </ul>
