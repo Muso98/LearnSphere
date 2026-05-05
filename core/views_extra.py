@@ -1,3 +1,4 @@
+from django.utils.translation import gettext as _
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -41,8 +42,8 @@ def student_dashboard(request):
 
 @login_required
 def director_dashboard(request):
-    if request.user.role != 'director':
-        messages.error(request, "Access denied. Directors only.")
+    if request.user.role not in ['director', 'admin'] and not request.user.is_superuser:
+        messages.error(request, _("Access denied. Directors only."))
         return redirect('home')
     
     # Stats
