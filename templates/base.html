@@ -448,9 +448,9 @@
                         class="bi bi-calendar-week"></i> {% trans "Dars Jadvali" %}</a></li>
             <li><a href="{% url 'assignment_list' %}" class="{% if 'assignments' in request.path %}active{% endif %}"><i
                         class="bi bi-book-half"></i> {% trans "Vazifalar" %}</a></li>
-            <li><a href="{% url 'resource_list' %}" class="{% if 'resources' in request.path %}active{% endif %}"><i
+            <li><a href="{% url 'resource_list' %}" class="{% if request.resolver_match.url_name == 'resource_list' %}active{% endif %}"><i
                         class="bi bi-collection-play-fill"></i> {% trans "Kutubxona" %}</a></li>
-            <li><a href="{% url 'quiz_list' %}" class="{% if 'quizzes' in request.path %}active{% endif %}"><i
+            <li><a href="{% url 'quiz_list' %}" class="{% if request.resolver_match.url_name == 'quiz_list' %}active{% endif %}"><i
                         class="bi bi-clipboard-check-fill"></i> {% trans "Testlar" %}</a></li>
             <li><a href="{% url 'notifications' %}" class="{% if 'notifications' in request.path %}active{% endif %}"><i
                         class="bi bi-bell-fill"></i> {% trans "Bildirishnomalar" %}</a></li>
@@ -505,9 +505,9 @@
                         class="bi bi-calendar-week"></i> {% trans "Dars Jadvali" %}</a></li>
             <li><a href="{% url 'assignment_list' %}" class="{% if 'assignments' in request.path %}active{% endif %}"><i
                         class="bi bi-briefcase-fill"></i> {% trans "Vazifalar" %}</a></li>
-            <li><a href="{% url 'resource_list' %}" class="{% if 'resources' in request.path %}active{% endif %}"><i
+            <li><a href="{% url 'resource_list' %}" class="{% if request.resolver_match.url_name == 'resource_list' %}active{% endif %}"><i
                         class="bi bi-collection-play-fill"></i> {% trans "Kutubxona" %}</a></li>
-            <li><a href="{% url 'quiz_list' %}" class="{% if 'quizzes' in request.path %}active{% endif %}"><i
+            <li><a href="{% url 'quiz_list' %}" class="{% if request.resolver_match.url_name == 'quiz_list' %}active{% endif %}"><i
                         class="bi bi-clipboard-check-fill"></i> {% trans "Testlar" %}</a></li>
             <li><a href="{% url 'notifications' %}" class="{% if 'notifications' in request.path %}active{% endif %}"><i
                         class="bi bi-bell-fill"></i> {% trans "Bildirishnomalar" %}</a></li>
