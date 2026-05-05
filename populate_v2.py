@@ -61,6 +61,9 @@ def populate():
             print(f"Created {role}: {username}")
         return user
 
+    # Create Admin
+    create_user("admin", "admin", "Admin", "User", password="admin123")
+
     # Create Teachers
     teachers = []
     for i in range(1, 7):
