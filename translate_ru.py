@@ -119,6 +119,16 @@ translations = {
     "Muloqot": "Коммуникация",
     "Jamoaviy": "Командная работа",
     "Moslashuv": "Адаптивность",
+    "Sinflar Boshqaruvi": "Управление классами",
+    "Yangi Sinf": "Новый класс",
+    "o'quvchi": "учеников",
+    "O'quvchilar": "Ученики",
+    "Fanlar Boshqaruvi": "Управление предметами",
+    "Yangi Fan": "Новый предмет",
+    "Fan nomi": "Название предмета",
+    "O'qituvchilar soni": "Количество учителей",
+    "o'qituvchi": "учителей",
+    "Tahrirlash": "Редактировать",
 }
 
 po_path = 'locale/ru/LC_MESSAGES/django.po'

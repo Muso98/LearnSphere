@@ -2,9 +2,9 @@
 <!-- Subjects Management Partial -->
 
 <div class="management-header">
-    <h3 class="management-title"><i class="bi bi-book me-2"></i>Fanlar Boshqaruvi</h3>
+    <h3 class="management-title"><i class="bi bi-book me-2"></i>{% trans "Fanlar Boshqaruvi" %}</h3>
     <a href="{% url 'subject_create' %}" class="btn btn-action btn-action-primary">
-        <i class="bi bi-plus-circle"></i> Yangi Fan
+        <i class="bi bi-plus-circle"></i> {% trans "Yangi Fan" %}
     </a>
 </div>
 
@@ -13,16 +13,16 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Fan nomi</th>
-                <th>O'qituvchilar soni</th>
-                <th style="width: 200px;">Harakatlar</th>
+                <th>{% trans "Fan nomi" %}</th>
+                <th>{% trans "O'qituvchilar soni" %}</th>
+                <th style="width: 200px;">{% trans "Harakatlar" %}</th>
             </tr>
         </thead>
         <tbody id="subjectsTableBody">
             <tr>
                 <td colspan="3" class="text-center py-5">
                     <div class="spinner-border text-primary" role="status"></div>
-                    <p class="mt-2 text-muted">Yuklanmoqda...</p>
+                    <p class="mt-2 text-muted">{% trans "Yuklanmoqda..." %}</p>
                 </td>
             </tr>
         </tbody>
@@ -42,13 +42,13 @@
         tbody.innerHTML = subjects.map(subj => `
         <tr>
             <td><strong>${subj.name}</strong></td>
-            <td><span class="badge bg-primary">${subj.teacher_count} o'qituvchi</span></td>
+            <td><span class="badge bg-primary">${subj.teacher_count} {% trans "o'qituvchi" %}</span></td>
             <td class="table-actions">
                 <a href="/administration/subjects/${subj.id}/edit/" class="btn btn-sm btn-warning">
-                    <i class="bi bi-pencil"></i> Tahrirlash
+                    <i class="bi bi-pencil"></i> {% trans "Tahrirlash" %}
                 </a>
                 <button onclick="deleteSubject(${subj.id}, '${subj.name}')" class="btn btn-sm btn-danger">
-                    <i class="bi bi-trash"></i> O'chirish
+                    <i class="bi bi-trash"></i> {% trans "O'chirish" %}
                 </button>
             </td>
         </tr>
