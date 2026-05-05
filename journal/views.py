@@ -11,15 +11,21 @@ from django.utils import timezone
 @login_required
 def gradebook_view(request):
     # Ensure user is teacher
-    if request.user.role != 'teacher':
-        messages.error(request, "Access denied. Teachers only.")
+    # Check permissions
+    is_admin = request.user.is_superuser or request.user.role in ['admin', 'director', 'vice_director']
+    if request.user.role != 'teacher' and not is_admin:
+        messages.error(request, "Sizda bu sahifaga kirish huquqi yo'q!")
         return redirect('home')
 
     selected_class_id = request.GET.get('class_id')
     selected_subject_id = request.GET.get('subject_id')
     
-    classes = Class.objects.filter(schedules__teacher=request.user).distinct()
-    subjects = Subject.objects.filter(schedules__teacher=request.user).distinct()
+    if is_admin:
+        classes = Class.objects.all().distinct()
+        subjects = Subject.objects.all().distinct()
+    else:
+        classes = Class.objects.filter(schedules__teacher=request.user).distinct()
+        subjects = Subject.objects.filter(schedules__teacher=request.user).distinct()
     
     # Add is_selected attribute to each class and subject for template
     for cls in classes:
@@ -36,8 +42,8 @@ def gradebook_view(request):
         current_class = get_object_or_404(Class, id=selected_class_id)
         current_subject = get_object_or_404(Subject, id=selected_subject_id)
         
-        # Verify teacher schedule
-        if not Schedule.objects.filter(teacher=request.user, class_obj=current_class, subject=current_subject).exists():
+        # Verify teacher schedule (skip for admins)
+        if not is_admin and not Schedule.objects.filter(teacher=request.user, class_obj=current_class, subject=current_subject).exists():
              messages.error(request, "Siz bu sinfga bu fandan dars bermaysiz!")
              return redirect('gradebook')
 
@@ -176,8 +182,10 @@ def gradebook_view(request):
 
 @login_required
 def attendance_view(request):
-    if request.user.role != 'teacher':
-        messages.error(request, "Access denied. Teachers only.")
+    # Check permissions
+    is_admin = request.user.is_superuser or request.user.role in ['admin', 'director', 'vice_director']
+    if request.user.role != 'teacher' and not is_admin:
+        messages.error(request, "Sizda bu sahifaga kirish huquqi yo'q!")
         return redirect('home')
         
     selected_class_id = request.GET.get('class_id')

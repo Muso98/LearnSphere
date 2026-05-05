@@ -56,14 +56,32 @@
 <nav id="attendancePagination" class="pagination-modern mt-3"></nav>
 
 <script>
-    function loadAttendance() {
-        // Placeholder
-        const attendance = [
-            { id: 1, student: 'Jasur Karimov', class: '1-A', date: '2024-02-08', status: 'present' },
-            { id: 2, student: 'Madina Aliyeva', class: '1-A', date: '2024-02-08', status: 'absent' }
-        ];
+    window.loadAttendance = function(page = 1) {
+        const classId = document.getElementById('attendanceClassFilter')?.value || '';
+        const date = document.getElementById('attendanceDateFilter')?.value || '';
+        const status = document.getElementById('attendanceStatusFilter')?.value || '';
 
+        fetch(`{% url 'attendance_list' %}?page=${page}&class=${classId}&date=${date}&status=${status}`, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+            .then(r => r.json())
+            .then(data => {
+                window.renderAttendanceData(data.attendance);
+                window.renderAttendancePagination(data.total_pages, data.current_page);
+            })
+            .catch(err => {
+                console.error('Error loading attendance:', err);
+                AdminUtils.Toast.show('{% trans "Xatolik yuz berdi!" %}', 'error');
+            });
+    }
+
+    window.renderAttendanceData = function(attendance) {
         const tbody = document.getElementById('attendanceTableBody');
+        if (!attendance || attendance.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center py-5"><p class="text-muted">{% trans "Davomat ma\'lumotlari topilmadi" %}</p></td></tr>';
+            return;
+        }
+
         tbody.innerHTML = attendance.map(a => `
         <tr>
             <td><strong>${a.student}</strong></td>
@@ -71,7 +89,7 @@
             <td>${a.date}</td>
             <td><span class="badge ${getStatusBadge(a.status)}">${getStatusText(a.status)}</span></td>
             <td>
-                <select class="form-select form-select-sm" onchange="updateAttendance(${a.id}, this.value)">
+                <select class="form-select form-select-sm" onchange="window.updateAttendance(${a.id}, this.value)">
                     <option value="present" ${a.status === 'present' ? 'selected' : ''}>{% trans "Kelgan" %}</option>
                     <option value="absent" ${a.status === 'absent' ? 'selected' : ''}>{% trans "Kelmagan" %}</option>
                     <option value="late" ${a.status === 'late' ? 'selected' : ''}>{% trans "Kechikkan" %}</option>
@@ -80,6 +98,41 @@
         </tr>
     `).join('');
     }
+
+    window.renderAttendancePagination = function(totalPages, currentPage) {
+        const container = document.getElementById('attendancePagination');
+        if (!container || totalPages <= 1) {
+            if (container) container.innerHTML = '';
+            return;
+        }
+
+        let html = '';
+        for (let i = 1; i <= totalPages; i++) {
+            html += `<button class="btn btn-sm ${i === currentPage ? 'btn-primary' : 'btn-outline-primary'} ms-1" onclick="window.loadAttendance(${i})">${i}</button>`;
+        }
+        container.innerHTML = html;
+    }
+
+    // Initialize on tab show
+    document.getElementById('attendance-tab')?.addEventListener('shown.bs.tab', function () {
+        if (!window.attendanceLoaded) {
+            window.loadAttendance();
+            window.attendanceLoaded = true;
+            
+            // Populate filters if not done
+            const classSelect = document.getElementById('attendanceClassFilter');
+            if (classSelect && classSelect.options.length <= 1) {
+                {% for cls in classes %}
+                classSelect.add(new Option('{{ cls.name }}', '{{ cls.id }}'));
+                {% endfor %}
+            }
+        }
+    });
+
+    // Add event listeners for filters
+    document.getElementById('attendanceClassFilter')?.addEventListener('change', () => window.loadAttendance(1));
+    document.getElementById('attendanceDateFilter')?.addEventListener('change', () => window.loadAttendance(1));
+    document.getElementById('attendanceStatusFilter')?.addEventListener('change', () => window.loadAttendance(1));
 
     function getStatusBadge(status) {
         return {
@@ -97,7 +150,7 @@
         }[status] || status;
     }
 
-    function updateAttendance(id, status) {
+    window.updateAttendance = function(id, status) {
         fetch(`/administration/attendance/${id}/update/`, {
             method: 'POST',
             headers: {

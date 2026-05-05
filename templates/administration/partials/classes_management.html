@@ -19,25 +19,27 @@
 </div>
 
 <script>
-    function loadClasses() {
-        fetch('/administration/classes/')
-            .then(r => r.text())
-            .then(html => {
-                // For simplicity, we'll render a simple list here
-                // In production, make this an AJAX endpoint that returns JSON
-                renderClassesData();
+    window.loadClasses = function() {
+        fetch('{% url "class_list" %}', {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+            .then(r => r.json())
+            .then(data => {
+                window.renderClassesData(data.classes);
+            })
+            .catch(err => {
+                console.error('Error loading classes:', err);
+                AdminUtils.Toast.show('{% trans "Xatolik yuz berdi!" %}', 'error');
             });
     }
 
-    function renderClassesData() {
-        // Placeholder - in production get from API
-        const classes = [
-            { id: 1, name: '1-A', student_count: 25, school: 'Maktab №1' },
-            { id: 2, name: '1-B', student_count: 22, school: 'Maktab №1' },
-            { id: 3, name: '2-A', student_count: 28, school: 'Maktab №1' }
-        ];
-
+    window.renderClassesData = function(classes) {
         const grid = document.getElementById('classesGrid');
+        if (!classes || classes.length === 0) {
+            grid.innerHTML = '<div class="col-12 text-center py-5"><p class="text-muted">{% trans "Sinflar topilmadi" %}</p></div>';
+            return;
+        }
+
         grid.innerHTML = classes.map(cls => `
         <div class="col-md-4">
             <div class="glass-card p-4">
@@ -52,10 +54,10 @@
                     <a href="/administration/classes/${cls.id}/students/" class="btn btn-sm btn-info flex-fill">
                         <i class="bi bi-people"></i> {% trans "O'quvchilar" %}
                     </a>
-                    <a href="/administration/classes/${cls.id}/edit/" class="btn btn-sm btn-warning">
+                    <a href="/administration/classes/${cls.id}/update/" class="btn btn-sm btn-warning">
                         <i class="bi bi-pencil"></i>
                     </a>
-                    <button onclick="deleteClass(${cls.id}, '${cls.name}')" class="btn btn-sm btn-danger">
+                    <button onclick="window.deleteClass(${cls.id}, '${cls.name}')" class="btn btn-sm btn-danger">
                         <i class="bi bi-trash"></i>
                     </button>
                 </div>
@@ -64,7 +66,15 @@
     `).join('');
     }
 
-    function deleteClass(id, name) {
+    // Initialize on tab show
+    document.getElementById('classes-tab')?.addEventListener('shown.bs.tab', function () {
+        if (!window.classesLoaded) {
+            window.loadClasses();
+            window.classesLoaded = true;
+        }
+    });
+
+    window.deleteClass = function(id, name) {
         if (!confirm(`${name} {% trans "sinfni o'chirishga ishonchingiz komilmi?" %}`)) return;
 
         fetch(`/administration/classes/${id}/delete/`, {

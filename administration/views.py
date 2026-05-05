@@ -114,12 +114,14 @@ def admin_dashboard(request):
         'avg_performance': avg_performance,
         'recent_grades': recent_grades,
         'recent_users': recent_users,
+        'classes': Class.objects.all(),
+        'subjects': Subject.objects.all(),
     }
     return render(request, 'administration/admin_dashboard.html', context)
 
 
 @login_required
-def stats_attendance(request):
+def api_attendance_stats(request):
     """API endpoint for attendance statistics"""
     if not is_admin_user(request.user):
         return JsonResponse({'error': 'Unauthorized'}, status=403)
@@ -158,7 +160,7 @@ def stats_attendance(request):
 
 
 @login_required
-def stats_performance(request):
+def api_performance_stats(request):
     """API endpoint for performance statistics by subject"""
     if not is_admin_user(request.user):
         return JsonResponse({'error': 'Unauthorized'}, status=403)
@@ -190,7 +192,7 @@ def stats_performance(request):
 
 
 @login_required
-def stats_top_students(request):
+def api_top_students(request):
     """API endpoint for top performing students"""
     if not is_admin_user(request.user):
         return JsonResponse({'error': 'Unauthorized'}, status=403)
@@ -221,7 +223,7 @@ def stats_top_students(request):
 
 
 @login_required
-def stats_struggling_students(request):
+def api_struggling_students(request):
     """API endpoint for struggling students (avg < 3.0)"""
     if not is_admin_user(request.user):
         return JsonResponse({'error': 'Unauthorized'}, status=403)
@@ -432,7 +434,8 @@ def user_list(request):
             'role_display': u.get_role_display(),
             'is_active': u.is_active,
             'date_joined': u.date_joined.strftime('%d.%m.%Y'),
-            'student_class': u.student_class.name if u.student_class else None
+            'student_class': u.student_class.name if u.student_class else None,
+            'student_class_id': u.student_class.id if u.student_class else None
         } for u in users]
         
         return JsonResponse({'users': users_data, 'total': users.count()})
@@ -614,6 +617,16 @@ def class_list(request):
             'student_count': student_count
         })
     
+    # Check if AJAX request
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        data = [{
+            'id': item['class'].id,
+            'name': item['class'].name,
+            'student_count': item['student_count'],
+            'school': str(item['class'].school)
+        } for item in class_data]
+        return JsonResponse({'classes': data})
+    
     context = {'class_data': class_data}
     return render(request, 'administration/class_list.html', context)
 
@@ -713,6 +726,15 @@ def subject_list(request):
         return redirect('home')
     
     subjects = Subject.objects.all().order_by('name')
+    # Check if AJAX request
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        data = [{
+            'id': s.id,
+            'name': s.name,
+            'teacher_count': TeacherAssignment.objects.filter(subject=s).values('teacher').distinct().count()
+        } for s in subjects]
+        return JsonResponse({'subjects': data})
+        
     context = {'subjects': subjects}
     return render(request, 'administration/subject_list.html', context)
 
@@ -808,6 +830,18 @@ def grade_list(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     
+    # Check if AJAX request
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        data = [{
+            'id': g.id,
+            'student': g.student.get_full_name(),
+            'subject': g.subject.name,
+            'teacher': g.teacher.get_full_name() if g.teacher else 'N/A',
+            'grade': g.value,
+            'date': g.date.strftime('%d.%m.%Y')
+        } for g in page_obj]
+        return JsonResponse({'grades': data, 'total_pages': paginator.num_pages, 'current_page': page_obj.number})
+    
     context = {
         'grades': page_obj,
         'classes': Class.objects.all(),
@@ -845,6 +879,17 @@ def attendance_list(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     
+    # Check if AJAX request
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        data = [{
+            'id': a.id,
+            'student': a.student.get_full_name(),
+            'class': a.student.student_class.name if a.student.student_class else 'N/A',
+            'date': a.date.strftime('%d.%m.%Y'),
+            'status': a.status
+        } for a in page_obj]
+        return JsonResponse({'attendance': data, 'total_pages': paginator.num_pages, 'current_page': page_obj.number})
+        
     context = {
         'attendance': page_obj,
         'classes': Class.objects.all(),
@@ -1019,105 +1064,4 @@ def shop_redemption_process(request, redemption_id):
         return JsonResponse({'success': False, 'message': 'Invalid status'})
     except Exception as e:
         return JsonResponse({'success': False, 'message': str(e)})
-
-
-# Dashboard Stats API Views
-
-@login_required
-def api_attendance_stats(request):
-    """Get attendance statistics for charts"""
-    if not is_admin_user(request.user):
-        return JsonResponse({'error': 'Unauthorized'}, status=403)
-
-    today = timezone.now().date()
-    # Weekly trend
-    weekly_trend = []
-    for i in range(6, -1, -1):
-        date = today - timedelta(days=i)
-        total = Attendance.objects.filter(date=date).count()
-        present = Attendance.objects.filter(date=date, status='present').count()
-        rate = round((present / total * 100), 1) if total > 0 else 0
-        weekly_trend.append({
-            'date': date.strftime('%d.%m'),
-            'rate': rate
-        })
-    
-    # Today's stats
-    total_today = Attendance.objects.filter(date=today).count()
-    present_today = Attendance.objects.filter(date=today, status='present').count()
-    absent_today = Attendance.objects.filter(date=today, status='absent').count()
-    late_today = Attendance.objects.filter(date=today, status='late').count()
-    
-    return JsonResponse({
-        'weekly_trend': weekly_trend,
-        'today': {
-            'present': present_today,
-            'absent': absent_today,
-            'late': late_today,
-            'total': total_today
-        }
-    })
-
-@login_required
-def api_performance_stats(request):
-    """Get performance statistics by subject"""
-    if not is_admin_user(request.user):
-        return JsonResponse({'error': 'Unauthorized'}, status=403)
-
-    subjects = Subject.objects.annotate(avg_grade=Avg('grade__value')).order_by('-avg_grade')
-    
-    data = {
-        'subjects': [s.name for s in subjects],
-        'averages': [round(s.avg_grade, 2) if s.avg_grade else 0 for s in subjects]
-    }
-    
-    return JsonResponse(data)
-
-@login_required
-def api_top_students(request):
-    """Get top performing students"""
-    from django.contrib.auth import get_user_model
-    User = get_user_model()
-    
-    if not is_admin_user(request.user):
-        return JsonResponse({'error': 'Unauthorized'}, status=403)
-
-    # Simplified logic: Get students with highest average grades
-    # In a real app, this should be optimized
-    students = User.objects.filter(role='student').annotate(
-        avg_grade=Avg('grades__value'),
-        grades_count=Count('grades')
-    ).filter(grades_count__gt=0).order_by('-avg_grade')[:5]
-    
-    data = [{
-        'name': s.get_full_name(),
-        'average': round(s.avg_grade, 2),
-        'grades_count': s.grades_count
-    } for s in students]
-    
-    return JsonResponse({'top_students': data})
-
-@login_required
-def api_struggling_students(request):
-    """Get struggling students (avg < 3)"""
-    from django.contrib.auth import get_user_model
-    User = get_user_model()
-    
-    if not is_admin_user(request.user):
-        return JsonResponse({'error': 'Unauthorized'}, status=403)
-
-    students = User.objects.filter(role='student').annotate(
-        avg_grade=Avg('grades__value'),
-        grades_count=Count('grades')
-    ).filter(grades_count__gt=0, avg_grade__lt=3.0).order_by('avg_grade')[:5]
-    
-    data = [{
-        'name': s.get_full_name(),
-        'class': str(s.student_class) if hasattr(s, 'student_class') else 'N/A',
-        'average': round(s.avg_grade, 2),
-        'grades_count': s.grades_count
-    } for s in students]
-    
-    return JsonResponse({'struggling_students': data})
-
 

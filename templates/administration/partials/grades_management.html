@@ -57,14 +57,33 @@
 <nav id="gradesPagination" class="pagination-modern mt-3"></nav>
 
 <script>
-    function loadGrades() {
-        // Placeholder for grades loading
-        const grades = [
-            { id: 1, student: 'Jasur Karimov', subject: 'Matematika', teacher: 'Aziz Rahimov', grade: 5, date: '2024-02-08' },
-            { id: 2, student: 'Madina Aliyeva', subject: 'Fizika', teacher: 'Olim Tursunov', grade: 4, date: '2024-02-08' }
-        ];
+    window.loadGrades = function(page = 1) {
+        const student = document.getElementById('studentSearch')?.value || '';
+        const classId = document.getElementById('gradeClassFilter')?.value || '';
+        const subjectId = document.getElementById('gradeSubjectFilter')?.value || '';
+        const date = document.getElementById('gradeDateFilter')?.value || '';
 
+        fetch(`{% url 'grade_list' %}?page=${page}&student=${student}&class=${classId}&subject=${subjectId}&date=${date}`, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+            .then(r => r.json())
+            .then(data => {
+                window.renderGradesData(data.grades);
+                window.renderGradesPagination(data.total_pages, data.current_page);
+            })
+            .catch(err => {
+                console.error('Error loading grades:', err);
+                AdminUtils.Toast.show('{% trans "Xatolik yuz berdi!" %}', 'error');
+            });
+    }
+
+    window.renderGradesData = function(grades) {
         const tbody = document.getElementById('gradesTableBody');
+        if (!grades || grades.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center py-5"><p class="text-muted">{% trans "Baholar topilmadi" %}</p></td></tr>';
+            return;
+        }
+
         tbody.innerHTML = grades.map(g => `
         <tr>
             <td><strong>${g.student}</strong></td>
@@ -73,7 +92,7 @@
             <td><span class="badge ${g.grade >= 4 ? 'bg-success' : g.grade >= 3 ? 'bg-warning' : 'bg-danger'} rounded-pill px-3">${g.grade}</span></td>
             <td>${g.date}</td>
             <td>
-                <button onclick="deleteGrade(${g.id})" class="btn btn-sm btn-danger">
+                <button onclick="window.deleteGrade(${g.id})" class="btn btn-sm btn-danger" title="O'chirish">
                     <i class="bi bi-trash"></i>
                 </button>
             </td>
@@ -81,7 +100,51 @@
     `).join('');
     }
 
-    function deleteGrade(id) {
+    window.renderGradesPagination = function(totalPages, currentPage) {
+        const container = document.getElementById('gradesPagination');
+        if (!container || totalPages <= 1) {
+            if (container) container.innerHTML = '';
+            return;
+        }
+
+        let html = '';
+        for (let i = 1; i <= totalPages; i++) {
+            html += `<button class="btn btn-sm ${i === currentPage ? 'btn-primary' : 'btn-outline-primary'} ms-1" onclick="window.loadGrades(${i})">${i}</button>`;
+        }
+        container.innerHTML = html;
+    }
+
+    // Initialize on tab show
+    document.getElementById('grades-tab')?.addEventListener('shown.bs.tab', function () {
+        if (!window.gradesLoaded) {
+            window.loadGrades();
+            window.gradesLoaded = true;
+            
+            // Populate filters if not done
+            const classSelect = document.getElementById('gradeClassFilter');
+            const subjectSelect = document.getElementById('gradeSubjectFilter');
+            
+            if (classSelect && classSelect.options.length <= 1) {
+                // Populate from existing data or another fetch
+                {% for cls in classes %}
+                classSelect.add(new Option('{{ cls.name }}', '{{ cls.id }}'));
+                {% endfor %}
+            }
+            if (subjectSelect && subjectSelect.options.length <= 1) {
+                {% for subj in subjects %}
+                subjectSelect.add(new Option('{{ subj.name }}', '{{ subj.id }}'));
+                {% endfor %}
+            }
+        }
+    });
+
+    // Add event listeners for filters
+    document.getElementById('studentSearch')?.addEventListener('input', () => window.loadGrades(1));
+    document.getElementById('gradeClassFilter')?.addEventListener('change', () => window.loadGrades(1));
+    document.getElementById('gradeSubjectFilter')?.addEventListener('change', () => window.loadGrades(1));
+    document.getElementById('gradeDateFilter')?.addEventListener('change', () => window.loadGrades(1));
+
+    window.deleteGrade = function(id) {
         if (!confirm('{% trans "Bahoni o\'chirishga ishonchingiz komilmi?" %}')) return;
 
         fetch(`/administration/grades/${id}/delete/`, {

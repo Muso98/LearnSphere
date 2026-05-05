@@ -146,7 +146,9 @@
                             <label class="form-label">{% trans "Sinf (faqat o'quvchilar uchun)" %}</label>
                             <select class="form-select" name="student_class">
                                 <option value="">{% trans "Tanlash..." %}</option>
-                                <!-- Will be populated dynamically -->
+                                {% for cls in classes %}
+                                <option value="{{ cls.id }}">{{ cls.name }}</option>
+                                {% endfor %}
                             </select>
                         </div>
                         <div class="col-md-6">
@@ -309,8 +311,10 @@
                 f.querySelector('[name="phone"]').value = user.phone;
                 f.querySelector('[name="role"]').value = user.role;
                 f.querySelector('[name="is_active"]').checked = user.is_active;
-                if (user.student_class) {
-                    // Logic to select class
+                if (user.student_class_id) {
+                    f.querySelector('[name="student_class"]').value = user.student_class_id;
+                } else {
+                    f.querySelector('[name="student_class"]').value = '';
                 }
             }
         }

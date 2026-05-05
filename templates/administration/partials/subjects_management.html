@@ -30,24 +30,36 @@
 </div>
 
 <script>
-    function loadSubjects() {
-        // Placeholder
-        const subjects = [
-            { id: 1, name: 'Matematika', teacher_count: 3 },
-            { id: 2, name: 'Fizika', teacher_count: 2 },
-            { id: 3, name: 'Ona tili', teacher_count: 4 }
-        ];
+    window.loadSubjects = function() {
+        fetch('{% url "subject_list" %}', {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+            .then(r => r.json())
+            .then(data => {
+                window.renderSubjectsData(data.subjects);
+            })
+            .catch(err => {
+                console.error('Error loading subjects:', err);
+                AdminUtils.Toast.show('{% trans "Xatolik yuz berdi!" %}', 'error');
+            });
+    }
 
+    window.renderSubjectsData = function(subjects) {
         const tbody = document.getElementById('subjectsTableBody');
+        if (!subjects || subjects.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="3" class="text-center py-5"><p class="text-muted">{% trans "Fanlar topilmadi" %}</p></td></tr>';
+            return;
+        }
+
         tbody.innerHTML = subjects.map(subj => `
         <tr>
             <td><strong>${subj.name}</strong></td>
             <td><span class="badge bg-primary">${subj.teacher_count} {% trans "o'qituvchi" %}</span></td>
             <td class="table-actions">
-                <a href="/administration/subjects/${subj.id}/edit/" class="btn btn-sm btn-warning">
+                <a href="/administration/subjects/${subj.id}/update/" class="btn btn-sm btn-warning">
                     <i class="bi bi-pencil"></i> {% trans "Tahrirlash" %}
                 </a>
-                <button onclick="deleteSubject(${subj.id}, '${subj.name}')" class="btn btn-sm btn-danger">
+                <button onclick="window.deleteSubject(${subj.id}, '${subj.name}')" class="btn btn-sm btn-danger">
                     <i class="bi bi-trash"></i> {% trans "O'chirish" %}
                 </button>
             </td>
@@ -55,7 +67,15 @@
     `).join('');
     }
 
-    function deleteSubject(id, name) {
+    // Initialize on tab show
+    document.getElementById('subjects-tab')?.addEventListener('shown.bs.tab', function () {
+        if (!window.subjectsLoaded) {
+            window.loadSubjects();
+            window.subjectsLoaded = true;
+        }
+    });
+
+    window.deleteSubject = function(id, name) {
         if (!confirm(`${name} {% trans "fanini o'chirishga ishonchingiz komilmi?" %}`)) return;
 
         fetch(`/administration/subjects/${id}/delete/`, {
