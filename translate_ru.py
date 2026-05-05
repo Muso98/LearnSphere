@@ -129,6 +129,14 @@ translations = {
     "O'qituvchilar soni": "Количество учителей",
     "o'qituvchi": "учителей",
     "Tahrirlash": "Редактировать",
+    "Sinflar boshqaruvi": "Управление классами",
+    "Fanlar boshqaruvi": "Управление предметами",
+    "Boshqarish": "Управление",
+    "Hozircha sinflar yo'q": "Классов пока нет",
+    "Birinchi sinfni yarating": "Создайте первый класс",
+    "Yangi fan": "Новый предмет",
+    "Hozircha fanlar yo'q.": "Предметов пока нет.",
+    "Birinchi fanni yarating": "Создайте первый предмет",
 }
 
 po_path = 'locale/ru/LC_MESSAGES/django.po'
