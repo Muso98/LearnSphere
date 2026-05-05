@@ -38,7 +38,9 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost:8000',
     'http://127.0.0.1:8000',
     'https://learnsphere.uz',
+    'https://www.learnsphere.uz',
     'http://learnsphere.uz',
+    'http://www.learnsphere.uz',
     'http://84.247.161.165',
 ]
 
