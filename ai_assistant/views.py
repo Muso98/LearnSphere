@@ -6,7 +6,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
-from django.utils import timezone
+from django.utils import timezone, translation
 import json
 
 from .models import Conversation, Message
@@ -83,7 +83,8 @@ def send_message(request, conversation_id):
         )
         
         # Get appropriate agent
-        agent = _get_agent(conversation.agent_type, request.user, conversation)
+        language = translation.get_language()
+        agent = _get_agent(conversation.agent_type, request.user, conversation, language=language)
         
         # Process message
         result = agent.process_message(user_message)
@@ -136,11 +137,11 @@ def get_conversation_history(request, conversation_id):
         return JsonResponse({'error': str(e)}, status=500)
 
 
-def _get_agent(agent_type, user, conversation):
+def _get_agent(agent_type, user, conversation, language='uz'):
     """Get appropriate agent instance"""
     if agent_type == 'teacher':
-        return TeacherAgent(user, conversation)
+        return TeacherAgent(user, conversation, language=language)
     elif agent_type == 'parent':
-        return ParentAgent(user, conversation)
+        return ParentAgent(user, conversation, language=language)
     else:
-        return StudentAgent(user, conversation)
+        return StudentAgent(user, conversation, language=language)

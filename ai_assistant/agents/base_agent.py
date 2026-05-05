@@ -11,18 +11,20 @@ from datetime import datetime
 class BaseAgent(ABC):
     """Base class for all AI agents"""
     
-    def __init__(self, user, conversation=None):
+    def __init__(self, user, conversation=None, language='uz'):
         """
         Initialize agent
         
         Args:
             user: Django User object
             conversation: Conversation object (optional)
+            language: Current interface language
         """
         self.user = user
         self.conversation = conversation
+        self.language = language
         self.retriever = ContextRetriever(user)
-        self.prompt_builder = PromptBuilder(self.agent_type)
+        self.prompt_builder = PromptBuilder(self.agent_type, language=language)
     
     @property
     @abstractmethod

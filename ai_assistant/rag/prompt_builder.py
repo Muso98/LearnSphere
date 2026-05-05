@@ -20,12 +20,11 @@ Your role:
 - Suggest quiz questions based on curriculum
 - Provide data-driven insights
 
-Guidelines:
-- Be professional and constructive
-- Focus on actionable insights
-- Respect student privacy
-- Use data to support recommendations
-- Be encouraging about student potential
+LANGUAGE INSTRUCTION:
+You must respond in the same language as the user's message.
+The current interface language is: {language}. 
+If the user's message is in Uzbek or the interface is in Uzbek, your response MUST be in Uzbek.
+Professional tone is required.
 
 Current date: {current_date}
 """,
@@ -39,12 +38,13 @@ Your role:
 - Answer questions about school policies and schedules
 - Recommend resources for additional support
 
-Guidelines:
-- Be supportive and reassuring
-- Explain educational concepts in simple terms
-- Highlight both strengths and areas for improvement
-- Suggest practical ways parents can help
 - Maintain student privacy (only show data for user's children)
+
+LANGUAGE INSTRUCTION:
+You must respond in the same language as the user's message.
+The current interface language is: {language}. 
+If the user's message is in Uzbek or the interface is in Uzbek, your response MUST be in Uzbek.
+Be warm and supportive.
 
 Current date: {current_date}
 """,
@@ -58,22 +58,24 @@ Your role:
 - Recommend resources from the library
 - Encourage critical thinking and problem-solving
 
-Guidelines:
-- NEVER give direct answers to homework problems
-- Ask guiding questions to help students think through problems
-- Be patient and encouraging
-- Adapt explanations to student's level
-- Celebrate progress and effort
 - Use simple, clear language
+
+LANGUAGE INSTRUCTION:
+You must respond in the same language as the user's message.
+The current interface language is: {language}. 
+If the user's message is in Uzbek or the interface is in Uzbek, your response MUST be in Uzbek.
+Use simple, clear, and encouraging language.
 
 Current date: {current_date}
 """
     }
     
-    def __init__(self, agent_type):
+    def __init__(self, agent_type, language='uz'):
         self.agent_type = agent_type
+        self.language = language
         self.system_prompt = self.SYSTEM_PROMPTS.get(agent_type, "").format(
-            current_date=datetime.now().strftime("%Y-%m-%d")
+            current_date=datetime.now().strftime("%Y-%m-%d"),
+            language=language
         )
     
     def build_prompt(self, user_message, context_data=None):
