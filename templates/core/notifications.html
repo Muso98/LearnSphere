@@ -1,13 +1,12 @@
-{% extends 'base.html' %}
-
-{% block title %}Bildirishnomalar - LearnSphere{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Bildirishnomalar" %} - LearnSphere{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-8">
         <div class="card shadow-sm">
             <div class="card-header bg-primary text-white">
-                <h5 class="mb-0">Bildirishnomalar</h5>
+                <h5 class="mb-0">{% trans "Bildirishnomalar" %}</h5>
             </div>
             <div class="list-group list-group-flush">
                 {% for notification in notifications %}
@@ -15,14 +14,14 @@
                     <div class="d-flex w-100 justify-content-between">
                         <small class="text-muted">{{ notification.created_at|date:"M d, H:i" }}</small>
                         {% if not notification.is_read %}
-                        <span class="badge bg-danger rounded-pill">Yangi</span>
+                        <span class="badge bg-danger rounded-pill">{% trans "Yangi" %}</span>
                         {% endif %}
                     </div>
                     <p class="mb-1">{{ notification.message }}</p>
                 </div>
                 {% empty %}
                 <div class="list-group-item text-center py-4">
-                    <p class="mb-0 text-muted">Sizda yangi bildirishnomalar yo'q.</p>
+                    <p class="mb-0 text-muted">{% trans "Sizda yangi bildirishnomalar yo'q." %}</p>
                 </div>
                 {% endfor %}
             </div>

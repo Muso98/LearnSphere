@@ -1,6 +1,5 @@
-{% extends 'base.html' %}
-
-{% block title %}Profil - LearnSphere{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Profil" %} - LearnSphere{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
@@ -8,7 +7,7 @@
         <div class="card shadow-sm">
             <div class="card-header bg-gradient text-white"
                 style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                <h4 class="mb-0"><i class="bi bi-person-circle me-2"></i>Foydalanuvchi Profili</h4>
+                <h4 class="mb-0"><i class="bi bi-person-circle me-2"></i>{% trans "Foydalanuvchi Profili" %}</h4>
             </div>
             <div class="card-body p-4">
                 <form method="post" enctype="multipart/form-data">
@@ -28,7 +27,7 @@
                             {% endif %}
                             <label for="profile_picture"
                                 class="position-absolute bottom-0 end-0 btn btn-sm btn-primary rounded-circle"
-                                style="width: 40px; height: 40px; cursor: pointer;" title="Rasmni o'zgartirish">
+                                style="width: 40px; height: 40px; cursor: pointer;" title="{% trans "Rasmni o'zgartirish" %}">
                                 <i class="bi bi-camera-fill"></i>
                             </label>
                             <input type="file" id="profile_picture" name="profile_picture" class="d-none"
@@ -41,12 +40,12 @@
                     <!-- Profile Information -->
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <label class="form-label fw-bold"><i class="bi bi-person me-2"></i>Ism</label>
+                            <label class="form-label fw-bold"><i class="bi bi-person me-2"></i>{% trans "Ism" %}</label>
                             <input type="text" name="first_name" class="form-control" value="{{ user.first_name }}"
                                 required>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label fw-bold"><i class="bi bi-person me-2"></i>Familiya</label>
+                            <label class="form-label fw-bold"><i class="bi bi-person me-2"></i>{% trans "Familiya" %}</label>
                             <input type="text" name="last_name" class="form-control" value="{{ user.last_name }}"
                                 required>
                         </div>
@@ -55,12 +54,12 @@
                             <input type="email" name="email" class="form-control" value="{{ user.email }}">
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label fw-bold"><i class="bi bi-telephone me-2"></i>Telefon</label>
+                            <label class="form-label fw-bold"><i class="bi bi-telephone me-2"></i>{% trans "Telefon" %}</label>
                             <input type="text" name="phone" class="form-control" value="{{ user.phone|default:'' }}"
                                 placeholder="+998 XX XXX XX XX">
                         </div>
                         <div class="col-12">
-                            <label class="form-label fw-bold"><i class="bi bi-chat-left-text me-2"></i>Bio</label>
+                            <label class="form-label fw-bold"><i class="bi bi-chat-left-text me-2"></i>{% trans "Bio" %}</label>
                             <textarea name="bio" class="form-control" rows="3"
                                 placeholder="O'zingiz haqingizda qisqacha...">{{ user.bio|default:'' }}</textarea>
                         </div>
@@ -69,18 +68,18 @@
                     <!-- Role-specific Information -->
                     {% if user.role == 'student' and user.student_class %}
                     <div class="alert alert-info mt-3">
-                        <i class="bi bi-building me-2"></i><strong>Sinf:</strong> {{ user.student_class }}
+                        <i class="bi bi-building me-2"></i><strong>{% trans "Sinf" %}:</strong> {{ user.student_class }}
                     </div>
                     {% endif %}
 
                     {% if user.role == 'parent' %}
                     <div class="mt-3">
-                        <h6 class="fw-bold"><i class="bi bi-people me-2"></i>Farzandlar:</h6>
+                        <h6 class="fw-bold"><i class="bi bi-people me-2"></i>{% trans "Farzandlar" %}:</h6>
                         <ul class="list-group">
                             {% for child in children %}
                             <li class="list-group-item">{{ child.first_name }} {{ child.last_name }} - {{ child.student_class }}</li>
                             {% empty %}
-                            <li class="list-group-item text-muted">Farzandlar biriktirilmagan.</li>
+                            <li class="list-group-item text-muted">{% trans "Farzandlar biriktirilmagan." %}</li>
                             {% endfor %}
                         </ul>
                     </div>
@@ -88,17 +87,17 @@
 
                     {% if user.role == 'teacher' %}
                     <div class="alert alert-success mt-3">
-                        <i class="bi bi-award me-2"></i><strong>Qo'yilgan baholar:</strong> {{ grades_given }}
+                        <i class="bi bi-award me-2"></i><strong>{% trans "Qo'yilgan baholar" %}:</strong> {{ grades_given }}
                     </div>
                     {% endif %}
 
                     <!-- Action Buttons -->
                     <div class="d-grid gap-2 mt-4">
                         <button type="submit" class="btn btn-primary btn-lg">
-                            <i class="bi bi-check-circle me-2"></i>Saqlash
+                            <i class="bi bi-check-circle me-2"></i>{% trans "Saqlash" %}
                         </button>
                         <a href="{% url 'home' %}" class="btn btn-outline-secondary">
-                            <i class="bi bi-arrow-left me-2"></i>Bekor qilish
+                            <i class="bi bi-arrow-left me-2"></i>{% trans "Bekor qilish" %}
                         </a>
                     </div>
                 </form>
@@ -114,8 +113,7 @@
     <div class="col-lg-8">
         <div class="card shadow-sm">
             <div class="card-header bg-white">
-                <h5 class="mb-0 fw-bold text-primary"><i class="bi bi-cpu-fill me-2"></i>AI Tahlil: Qobiliyatlar
-                    Xaritasi</h5>
+                <h5 class="mb-0 fw-bold text-primary"><i class="bi bi-cpu-fill me-2"></i>{% trans "AI Tahlil: Qobiliyatlar Xaritasi" %}</h5>
             </div>
             <div class="card-body">
                 <div class="row align-items-center">
@@ -123,33 +121,33 @@
                         <canvas id="skillRadarChart"></canvas>
                     </div>
                     <div class="col-md-5">
-                        <h6 class="text-muted text-uppercase small fw-bold mb-3">Xulosa</h6>
+                        <h6 class="text-muted text-uppercase small fw-bold mb-3">{% trans "Xulosa" %}</h6>
                         <ul class="list-group list-group-flush small">
                             <li class="list-group-item d-flex justify-content-between px-0">
-                                <span>Tanqidiy fikrlash</span>
+                                <span>{% trans "Tanqidiy fikrlash" %}</span>
                                 <span class="fw-bold text-primary">{{ skill_map.critical_thinking }}%</span>
                             </li>
                             <li class="list-group-item d-flex justify-content-between px-0">
-                                <span>Ijodkorlik</span>
+                                <span>{% trans "Ijodkorlik" %}</span>
                                 <span class="fw-bold text-success">{{ skill_map.creativity }}%</span>
                             </li>
                             <li class="list-group-item d-flex justify-content-between px-0">
-                                <span>Muloqot</span>
+                                <span>{% trans "Muloqot" %}</span>
                                 <span class="fw-bold text-info">{{ skill_map.communication }}%</span>
                             </li>
                             <li class="list-group-item d-flex justify-content-between px-0">
-                                <span>Jamoaviy ishlash</span>
+                                <span>{% trans "Jamoaviy ishlash" %}</span>
                                 <span class="fw-bold text-warning">{{ skill_map.teamwork }}%</span>
                             </li>
                             <li class="list-group-item d-flex justify-content-between px-0">
-                                <span>Moslashuvchanlik</span>
+                                <span>{% trans "Moslashuvchanlik" %}</span>
                                 <span class="fw-bold text-secondary">{{ skill_map.adaptive_learning }}%</span>
                             </li>
                         </ul>
                         <div class="mt-3 text-muted" style="font-size: 0.8rem;">
-                            <i class="bi bi-info-circle me-1"></i> So'nggi yangilanish: {{ skill_map.updated_at|date:"d.m.Y" }}
+                            <i class="bi bi-info-circle me-1"></i> {% trans "So'nggi yangilanish" %}: {{ skill_map.updated_at|date:"d.m.Y" }}
                             <br>
-                            (O'qituvchi: {{ skill_map.updated_by.get_full_name }})
+                            ({% trans "O'qituvchi" %}: {{ skill_map.updated_by.get_full_name }})
                         </div>
                     </div>
                 </div>
@@ -167,14 +165,14 @@
             type: 'radar',
             data: {
                 labels: [
-                    'Tanqidiy Fikrlash',
-                    'Ijodkorlik',
-                    'Muloqot',
-                    'Jamoaviy Ishlash',
-                    'Moslashuvchanlik'
+                    '{% trans "Tanqidiy Fikrlash" %}',
+                    '{% trans "Ijodkorlik" %}',
+                    '{% trans "Muloqot" %}',
+                    '{% trans "Jamoaviy Ishlash" %}',
+                    '{% trans "Moslashuvchanlik" %}'
                 ],
                 datasets: [{
-                    label: 'O\'quvchi Ko\'rsatkichlari',
+                    label: '{% trans "O'quvchi Ko'rsatkichlari" %}',
                     data: [
                         {{ skill_map.critical_thinking }},
                 {{ skill_map.creativity }},
