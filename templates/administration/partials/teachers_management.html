@@ -65,7 +65,7 @@
         const subject = document.getElementById('teacherSubjectFilter')?.value || '';
         const cls = document.getElementById('teacherClassFilter')?.value || '';
 
-        fetch(`/administration/teacher-assignment/?search=${search}&subject=${subject}&class=${cls}`, {
+        fetch(`{% url 'teacher_assignment' %}?search=${search}&subject=${subject}&class=${cls}`, {
             headers: { 'X-Requested-With': 'XMLHttpRequest' }
         })
             .then(r => r.json())
@@ -103,7 +103,8 @@
     window.deleteAssignment = function(id) {
         if (!confirm('{% trans "Tayinlashni bekor qilishga ishonchingiz komilmi?"|escapejs %}')) return;
 
-        fetch(`/administration/teacher-assignment/${id}/delete/`, {
+        let url = "{% url 'teacher_assignment_delete' 0 %}".replace('0', id);
+        fetch(url, {
             method: 'POST',
             headers: { 'X-CSRFToken': AdminUtils.csrftoken }
         })
@@ -121,14 +122,4 @@
             });
     }
 
-    // Initial load when tab is shown
-    const teachersTab = document.getElementById('teachers-tab');
-    if (teachersTab) {
-        teachersTab.addEventListener('shown.bs.tab', function() {
-            if (!window.teachersLoaded) {
-                window.loadTeacherAssignments();
-                window.teachersLoaded = true;
-            }
-        });
-    }
 </script>

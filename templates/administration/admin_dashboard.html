@@ -129,6 +129,34 @@
         window.gradesLoaded = false;
         window.attendanceLoaded = false;
         window.teachersLoaded = false;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('[data-bs-toggle="tab"]');
+            tabs.forEach(tab => {
+                tab.addEventListener('shown.bs.tab', function(e) {
+                    const targetId = e.target.id;
+                    if (targetId === 'users-tab' && !window.usersLoaded) {
+                        window.loadUsers?.();
+                        window.usersLoaded = true;
+                    } else if (targetId === 'classes-tab' && !window.classesLoaded) {
+                        window.loadClasses?.();
+                        window.classesLoaded = true;
+                    } else if (targetId === 'subjects-tab' && !window.subjectsLoaded) {
+                        window.loadSubjects?.();
+                        window.subjectsLoaded = true;
+                    } else if (targetId === 'grades-tab' && !window.gradesLoaded) {
+                        window.loadGrades?.();
+                        window.gradesLoaded = true;
+                    } else if (targetId === 'attendance-tab' && !window.attendanceLoaded) {
+                        window.loadAttendance?.();
+                        window.attendanceLoaded = true;
+                    } else if (targetId === 'teachers-tab' && !window.teachersLoaded) {
+                        window.loadTeacherAssignments?.();
+                        window.teachersLoaded = true;
+                    }
+                });
+            });
+        });
     </script>
 
     <!-- Tab Content -->

@@ -51,10 +51,10 @@
                     <span class="badge bg-primary rounded-pill">${cls.student_count} {% trans "o'quvchi" %}</span>
                 </div>
                 <div class="d-flex gap-2">
-                    <a href="/administration/classes/${cls.id}/students/" class="btn btn-sm btn-info flex-fill">
+                    <a href="${"{% url 'class_students' 0 %}".replace('0', cls.id)}" class="btn btn-sm btn-info flex-fill">
                         <i class="bi bi-people"></i> {% trans "O'quvchilar" %}
                     </a>
-                    <a href="/administration/classes/${cls.id}/update/" class="btn btn-sm btn-warning">
+                    <a href="${"{% url 'class_edit' 0 %}".replace('0', cls.id)}" class="btn btn-sm btn-warning">
                         <i class="bi bi-pencil"></i>
                     </a>
                     <button onclick="window.deleteClass(${cls.id}, '${cls.name}')" class="btn btn-sm btn-danger">
@@ -66,18 +66,12 @@
     `).join('');
     }
 
-    // Initialize on tab show
-    document.getElementById('classes-tab')?.addEventListener('shown.bs.tab', function () {
-        if (!window.classesLoaded) {
-            window.loadClasses();
-            window.classesLoaded = true;
-        }
-    });
 
     window.deleteClass = function(id, name) {
         if (!confirm(`${name} {% trans "sinfni o'chirishga ishonchingiz komilmi?"|escapejs %}`)) return;
 
-        fetch(`/administration/classes/${id}/delete/`, {
+        const url = "{% url 'class_delete' 0 %}".replace('0', id);
+        fetch(url, {
             method: 'POST',
             headers: { 'X-CSRFToken': AdminUtils.csrftoken }
         })

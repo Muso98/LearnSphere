@@ -114,29 +114,6 @@
         container.innerHTML = html;
     }
 
-    // Initialize on tab show
-    document.getElementById('grades-tab')?.addEventListener('shown.bs.tab', function () {
-        if (!window.gradesLoaded) {
-            window.loadGrades();
-            window.gradesLoaded = true;
-            
-            // Populate filters if not done
-            const classSelect = document.getElementById('gradeClassFilter');
-            const subjectSelect = document.getElementById('gradeSubjectFilter');
-            
-            if (classSelect && classSelect.options.length <= 1) {
-                // Populate from existing data or another fetch
-                {% for cls in classes %}
-                classSelect.add(new Option('{{ cls.name }}', '{{ cls.id }}'));
-                {% endfor %}
-            }
-            if (subjectSelect && subjectSelect.options.length <= 1) {
-                {% for subj in subjects %}
-                subjectSelect.add(new Option('{{ subj.name }}', '{{ subj.id }}'));
-                {% endfor %}
-            }
-        }
-    });
 
     // Add event listeners for filters
     document.getElementById('studentSearch')?.addEventListener('input', () => window.loadGrades(1));

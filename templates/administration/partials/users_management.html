@@ -392,13 +392,6 @@
         window.loadUsers();
     }
 
-    // Initialize on tab show
-    document.getElementById('users-tab')?.addEventListener('shown.bs.tab', function () {
-        if (!window.usersLoaded) {
-            window.loadUsers();
-            window.usersLoaded = true;
-        }
-    });
 </script>
 
 <style>

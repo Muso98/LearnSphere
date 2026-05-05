@@ -113,21 +113,6 @@
         container.innerHTML = html;
     }
 
-    // Initialize on tab show
-    document.getElementById('attendance-tab')?.addEventListener('shown.bs.tab', function () {
-        if (!window.attendanceLoaded) {
-            window.loadAttendance();
-            window.attendanceLoaded = true;
-            
-            // Populate filters if not done
-            const classSelect = document.getElementById('attendanceClassFilter');
-            if (classSelect && classSelect.options.length <= 1) {
-                {% for cls in classes %}
-                classSelect.add(new Option('{{ cls.name }}', '{{ cls.id }}'));
-                {% endfor %}
-            }
-        }
-    });
 
     // Add event listeners for filters
     document.getElementById('attendanceClassFilter')?.addEventListener('change', () => window.loadAttendance(1));

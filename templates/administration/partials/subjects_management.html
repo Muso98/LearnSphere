@@ -56,7 +56,7 @@
             <td><strong>${subj.name}</strong></td>
             <td><span class="badge bg-primary">${subj.teacher_count} {% trans "o'qituvchi" %}</span></td>
             <td class="table-actions">
-                <a href="/administration/subjects/${subj.id}/update/" class="btn btn-sm btn-warning">
+                <a href="${"{% url 'subject_edit' 0 %}".replace('0', subj.id)}" class="btn btn-sm btn-warning">
                     <i class="bi bi-pencil"></i> {% trans "Tahrirlash" %}
                 </a>
                 <button onclick="window.deleteSubject(${subj.id}, '${subj.name}')" class="btn btn-sm btn-danger">
@@ -67,18 +67,12 @@
     `).join('');
     }
 
-    // Initialize on tab show
-    document.getElementById('subjects-tab')?.addEventListener('shown.bs.tab', function () {
-        if (!window.subjectsLoaded) {
-            window.loadSubjects();
-            window.subjectsLoaded = true;
-        }
-    });
 
     window.deleteSubject = function(id, name) {
         if (!confirm(`${name} {% trans "fanini o'chirishga ishonchingiz komilmi?"|escapejs %}`)) return;
 
-        fetch(`/administration/subjects/${id}/delete/`, {
+        const url = "{% url 'subject_delete' 0 %}".replace('0', id);
+        fetch(url, {
             method: 'POST',
             headers: { 'X-CSRFToken': AdminUtils.csrftoken }
         })
