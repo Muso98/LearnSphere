@@ -29,7 +29,7 @@
             })
             .catch(err => {
                 console.error('Error loading classes:', err);
-                AdminUtils.Toast.show('{% trans "Xatolik yuz berdi!" %}', 'error');
+                AdminUtils.Toast.show('{% trans "Xatolik yuz berdi!"|escapejs %}', 'error');
             });
     }
 
@@ -75,7 +75,7 @@
     });
 
     window.deleteClass = function(id, name) {
-        if (!confirm(`${name} {% trans "sinfni o'chirishga ishonchingiz komilmi?" %}`)) return;
+        if (!confirm(`${name} {% trans "sinfni o'chirishga ishonchingiz komilmi?"|escapejs %}`)) return;
 
         fetch(`/administration/classes/${id}/delete/`, {
             method: 'POST',
@@ -84,10 +84,10 @@
             .then(r => r.json())
             .then(data => {
                 if (data.success) {
-                    AdminUtils.Toast.show('{% trans "Sinf o\'chirildi!" %}', 'success');
+                    AdminUtils.Toast.show('{% trans "Sinf o\'chirildi!"|escapejs %}', 'success');
                     loadClasses();
                 } else {
-                    AdminUtils.Toast.show(data.message || '{% trans "Xatolik!" %}', 'error');
+                    AdminUtils.Toast.show(data.message || '{% trans "Xatolik!"|escapejs %}', 'error');
                 }
             });
     }

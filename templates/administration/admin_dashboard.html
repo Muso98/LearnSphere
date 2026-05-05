@@ -112,14 +112,14 @@
     <script>
         window.AdminUtils = window.AdminUtils || {};
         window.AdminUtils.Translations = {
-            loading: '{% trans "Yuklanmoqda..." %}',
-            success_save: '{% trans "Muvaffaqiyatli saqlandi!" %}',
-            error_general: '{% trans "Xatolik yuz berdi!" %}',
-            error_network: '{% trans "Tarmoq xatosi!" %}',
-            save: '{% trans "Saqlash" %}',
-            no_selection: '{% trans "Hech narsa tanlanmagan!" %}',
-            delete_confirm: '{% trans "ni o\'chirishga ishonchingiz komilmi?" %}',
-            success_delete: '{% trans "Muvaffaqiyatli o\'chirildi!" %}',
+            loading: '{% trans "Yuklanmoqda..."|escapejs %}',
+            success_save: '{% trans "Muvaffaqiyatli saqlandi!"|escapejs %}',
+            error_general: '{% trans "Xatolik yuz berdi!"|escapejs %}',
+            error_network: '{% trans "Tarmoq xatosi!"|escapejs %}',
+            save: '{% trans "Saqlash"|escapejs %}',
+            no_selection: '{% trans "Hech narsa tanlanmagan!"|escapejs %}',
+            delete_confirm: '{% trans "ni o\'chirishga ishonchingiz komilmi?"|escapejs %}',
+            success_delete: '{% trans "Muvaffaqiyatli o\'chirildi!"|escapejs %}',
         };
         
         // Tab initial load tracking

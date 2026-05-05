@@ -71,7 +71,7 @@
             })
             .catch(err => {
                 console.error('Error loading attendance:', err);
-                AdminUtils.Toast.show('{% trans "Xatolik yuz berdi!" %}', 'error');
+                AdminUtils.Toast.show('{% trans "Xatolik yuz berdi!"|escapejs %}', 'error');
             });
     }
 
@@ -162,7 +162,7 @@
             .then(r => r.json())
             .then(data => {
                 if (data.success) {
-                    AdminUtils.Toast.show('{% trans "Davomat yangilandi!" %}', 'success');
+                    AdminUtils.Toast.show('{% trans "Davomat yangilandi!"|escapejs %}', 'success');
                     loadAttendance();
                 }
             });

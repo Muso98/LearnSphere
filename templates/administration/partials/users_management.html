@@ -194,7 +194,7 @@
             })
             .catch(err => {
                 console.error('Error loading users:', err);
-                AdminUtils.Toast.show('{% trans "Xatolik yuz berdi!" %}', 'error');
+                AdminUtils.Toast.show('{% trans "Xatolik yuz berdi!"|escapejs %}', 'error');
             });
     }
 
@@ -344,30 +344,30 @@
             .then(r => r.json())
             .then(data => {
                 if (data.success) {
-                    AdminUtils.Toast.show(data.message || '{% trans "Muvaffaqiyatli saqlandi!" %}', 'success');
+                    AdminUtils.Toast.show(data.message || '{% trans "Muvaffaqiyatli saqlandi!"|escapejs %}', 'success');
                     userModal.hide();
                     window.loadUsers();
                 } else {
                     if (data.errors) {
-                        let errorMsg = '{% trans "Xatoliklar" %}:<br>';
+                        let errorMsg = '{% trans "Xatoliklar"|escapejs %}:<br>';
                         for (const [field, errors] of Object.entries(data.errors)) {
                             errorMsg += `- <b>${field}:</b> ${errors.join(', ')}<br>`;
                         }
                         AdminUtils.Toast.show(errorMsg, 'error');
                         console.error('Form errors:', data.errors);
                     } else {
-                        AdminUtils.Toast.show(data.message || '{% trans "Xatolik yuz berdi!" %}', 'error');
+                        AdminUtils.Toast.show(data.message || '{% trans "Xatolik yuz berdi!"|escapejs %}', 'error');
                     }
                 }
             })
             .catch(err => {
                 console.error('Save error:', err);
-                AdminUtils.Toast.show('{% trans "Tarmoq xatosi!" %}', 'error');
+                AdminUtils.Toast.show('{% trans "Tarmoq xatosi!"|escapejs %}', 'error');
             });
     }
 
     window.deleteUser = function(userId, username) {
-        if (!confirm(`{% trans "ni o'chirishga ishonchingiz komilmi?" %}`.replace('ni', username + 'ni'))) return;
+        if (!confirm(`{% trans "ni o'chirishga ishonchingiz komilmi?"|escapejs %}`.replace('ni', username + 'ni'))) return;
 
         const url = "{% url 'user_delete' 0 %}".replace('0', userId);
         fetch(url, {
@@ -380,7 +380,7 @@
             .then(r => r.json())
             .then(data => {
                 if (data.success) {
-                    AdminUtils.Toast.show(data.message || '{% trans "Muvaffaqiyatli o\'chirildi!" %}', 'success');
+                    AdminUtils.Toast.show(data.message || '{% trans "Muvaffaqiyatli o\'chirildi!"|escapejs %}', 'success');
                     window.loadUsers();
                 } else {
                     AdminUtils.Toast.show(data.message || '{% trans "Xatolik yuz berdi!" %}', 'error');

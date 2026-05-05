@@ -73,7 +73,7 @@
             })
             .catch(err => {
                 console.error('Error loading grades:', err);
-                AdminUtils.Toast.show('{% trans "Xatolik yuz berdi!" %}', 'error');
+                AdminUtils.Toast.show('{% trans "Xatolik yuz berdi!"|escapejs %}', 'error');
             });
     }
 
@@ -145,7 +145,7 @@
     document.getElementById('gradeDateFilter')?.addEventListener('change', () => window.loadGrades(1));
 
     window.deleteGrade = function(id) {
-        if (!confirm('{% trans "Bahoni o\'chirishga ishonchingiz komilmi?" %}')) return;
+        if (!confirm('{% trans "Bahoni o\'chirishga ishonchingiz komilmi?"|escapejs %}')) return;
 
         fetch(`/administration/grades/${id}/delete/`, {
             method: 'POST',
@@ -154,7 +154,7 @@
             .then(r => r.json())
             .then(data => {
                 if (data.success) {
-                    AdminUtils.Toast.show('{% trans "Baho o\'chirildi!" %}', 'success');
+                    AdminUtils.Toast.show('{% trans "Baho o\'chirildi!"|escapejs %}', 'success');
                     loadGrades();
                 }
             });

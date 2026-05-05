@@ -40,7 +40,7 @@
             })
             .catch(err => {
                 console.error('Error loading subjects:', err);
-                AdminUtils.Toast.show('{% trans "Xatolik yuz berdi!" %}', 'error');
+                AdminUtils.Toast.show('{% trans "Xatolik yuz berdi!"|escapejs %}', 'error');
             });
     }
 
@@ -76,7 +76,7 @@
     });
 
     window.deleteSubject = function(id, name) {
-        if (!confirm(`${name} {% trans "fanini o'chirishga ishonchingiz komilmi?" %}`)) return;
+        if (!confirm(`${name} {% trans "fanini o'chirishga ishonchingiz komilmi?"|escapejs %}`)) return;
 
         fetch(`/administration/subjects/${id}/delete/`, {
             method: 'POST',
@@ -85,10 +85,10 @@
             .then(r => r.json())
             .then(data => {
                 if (data.success) {
-                    AdminUtils.Toast.show('{% trans "Fan o\'chirildi!" %}', 'success');
+                    AdminUtils.Toast.show('{% trans "Fan o\'chirildi!"|escapejs %}', 'success');
                     loadSubjects();
                 } else {
-                    AdminUtils.Toast.show(data.message || '{% trans "Xatolik!" %}', 'error');
+                    AdminUtils.Toast.show(data.message || '{% trans "Xatolik!"|escapejs %}', 'error');
                 }
             });
     }

@@ -243,7 +243,7 @@
                 const btn = document.querySelector('#rewardModal .modal-footer .btn-primary');
                 const originalText = btn.textContent;
                 btn.disabled = true;
-                btn.textContent = '{% trans "Saqlanmoqda..." %}';
+                btn.textContent = '{% trans "Saqlanmoqda..."|escapejs %}';
 
                 fetch(url, {
                     method: 'POST',
@@ -261,12 +261,12 @@
                             loadRewards();
                             safeShowToast(data.message, 'success');
                         } else {
-                            safeShowToast(data.message || "{% trans 'Xatolik yuz berdi' %}", 'error');
+                            safeShowToast(data.message || "{% trans 'Xatolik yuz berdi'|escapejs %}", 'error');
                         }
                     })
                     .catch(err => {
                         console.error(err);
-                        safeShowToast('{% trans "Tarmoq xatosi" %}', 'error');
+                        safeShowToast('{% trans "Tarmoq xatosi"|escapejs %}', 'error');
                     })
                     .finally(() => {
                         btn.disabled = false;
@@ -275,7 +275,7 @@
             };
 
             window.deleteReward = function (id) {
-                if (!confirm("{% trans 'Haqiqatan ham bu mahsulotni o\'chirmoqchimisiz?' %}")) return;
+                if (!confirm("{% trans 'Haqiqatan ham bu mahsulotni o\'chirmoqchimisiz?'|escapejs %}")) return;
 
                 fetch(`${shopUrls.rewardsList}${id}/delete/`, {
                     method: 'POST',
@@ -295,7 +295,7 @@
                     })
                     .catch(err => {
                         console.error(err);
-                        safeShowToast('{% trans "Tarmoq xatosi" %}', 'error');
+                        safeShowToast('{% trans "Tarmoq xatosi"|escapejs %}', 'error');
                     });
             };
 
@@ -491,7 +491,7 @@
             window.loadRedemptions = loadRedemptions;
 
             window.processRedemption = function (id, status) {
-                const msg = status === 'approved' ? '{% trans "Tasdiqlaysizmi?" %}' : '{% trans "Rad etasizmi?" %}';
+                const msg = status === 'approved' ? '{% trans "Tasdiqlaysizmi?"|escapejs %}' : '{% trans "Rad etasizmi?"|escapejs %}';
                 if (!confirm(msg)) return;
 
                 fetch(`${shopUrls.redemptionsList}${id}/process/`, {
