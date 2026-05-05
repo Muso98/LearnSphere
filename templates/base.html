@@ -7,7 +7,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}LearnSphere - Zamonaviy Ta'lim Platformasi{% endblock %}</title>
+    <title>{% block title %}LearnSphere - {% trans "Zamonaviy Ta'lim Platformasi" %}{% endblock %}</title>
     <meta name="google-site-verification" content="a5748bb5ff4f0777" />
     <meta name="yandex-verification" content="a5748bb5ff4f0777" />
     
@@ -358,10 +358,10 @@
                             href="{% url 'ai_assistant:chat_interface' %}"
                             style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-weight: 500;">
                             <i class="bi bi-robot me-2"></i>
-                            {% if user.role == 'teacher' %}AI Yordamchi
-                            {% elif user.role == 'parent' %}AI Monitor
-                            {% elif user.role == 'student' %}AI O'qituvchi
-                            {% else %}AI Assistant{% endif %}
+                            {% if user.role == 'teacher' %}{% trans "AI Yordamchi" %}
+                            {% elif user.role == 'parent' %}{% trans "AI Monitor" %}
+                            {% elif user.role == 'student' %}{% trans "AI O'qituvchi" %}
+                            {% else %}{% trans "AI Assistant" %}{% endif %}
                         </a>
                     </li>
                     <li class="nav-item me-4">
@@ -438,7 +438,7 @@
     {% if user.is_authenticated %}
     <aside class="sidebar" id="sidebar">
         <ul class="sidebar-nav">
-            <li class="px-3 mb-3 text-muted text-uppercase small fw-bold">Menu</li>
+            <li class="px-3 mb-3 text-muted text-uppercase small fw-bold">{% trans "Menyu" %}</li>
 
             {% if user.role == 'student' %}
             <li><a href="{% url 'student_dashboard' %}"
@@ -524,7 +524,7 @@
 
             <li><a href="{% url 'meeting_list' %}"
                     class="{% if 'meeting' in request.path %}active{% endif %} d-flex align-items-center">
-                    <i class="bi bi-camera-video-fill me-2"></i> Majlislar
+                    <i class="bi bi-camera-video-fill me-2"></i> {% trans "Majlislar" %}
                     {% if upcoming_meetings_count > 0 %}
                     <span class="badge bg-danger rounded-pill ms-auto">{{ upcoming_meetings_count }}</span>
                     {% endif %}
@@ -533,34 +533,34 @@
             {% elif user.role == 'director' or user.role == 'admin' %}
             <li><a href="{% url 'director_dashboard' %}"
                     class="{% if 'dashboard' in request.path and 'admin' not in request.path %}active{% endif %}"><i
-                        class="bi bi-speedometer2"></i> Dashboard</a></li>
+                        class="bi bi-speedometer2"></i> {% trans "Dashboard" %}</a></li>
             <li><a href="{% url 'admin_dashboard' %}"
                     class="{% if 'admin' in request.path and 'dashboard' in request.path %}active{% endif %}"><i
-                        class="bi bi-gear-fill"></i> Admin Panel</a></li>
+                        class="bi bi-gear-fill"></i> {% trans "Admin Panel" %}</a></li>
             <li><a href="{% url 'schedule_list' %}" class="{% if 'schedule' in request.path %}active{% endif %}"><i
-                        class="bi bi-calendar3"></i> Jadval Boshqaruvi</a></li>
+                        class="bi bi-calendar3"></i> {% trans "Jadval Boshqaruvi" %}</a></li>
             <li><a href="{% url 'teacher_assignment' %}" class="{% if 'teachers' in request.path %}active{% endif %}"><i
-                        class="bi bi-person-check-fill"></i> O'qituvchi Biriktiruvi</a></li>
+                        class="bi bi-person-check-fill"></i> {% trans "O'qituvchi Biriktiruvi" %}</a></li>
             <li><a href="{% url 'notifications' %}" class="{% if 'notifications' in request.path %}active{% endif %}"><i
-                        class="bi bi-bell-fill"></i> Bildirishnomalar</a></li>
+                        class="bi bi-bell-fill"></i> {% trans "Bildirishnomalar" %}</a></li>
             <li><a href="{% url 'profile' %}" class="{% if 'profile' in request.path %}active{% endif %}"><i
-                        class="bi bi-shield-lock-fill"></i> Profil</a></li>
+                        class="bi bi-shield-lock-fill"></i> {% trans "Profil" %}</a></li>
             <li><a href="{% url 'chat_list' %}"
                     class="{% if 'chat' in request.path %}active{% endif %} d-flex align-items-center">
-                    <i class="bi bi-chat-text-fill me-2"></i> Xabarlar
+                    <i class="bi bi-chat-text-fill me-2"></i> {% trans "Xabarlar" %}
                     {% if unread_messages_count > 0 %}
                     <span class="badge bg-danger rounded-pill ms-auto">{{ unread_messages_count }}</span>
                     {% endif %}
                 </a></li>
             <li><a href="{% url 'meeting_list' %}"
                     class="{% if 'meeting' in request.path %}active{% endif %} d-flex align-items-center">
-                    <i class="bi bi-camera-video-fill me-2"></i> Majlislar
+                    <i class="bi bi-camera-video-fill me-2"></i> {% trans "Majlislar" %}
                     {% if upcoming_meetings_count > 0 %}
                     <span class="badge bg-danger rounded-pill ms-auto">{{ upcoming_meetings_count }}</span>
                     {% endif %}
                 </a></li>
             <li><a href="{% url 'quarter_report' %}" class="{% if 'reports' in request.path %}active{% endif %}"><i
-                        class="bi bi-bar-chart-fill"></i> Hisobotlar</a></li>
+                        class="bi bi-bar-chart-fill"></i> {% trans "Hisobotlar" %}</a></li>
             {% endif %}
         </ul>
 
@@ -602,7 +602,7 @@
 
     <footer class="footer">
         <div class="container">
-            <span>&copy; 2026 LearnSphere LMS. Barcha huquqlar himoyalangan.</span>
+            <span>&copy; 2026 LearnSphere LMS. {% trans "Barcha huquqlar himoyalangan." %}</span>
         </div>
     </footer>
 

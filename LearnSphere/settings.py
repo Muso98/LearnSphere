@@ -58,6 +58,7 @@ for i in range(256):
 # Application definition
 
 INSTALLED_APPS = [
+    'modeltranslation',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -168,6 +169,11 @@ AUTH_PASSWORD_VALIDATORS = [
 from django.utils.translation import gettext_lazy as _
 
 LANGUAGE_CODE = 'uz'
+
+# Model translation
+MODELTRANSLATION_DEFAULT_LANGUAGE = 'uz'
+MODELTRANSLATION_LANGUAGES = ('uz', 'en', 'ru')
+MODELTRANSLATION_FALLBACK_LANGUAGES = ('uz', 'en', 'ru')
 
 LANGUAGES = [
     ('uz', _('O\'zbek')),

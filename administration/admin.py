@@ -1,8 +1,8 @@
-from django.contrib import admin
+from modeltranslation.admin import TranslationAdmin
 from .models import Room, RoomBooking
 
 @admin.register(Room)
-class RoomAdmin(admin.ModelAdmin):
+class RoomAdmin(TranslationAdmin):
     list_display = ('number', 'room_type', 'capacity', 'has_projector', 'has_smartboard')
     list_filter = ('room_type', 'has_projector', 'has_smartboard')
     search_fields = ('number', 'description')
