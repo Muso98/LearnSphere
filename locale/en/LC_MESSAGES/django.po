@@ -12,67 +12,188 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-# Base & Navigation
-msgid "Dashboard"
-msgstr "Dashboard"
+msgid "30 kun"
+msgstr "30 days"
 
-msgid "Home"
+msgid "AI Tahlil"
+msgstr "AI Analysis"
+
+msgid "AI tizimida"
+msgstr "AI Powered"
+
+msgid "Admin"
+msgstr "Admin"
+
+msgid "Admin Dashboard"
+msgstr "Admin Dashboard"
+
+msgid "Admin Panel"
+msgstr "Admin Panel"
+
+msgid "Aktiv"
+msgstr "Active"
+
+msgid "Asosiy sahifa"
 msgstr "Home"
 
-msgid "Profile"
-msgstr "Profile"
+msgid "Baho"
+msgstr "Grade"
 
-msgid "Bosh sahifa"
-msgstr "Home"
+msgid "Baholar"
+msgstr "Grades"
 
-msgid "Dars Jadvali"
-msgstr "Schedule"
+msgid "Baholar hali mavjud emas."
+msgstr "No grades available yet."
 
-msgid "Vazifalar"
-msgstr "Assignments"
+msgid "Baholarim"
+msgstr "My Grades"
 
-msgid "Kutubxona"
-msgstr "Library"
+msgid "Ball"
+msgstr "Score"
 
-msgid "Testlar"
-msgstr "Quizzes"
+msgid "Barcha huquqlar himoyalangan."
+msgstr "All rights reserved."
 
 msgid "Bildirishnomalar"
 msgstr "Notifications"
 
-msgid "Majlislar"
-msgstr "Meetings"
+msgid "Biriktirilmagan"
+msgstr "Not Assigned"
 
-msgid "Reyting"
-msgstr "Leaderboard"
+msgid "Bor"
+msgstr "Present"
 
-msgid "Do'kon"
-msgstr "Shop"
+msgid "Bosh sahifa"
+msgstr "Home"
 
-msgid "Xabarlar"
-msgstr "Messages"
+msgid "Bugun"
+msgstr "Today"
 
-msgid "Jurnal"
-msgstr "Gradebook"
+msgid "Bugun Boshqaring"
+msgstr "Manage Today"
 
-msgid "Davomat"
-msgstr "Attendance"
-
-msgid "Profil boshqaruvi"
-msgstr "Profile Management"
-
-msgid "Mening Profilim"
-msgstr "My Profile"
+msgid "Bugungi davomat"
+msgstr "Today's Attendance"
 
 msgid "Chiqish"
 msgstr "Logout"
 
+msgid "Dars Jadvali"
+msgstr "Schedule"
+
+msgid "Dashboard"
+msgstr "Dashboard"
+
+msgid "Davomat"
+msgstr "Attendance"
+
+msgid "Davomat ma'lumotlari topilmadi."
+msgstr "No attendance records found."
+
+msgid "Demo hisoblar kerakmi?"
+msgstr "Need demo accounts?"
+
+msgid "Director"
+msgstr "Director"
+
+msgid "Do'kon"
+msgstr "Shop"
+
+msgid "E'tibor talab qiluvchilar"
+msgstr "Needs Attention"
+
+msgid "Elektron Jurnal"
+msgstr "Electronic Journal"
+
+msgid "Eng yaxshi o'quvchilar"
+msgstr "Top Students"
+
+msgid "English"
+msgstr "English"
+
+msgid "Fan"
+msgstr "Subject"
+
+msgid "Fanlar"
+msgstr "Subjects"
+
+msgid "Fanlar bo'yicha o'zlashtirish"
+msgstr "Performance by Subject"
+
+msgid "Faol"
+msgstr "Active"
+
+msgid "Farzandlar hali biriktirilmagan."
+msgstr "No children assigned yet."
+
+msgid "Farzandlarim"
+msgstr "My Children"
+
+msgid "Farzandlarimning Qobiliyatlari (AI Tahlil)"
+msgstr "My Children's Skills (AI Analysis)"
+
+msgid "Farzandlaringizning baholarini va davomatini onlayn kuzatib boring."
+msgstr "Track your children's grades and attendance online."
+
+msgid "Farzandlaringizning o'zlashtirish ko'rsatkichlari bu yerda aks etadi."
+msgstr "Your children's performance indicators are displayed here."
+
+msgid "Foydalanuvchi nomi"
+msgstr "Username"
+
+msgid "Foydalanuvchilar"
+msgstr "Users"
+
+msgid "Haftalik davomat tendensiyasi"
+msgstr "Weekly Attendance Trend"
+
+msgid "Hisobotlar"
+msgstr "Reports"
+
+msgid "Home"
+msgstr "Home"
+
+msgid "Hozircha baholar yo'q"
+msgstr "No grades yet"
+
+msgid "Ijodkorlik"
+msgstr "Creativity"
+
+msgid "Izoh"
+msgstr "Comment"
+
+msgid "Jadval Boshqaruvi"
+msgstr "Schedule Management"
+
+msgid "Jami foydalanuvchilar"
+msgstr "Total Users"
+
+msgid "Jamoaviy"
+msgstr "Teamwork"
+
+msgid "Jurnal"
+msgstr "Gradebook"
+
+msgid "Kechikkan"
+msgstr "Late"
+
+msgid "Kelajak Ta'limini"
+msgstr "Future Education"
+
 msgid "Kirish"
 msgstr "Login"
 
-# Login Page
-msgid "Xush kelibsiz!"
-msgstr "Welcome!"
+msgid "Ko'rish"
+msgstr "View"
+
+msgid "Kutubxona"
+msgstr "Library"
+
+msgid "LearnSphere - bu sun'iy intellekt yordamida o'quv jarayonini tahlil qiluvchi va boshqaruvchi innovatsion platforma."
+msgstr "LearnSphere is an innovative platform that analyzes and manages the learning process using artificial intelligence."
+
+msgid "LearnSphere Boshqaruv Paneli"
+msgstr "LearnSphere Control Panel"
 
 msgid "LearnSphere ta'lim platformasiga kirish"
 msgstr "Login to LearnSphere platform"
@@ -80,174 +201,152 @@ msgstr "Login to LearnSphere platform"
 msgid "Login yoki parol noto'g'ri."
 msgstr "Invalid login or password."
 
-msgid "Foydalanuvchi nomi"
-msgstr "Username"
-
-msgid "Username"
-msgstr "Username"
-
-msgid "Parol"
-msgstr "Password"
-
-msgid "Tizimga Kirish"
-msgstr "Login to System"
-
-msgid "Demo hisoblar kerakmi?"
-msgstr "Need demo accounts?"
-
-msgid "Ko'rish"
-msgstr "View"
-
-# Student Dashboard
-msgid "Mening Kabinetim"
-msgstr "My Cabinet"
-
-msgid "Biriktirilmagan"
-msgstr "Not Assigned"
-
-msgid "Sinf"
-msgstr "Class"
-
-msgid "Xush kelibsiz"
-msgstr "Welcome"
-
-msgid "Baholarim"
-msgstr "My Grades"
-
-msgid "Fan"
-msgstr "Subject"
-
-msgid "Baho"
-msgstr "Grade"
-
-msgid "Sana"
-msgstr "Date"
-
-msgid "Baholar hali mavjud emas."
-msgstr "No grades available yet."
-
-msgid "Status"
-msgstr "Status"
-
-msgid "Bor"
-msgstr "Present"
-
-msgid "Yo'q"
-msgstr "Absent"
-
-msgid "Kechikkan"
-msgstr "Late"
-
-msgid "Davomat ma'lumotlari topilmadi."
-msgstr "No attendance records found."
-
-# Parent Dashboard
-msgid "Ota-ona burchagi"
-msgstr "Parent Dashboard"
-
-msgid "Farzandlaringizning o'zlashtirish ko'rsatkichlari bu yerda aks etadi."
-msgstr "Your children's performance indicators are displayed here."
-
-msgid "Farzandlarim"
-msgstr "My Children"
-
-msgid "Farzandlar hali biriktirilmagan."
-msgstr "No children assigned yet."
-
-msgid "So'nggi Baholar"
-msgstr "Recent Grades"
-
-msgid "O'quvchi"
-msgstr "Student"
-
-msgid "Izoh"
-msgstr "Comment"
-
-msgid "So'nggi baholar topilmadi."
-msgstr "No recent grades found."
-
-msgid "Farzandlarimning Qobiliyatlari (AI Tahlil)"
-msgstr "My Children's Skills (AI Analysis)"
-
-msgid "Sinf yo'q"
-msgstr "No Class"
-
 msgid "Ma'lumot yo'q"
 msgstr "No Data"
 
-# Admin Dashboard
-msgid "Admin Dashboard"
-msgstr "Admin Dashboard"
+msgid "Ma'lumotlar yo'q"
+msgstr "No data"
 
-msgid "Asosiy sahifa"
-msgstr "Home Page"
+msgid "Majlis yaratish"
+msgstr "Create Meeting"
 
-msgid "Jami foydalanuvchilar"
-msgstr "Total Users"
+msgid "Majlislar"
+msgstr "Meetings"
 
-msgid "Faol"
-msgstr "Active"
-
-msgid "O'quvchilar"
-msgstr "Students"
-
-msgid "Aktiv"
-msgstr "Active"
-
-msgid "Bugungi davomat"
-msgstr "Today's Attendance"
-
-msgid "Bugun"
-msgstr "Today"
-
-msgid "O'rtacha baho"
-msgstr "Average Grade"
-
-msgid "30 kun"
-msgstr "30 days"
-
-msgid "Fanlar bo'yicha o'zlashtirish"
-msgstr "Performance by Subject"
-
-msgid "Haftalik davomat tendensiyasi"
-msgstr "Weekly Attendance Trend"
-
-msgid "Eng yaxshi o'quvchilar"
-msgstr "Top Students"
-
-msgid "Yuklanmoqda..."
-msgstr "Loading..."
-
-msgid "E'tibor talab qiluvchilar"
-msgstr "Needs Attention"
-
-msgid "Oxirgi baholar"
-msgstr "Recent Grades"
-
-msgid "Hozircha baholar yo'q"
-msgstr "No grades yet"
-
-msgid "Yangi foydalanuvchilar"
-msgstr "New Users"
-
-# Dynamic Content (Roles & Subjects)
-msgid "Admin"
-msgstr "Admin"
-
-msgid "Director"
-msgstr "Director"
-
-msgid "Teacher"
-msgstr "Teacher"
-
-msgid "Student"
-msgstr "Student"
-
-msgid "Parent"
-msgstr "Parent"
+msgid "Maktab faoliyati bir qarashda"
+msgstr "School activity at a glance"
 
 msgid "Mathematics"
 msgstr "Mathematics"
 
-msgid "English"
-msgstr "English"
+msgid "Mening Kabinetim"
+msgstr "My Cabinet"
+
+msgid "Mening Profilim"
+msgstr "My Profile"
+
+msgid "Mening Qobiliyatlarim (AI)"
+msgstr "My Abilities (AI)"
+
+msgid "Moslashuvchanlik"
+msgstr "Adaptability"
+
+msgid "Muloqot"
+msgstr "Communication"
+
+msgid "O'qituvchi Biriktiruvi"
+msgstr "Teacher Assignment"
+
+msgid "O'qituvchilar"
+msgstr "Teachers"
+
+msgid "O'qituvchilar uchun qulay va tezkor baholash tizimi. Qog'ozbozlikdan xalos bo'ling."
+msgstr "Convenient and fast grading system for teachers. Get rid of paperwork."
+
+msgid "O'qituvchingiz hali sizning Soft Skills ko'rsatkichlaringizni kiritmagan."
+msgstr "Your teacher has not entered your Soft Skills indicators yet."
+
+msgid "O'quvchi"
+msgstr "Student"
+
+msgid "O'quvchilar"
+msgstr "Students"
+
+msgid "O'quvchilarning o'zlashtirishini sun'iy intellekt yordamida chuqur tahlil qiling va bashorat qiling."
+msgstr "Deeply analyze and predict student achievement using AI."
+
+msgid "O'rtacha baho"
+msgstr "Average Grade"
+
+msgid "Ota-ona burchagi"
+msgstr "Parent Dashboard"
+
+msgid "Ota-onalar Nazorati"
+msgstr "Parental Control"
+
+msgid "Oxirgi baholar"
+msgstr "Recent Grades"
+
+msgid "Parent"
+msgstr "Parent"
+
+msgid "Parol"
+msgstr "Password"
+
+msgid "Profil"
+msgstr "Profile"
+
+msgid "Profil boshqaruvi"
+msgstr "Profile Management"
+
+msgid "Profile"
+msgstr "Profile"
+
+msgid "Reyting"
+msgstr "Leaderboard"
+
+msgid "Sana"
+msgstr "Date"
+
+msgid "Sinf"
+msgstr "Class"
+
+msgid "Sinf yo'q"
+msgstr "No Class"
+
+msgid "Sinflar"
+msgstr "Classes"
+
+msgid "So'nggi Baholar"
+msgstr "Recent Grades"
+
+msgid "So'nggi baholar topilmadi."
+msgstr "No recent grades found."
+
+msgid "Status"
+msgstr "Status"
+
+msgid "Student"
+msgstr "Student"
+
+msgid "Tanqidiy Fikrlash"
+msgstr "Critical Thinking"
+
+msgid "Teacher"
+msgstr "Teacher"
+
+msgid "Testlar"
+msgstr "Quizzes"
+
+msgid "Tizimga Kirish"
+msgstr "Login to System"
+
+msgid "Username"
+msgstr "Username"
+
+msgid "Vazifalar"
+msgstr "Assignments"
+
+msgid "Virtual Majlislar"
+msgstr "Virtual Meetings"
+
+msgid "Xabarlar"
+msgstr "Messages"
+
+msgid "Xush kelibsiz"
+msgstr "Welcome"
+
+msgid "Xush kelibsiz!"
+msgstr "Welcome!"
+
+msgid "Yangi foydalanuvchilar"
+msgstr "New Users"
+
+msgid "Yo'q"
+msgstr "Absent"
+
+msgid "Yuklanmoqda..."
+msgstr "Loading..."
+
+msgid "Zamonaviy Ta'lim Platformasi"
+msgstr "Modern Education Platform"

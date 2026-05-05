@@ -12,257 +12,446 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
 
-# Base & Navigation
-msgid "Dashboard"
-msgstr "Панель управления"
+msgid "30 kun"
+msgstr "30 дней"
 
-msgid "Home"
-msgstr "Главная"
+msgid "AI Tahlil"
+msgstr "AI Анализ"
 
-msgid "Profile"
-msgstr "Профиль"
+msgid "AI tizimida"
+msgstr "На базе ИИ"
 
-msgid "Bosh sahifa"
-msgstr "Главная"
+msgid "Admin"
+msgstr "Администратор"
 
-msgid "Dars Jadvali"
-msgstr "Расписание"
-
-msgid "Vazifalar"
-msgstr "Задания"
-
-msgid "Kutubxona"
-msgstr "Библиотека"
-
-msgid "Testlar"
-msgstr "Тесты"
-
-msgid "Bildirishnomalar"
-msgstr "Уведомления"
-
-msgid "Majlislar"
-msgstr "Собрания"
-
-msgid "Reyting"
-msgstr "Рейтинг"
-
-msgid "Do'kon"
-msgstr "Магазин"
-
-msgid "Xabarlar"
-msgstr "Сообщения"
-
-msgid "Jurnal"
-msgstr "Журнал"
-
-msgid "Davomat"
-msgstr "Посещаемость"
-
-msgid "Profil boshqaruvi"
-msgstr "Управление профилем"
-
-msgid "Mening Profilim"
-msgstr "Мой профиль"
-
-msgid "Chiqish"
-msgstr "Выйти"
-
-msgid "Kirish"
-msgstr "Войти"
-
-# Login Page
-msgid "Xush kelibsiz!"
-msgstr "Добро пожаловать!"
-
-msgid "LearnSphere ta'lim platformasiga kirish"
-msgstr "Войти в платформу LearnSphere"
-
-msgid "Login yoki parol noto'g'ri."
-msgstr "Неверный логин или пароль."
-
-msgid "Foydalanuvchi nomi"
-msgstr "Имя пользователя"
-
-msgid "Username"
-msgstr "Имя пользователя"
-
-msgid "Parol"
-msgstr "Пароль"
-
-msgid "Tizimga Kirish"
-msgstr "Войти в систему"
-
-msgid "Demo hisoblar kerakmi?"
-msgstr "Нужны демо-аккаунты?"
-
-msgid "Ko'rish"
-msgstr "Посмотреть"
-
-# Student Dashboard
-msgid "Mening Kabinetim"
-msgstr "Мой Кабинет"
-
-msgid "Biriktirilmagan"
-msgstr "Не прикреплен"
-
-msgid "Sinf"
-msgstr "Класс"
-
-msgid "Xush kelibsiz"
-msgstr "Добро пожаловать"
-
-msgid "Baholarim"
-msgstr "Мои Оценки"
-
-msgid "Fan"
-msgstr "Предмет"
-
-msgid "Baho"
-msgstr "Оценка"
-
-msgid "Sana"
-msgstr "Дата"
-
-msgid "Baholar hali mavjud emas."
-msgstr "Оценок пока нет."
-
-msgid "Status"
-msgstr "Статус"
-
-msgid "Bor"
-msgstr "Присутствовал"
-
-msgid "Yo'q"
-msgstr "Отсутствовал"
-
-msgid "Kechikkan"
-msgstr "Опоздал"
-
-msgid "Davomat ma'lumotlari topilmadi."
-msgstr "Данные о посещаемости не найдены."
-
-# Parent Dashboard
-msgid "Ota-ona burchagi"
-msgstr "Кабинет родителя"
-
-msgid "Farzandlaringizning o'zlashtirish ko'rsatkichlari bu yerda aks etadi."
-msgstr "Здесь отображаются показатели успеваемости ваших детей."
-
-msgid "Farzandlarim"
-msgstr "Мои Дети"
-
-msgid "Farzandlar hali biriktirilmagan."
-msgstr "Дети еще не прикреплены."
-
-msgid "So'nggi Baholar"
-msgstr "Последние Оценки"
-
-msgid "O'quvchi"
-msgstr "Ученик"
-
-msgid "Izoh"
-msgstr "Комментарий"
-
-msgid "So'nggi baholar topilmadi."
-msgstr "Последние оценки не найдены."
-
-msgid "Farzandlarimning Qobiliyatlari (AI Tahlil)"
-msgstr "Навыки моих детей (ИИ Анализ)"
-
-msgid "Sinf yo'q"
-msgstr "Нет класса"
-
-msgid "Ma'lumot yo'q"
-msgstr "Нет данных"
-
-# Admin Dashboard
 msgid "Admin Dashboard"
 msgstr "Панель администратора"
+
+msgid "Admin Panel"
+msgstr "Админ панель"
+
+msgid "Aktiv"
+msgstr "Актив"
 
 msgid "Asosiy sahifa"
 msgstr "Главная страница"
 
-msgid "Jami foydalanuvchilar"
-msgstr "Всего пользователей"
+msgid "Baho"
+msgstr "Оценка"
 
-msgid "Faol"
-msgstr "Активны"
+msgid "Baholar"
+msgstr "Оценки"
 
-msgid "O'quvchilar"
-msgstr "Ученики"
+msgid "Baholar hali mavjud emas."
+msgstr "Оценок пока нет."
 
-msgid "Aktiv"
-msgstr "Активен"
+msgid "Baholarim"
+msgstr "Мои Оценки"
 
-msgid "Bugungi davomat"
-msgstr "Посещаемость сегодня"
+msgid "Balansingiz"
+msgstr "Ваш баланс"
+
+msgid "Ball"
+msgstr "Балл"
+
+msgid "Ball yetmaydi"
+msgstr "Недостаточно баллов"
+
+msgid "Ballar Do'koni"
+msgstr "Магазин баллов"
+
+msgid "Barcha huquqlar himoyalangan."
+msgstr "Все права защищены."
+
+msgid "Bekor qilish"
+msgstr "Отмена"
+
+msgid "Bildirishnomalar"
+msgstr "Уведомления"
+
+msgid "Biriktirilmagan"
+msgstr "Не прикреплен"
+
+msgid "Bor"
+msgstr "Присутствовал"
+
+msgid "Bosh sahifa"
+msgstr "Главная страница"
 
 msgid "Bugun"
 msgstr "Сегодня"
 
-msgid "O'rtacha baho"
-msgstr "Средняя оценка"
+msgid "Bugun Boshqaring"
+msgstr "Управляйте Сегодня"
 
-msgid "30 kun"
-msgstr "30 дней"
+msgid "Bugungi davomat"
+msgstr "Посещаемость сегодня"
 
-msgid "Fanlar bo'yicha o'zlashtirish"
-msgstr "Успеваемость по предметам"
+msgid "Chiqish"
+msgstr "Выйти"
 
-msgid "Haftalik davomat tendensiyasi"
-msgstr "Еженедельная тенденция посещаемости"
+msgid "Dars Jadvali"
+msgstr "Расписание"
 
-msgid "Eng yaxshi o'quvchilar"
-msgstr "Лучшие ученики"
+msgid "Dashboard"
+msgstr "Дашборд"
 
-msgid "Yuklanmoqda..."
-msgstr "Загрузка..."
+msgid "Davomat"
+msgstr "Посещаемость"
 
-msgid "E'tibor talab qiluvchilar"
-msgstr "Требует внимания"
+msgid "Davomat %"
+msgstr "% Посещаемости"
 
-msgid "Oxirgi baholar"
-msgstr "Недавние оценки"
+msgid "Davomat ma'lumotlari topilmadi."
+msgstr "Данные о посещаемости не найдены."
 
-msgid "Hozircha baholar yo'q"
-msgstr "Оценок пока нет"
-
-msgid "Yangi foydalanuvchilar"
-msgstr "Новые пользователи"
-
-# Dynamic Content (Roles & Subjects)
-msgid "Admin"
-msgstr "Администратор"
+msgid "Demo hisoblar kerakmi?"
+msgstr "Нужны демо-аккаунты?"
 
 msgid "Director"
 msgstr "Директор"
 
-msgid "Teacher"
-msgstr "Учитель"
+msgid "Do'kon"
+msgstr "Магазин"
 
-msgid "Student"
-msgstr "Ученик"
+msgid "E'tibor talab qiluvchilar"
+msgstr "Требующие внимания"
 
-msgid "Parent"
-msgstr "Родитель"
+msgid "Elektron Jurnal"
+msgstr "Электронный журнал"
 
-msgid "Mathematics"
-msgstr "Математика"
+msgid "Eng Faol O'quvchilar Reytingi"
+msgstr "Рейтинг самых активных учеников"
+
+msgid "Eng yaxshi o'quvchilar"
+msgstr "Лучшие ученики"
 
 msgid "English"
 msgstr "Английский"
 
-msgid "baho"
-msgstr "оценок"
+msgid "Fan"
+msgstr "Предмет"
+
+msgid "Fanlar"
+msgstr "Предметы"
+
+msgid "Fanlar bo'yicha o'zlashtirish"
+msgstr "Успеваемость по предметам"
+
+msgid "Faol"
+msgstr "Актив"
+
+msgid "Farzandlar hali biriktirilmagan."
+msgstr "Дети еще не прикреплены."
+
+msgid "Farzandlarim"
+msgstr "Мои Дети"
+
+msgid "Farzandlarimning Qobiliyatlari (AI Tahlil)"
+msgstr "Навыки моих детей (ИИ Анализ)"
+
+msgid "Farzandlaringizning baholarini va davomatini onlayn kuzatib boring."
+msgstr "Следите за оценками и посещаемостью ваших детей онлайн."
+
+msgid "Farzandlaringizning o'zlashtirish ko'rsatkichlari bu yerda aks etadi."
+msgstr "Здесь отображаются показатели успеваемости ваших детей."
+
+msgid "Foydalanuvchi nomi"
+msgstr "Имя пользователя"
+
+msgid "Foydalanuvchilar"
+msgstr "Пользователи"
+
+msgid "Haftalik davomat tendensiyasi"
+msgstr "Тенденция еженедельной посещаемости"
 
 msgid "Hammasi yaxshi!"
-msgstr "Все отлично!"
+msgstr "Все хорошо!"
+
+msgid "Hech narsa tanlanmagan!"
+msgstr "Ничего не выбрано!"
+
+msgid "Hisobotlar"
+msgstr "Отчеты"
+
+msgid "Home"
+msgstr "Главная"
+
+msgid "Hozircha baholar yo'q"
+msgstr "Оценок пока нет"
+
+msgid "Ijodkorlik"
+msgstr "Креативность"
+
+msgid "Izoh"
+msgstr "Комментарий"
+
+msgid "Jadval Boshqaruvi"
+msgstr "Управление расписанием"
+
+msgid "Jami Ball"
+msgstr "Общий балл"
+
+msgid "Jami foydalanuvchilar"
+msgstr "Всего пользователей"
+
+msgid "Jamoaviy"
+msgstr "Командная работа"
+
+msgid "Jurnal"
+msgstr "Журнал"
+
+msgid "Kechikkan"
+msgstr "Опоздал"
+
+msgid "Kelajak Ta'limini"
+msgstr "Образование Будущего"
 
 msgid "Kelgan"
-msgstr "Присутствовал"
+msgstr "Пришел"
 
 msgid "Kelmagan"
+msgstr "Не пришел"
+
+msgid "Kirish"
+msgstr "Войти"
+
+msgid "Ko'rish"
+msgstr "Посмотреть"
+
+msgid "Kutubxona"
+msgstr "Библиотека"
+
+msgid "LearnSphere - bu sun'iy intellekt yordamida o'quv jarayonini tahlil qiluvchi va boshqaruvchi innovatsion platforma."
+msgstr "LearnSphere - инновационная платформа, анализирующая и управляющая процессом обучения с помощью искусственного интеллекта."
+
+msgid "LearnSphere Boshqaruv Paneli"
+msgstr "Панель управления LearnSphere"
+
+msgid "LearnSphere ta'lim platformasiga kirish"
+msgstr "Вход в образовательную платформу LearnSphere"
+
+msgid "Login yoki parol noto'g'ri."
+msgstr "Неверный логин или пароль."
+
+msgid "Ma'lumot yo'q"
+msgstr "Нет данных"
+
+msgid "Ma'lumotlar yo'q"
+msgstr "Нет данных"
+
+msgid "Majlis yaratish"
+msgstr "Создать собрание"
+
+msgid "Majlislar"
+msgstr "Собрания"
+
+msgid "Maktab faoliyati bir qarashda"
+msgstr "Деятельность школы с одного взгляда"
+
+msgid "Mathematics"
+msgstr "Математика"
+
+msgid "Mening Kabinetim"
+msgstr "Мой Кабинет"
+
+msgid "Mening Profilim"
+msgstr "Мой профиль"
+
+msgid "Mening Qobiliyatlarim (AI)"
+msgstr "Мои способности (AI)"
+
+msgid "Moslashuvchanlik"
+msgstr "Адаптивность"
+
+msgid "Muloqot"
+msgstr "Коммуникация"
+
+msgid "Muvaffaqiyatli o'chirildi!"
+msgstr "Успешно удалено!"
+
+msgid "Muvaffaqiyatli saqlandi!"
+msgstr "Успешно сохранено!"
+
+msgid "O'qituvchi Biriktiruvi"
+msgstr "Прикрепление учителей"
+
+msgid "O'qituvchilar"
+msgstr "Учителя"
+
+msgid "O'qituvchilar uchun qulay va tezkor baholash tizimi. Qog'ozbozlikdan xalos bo'ling."
+msgstr "Удобная и быстрая система оценивания для учителей. Избавьтесь от бумажной волокиты."
+
+msgid "O'qituvchingiz hali sizning Soft Skills ko'rsatkichlaringizni kiritmagan."
+msgstr "Ваш преподаватель еще не ввел ваши показатели Soft Skills."
+
+msgid "O'quvchi"
+msgstr "Ученик"
+
+msgid "O'quvchilar"
+msgstr "Ученики"
+
+msgid "O'quvchilarning 'Soft Skills' ko'rsatkichlarini kiritish uchun sinfni tanlang."
+msgstr "Выберите класс, чтобы ввести показатели 'Soft Skills' учащихся."
+
+msgid "O'quvchilarning o'zlashtirishini sun'iy intellekt yordamida chuqur tahlil qiling va bashorat qiling."
+msgstr "Глубоко анализируйте и прогнозируйте успеваемость учащихся с помощью ИИ."
+
+msgid "O'rtacha baho"
+msgstr "Средний балл"
+
+msgid "Ota-ona burchagi"
+msgstr "Кабинет родителя"
+
+msgid "Ota-onalar Nazorati"
+msgstr "Родительский контроль"
+
+msgid "Oxirgi baholar"
+msgstr "Последние оценки"
+
+msgid "Parent"
+msgstr "Родитель"
+
+msgid "Parol"
+msgstr "Пароль"
+
+msgid "Profil"
+msgstr "Профиль"
+
+msgid "Profil boshqaruvi"
+msgstr "Управление профилем"
+
+msgid "Profile"
+msgstr "Профиль"
+
+msgid "Qo'shilish"
+msgstr "Присоединиться"
+
+msgid "Qobiliyatlar"
+msgstr "Способности"
+
+msgid "Qobiliyatlar Xaritasi (AI Data)"
+msgstr "Карта способностей (AI Данные)"
+
+msgid "Rejalashtirilgan majlislar yo'q"
+msgstr "Запланированных собраний нет"
+
+msgid "Reyting"
+msgstr "Рейтинг"
+
+msgid "Sana"
+msgstr "Дата"
+
+msgid "Saqlash"
+msgstr "Сохранить"
+
+msgid "Sinf"
+msgstr "Класс"
+
+msgid "Sinf Tanlash"
+msgstr "Выбор класса"
+
+msgid "Sinf yo'q"
+msgstr "Нет класса"
+
+msgid "Sinflar"
+msgstr "Классы"
+
+msgid "So'nggi Baholar"
+msgstr "Последние Оценки"
+
+msgid "So'nggi baholar topilmadi."
+msgstr "Последние оценки не найдены."
+
+msgid "Soft Skills Baholash"
+msgstr "Оценка Soft Skills"
+
+msgid "Sotib olish"
+msgstr "Купить"
+
+msgid "Status"
+msgstr "Статус"
+
+msgid "Student"
+msgstr "Ученик"
+
+msgid "Tanqidiy Fikrlash"
+msgstr "Критическое мышление"
+
+msgid "Tarmoq xatosi!"
+msgstr "Сетевая ошибка!"
+
+msgid "Tashkilotchi"
+msgstr "Организатор"
+
+msgid "Teacher"
+msgstr "Учитель"
+
+msgid "Testlar"
+msgstr "Тесты"
+
+msgid "Tizimga Kirish"
+msgstr "Войти в систему"
+
+msgid "Umumiy majlis"
+msgstr "Общее собрание"
+
+msgid "Username"
+msgstr "Имя пользователя"
+
+msgid "Vazifalar"
+msgstr "Задания"
+
+msgid "Virtual Majlislar"
+msgstr "Виртуальные собрания"
+
+msgid "Xabarlar"
+msgstr "Сообщения"
+
+msgid "Xatolik yuz berdi!"
+msgstr "Произошла ошибка!"
+
+msgid "Xush kelibsiz"
+msgstr "Добро пожаловать"
+
+msgid "Xush kelibsiz!"
+msgstr "Добро пожаловать!"
+
+msgid "Yangi"
+msgstr "Новый"
+
+msgid "Yangi foydalanuvchilar"
+msgstr "Новые пользователи"
+
+msgid "Yangi majlislar paydo bo'lganda shu yerda ko'rasiz."
+msgstr "Вы увидите новые собрания здесь, когда они появятся."
+
+msgid "Yig'gan ballaringizni ajoyib imtiyozlarga almashtiring"
+msgstr "Обменяйте накопленные баллы на отличные привилегии"
+
+msgid "Yo'q"
 msgstr "Отсутствовал"
 
-msgid "Davomat %"
-msgstr "Посещаемость %"
+msgid "Yuklanmoqda..."
+msgstr "Загрузка..."
+
+msgid "Yuqori ball to'plagan o'quvchilar"
+msgstr "Ученики с самыми высокими баллами"
+
+msgid "Yutuqlar (Badges)"
+msgstr "Достижения (Значки)"
+
+msgid "Zamonaviy Ta'lim Platformasi"
+msgstr "Современная образовательная платформа"
+
+msgid "baho"
+msgstr "оценка"
+
+msgid "ball"
+msgstr "балл"
+
+msgid "chat"
+msgstr "чат"
+
+msgid "ni o'chirishga ishonchingiz komilmi?"
+msgstr " вы уверены, что хотите удалить?"
