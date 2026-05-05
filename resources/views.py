@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Resource, Quiz, Question, Answer, QuizResult
-from core.models import Subject
+from core.models import Subject, Class
 from django.db.models import Count, Q
 
 # --- Resource Views ---
