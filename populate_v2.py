@@ -11,6 +11,7 @@ from core.models import School, Class, Subject, Schedule
 from journal.models import Grade, Attendance
 from administration.models import TeacherAssignment
 from django.utils import timezone
+from django.core.exceptions import ValidationError
 
 def populate():
     print("Populating comprehensive data...")
@@ -99,17 +100,21 @@ def populate():
             for i, assignment in enumerate(daily_lessons):
                 if i >= len(times): break
                 start, end = times[i]
-                Schedule.objects.get_or_create(
-                    class_obj=cls,
-                    day_of_week=day,
-                    start_time=start,
-                    defaults={
-                        'end_time': end,
-                        'subject': assignment.subject,
-                        'teacher': assignment.teacher,
-                        'room': f"{random.randint(101, 305)}"
-                    }
-                )
+                try:
+                    Schedule.objects.get_or_create(
+                        class_obj=cls,
+                        day_of_week=day,
+                        start_time=start,
+                        defaults={
+                            'end_time': end,
+                            'subject': assignment.subject,
+                            'teacher': assignment.teacher,
+                            'room': f"{random.randint(101, 305)}"
+                        }
+                    )
+                except ValidationError:
+                    # Skip conflicting schedule
+                    continue
 
     # Create Students and Parents
     all_students = []
