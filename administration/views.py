@@ -65,7 +65,7 @@ def teacher_assignment_delete(request, assignment_id):
 
 def is_admin_user(user):
     """Check if user is admin, director, or superuser"""
-    return user.is_authenticated and (user.is_superuser or getattr(user, 'role', '') in ['admin', 'director'])
+    return user.is_authenticated and (user.is_superuser or getattr(user, 'role', '') in ['admin', 'director', 'vice_director'])
 
 
 @login_required

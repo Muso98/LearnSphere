@@ -244,7 +244,7 @@
         tbody.innerHTML = html;
     }
 
-    function getRoleBadgeColor(role) {
+    window.getRoleBadgeColor = function(role) {
         const colors = {
             'admin': 'danger',
             'director': 'warning',
@@ -254,6 +254,24 @@
             'parent': 'secondary'
         };
         return colors[role] || 'secondary';
+    }
+
+    window.renderPagination = function() {
+        const totalPages = Math.ceil(usersData.length / usersPerPage);
+        const container = document.getElementById('usersPagination');
+        if (!container) return;
+
+        let html = '';
+        for (let i = 1; i <= totalPages; i++) {
+            html += `<button class="btn btn-sm ${i === currentPage ? 'btn-primary' : 'btn-outline-primary'} ms-1" onclick="window.changeUsersPage(${i})">${i}</button>`;
+        }
+        container.innerHTML = html;
+    }
+
+    window.changeUsersPage = function(page) {
+        currentPage = page;
+        window.renderUsersTable();
+        window.renderPagination();
     }
 
     window.showUserModal = function(mode, userId = null) {
@@ -379,7 +397,7 @@
     // Initialize on tab show
     document.getElementById('users-tab')?.addEventListener('shown.bs.tab', function () {
         if (!window.usersLoaded) {
-            loadUsers();
+            window.loadUsers();
             window.usersLoaded = true;
         }
     });

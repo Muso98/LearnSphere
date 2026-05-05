@@ -106,6 +106,30 @@
         </li>
     </ul>
 
+    <!-- Admin JS Utilities and Translations -->
+    <script src="{% static 'js/admin_management.js' %}"></script>
+    <script>
+        window.AdminUtils = window.AdminUtils || {};
+        window.AdminUtils.Translations = {
+            loading: '{% trans "Yuklanmoqda..." %}',
+            success_save: '{% trans "Muvaffaqiyatli saqlandi!" %}',
+            error_general: '{% trans "Xatolik yuz berdi!" %}',
+            error_network: '{% trans "Tarmoq xatosi!" %}',
+            save: '{% trans "Saqlash" %}',
+            no_selection: '{% trans "Hech narsa tanlanmagan!" %}',
+            delete_confirm: '{% trans "ni o\'chirishga ishonchingiz komilmi?" %}',
+            success_delete: '{% trans "Muvaffaqiyatli o\'chirildi!" %}',
+        };
+        
+        // Tab initial load tracking
+        window.usersLoaded = false;
+        window.classesLoaded = false;
+        window.subjectsLoaded = false;
+        window.gradesLoaded = false;
+        window.attendanceLoaded = false;
+        window.teachersLoaded = false;
+    </script>
+
     <!-- Tab Content -->
     <div class="tab-content mt-4" id="adminTabContent">
         <!-- Dashboard Tab -->
@@ -154,27 +178,4 @@
 
 {% block extra_js %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<script src="{% static 'js/admin_management.js' %}"></script>
-<script>
-    // Tab initial load tracking
-    window.usersLoaded = false;
-    window.classesLoaded = false;
-    window.subjectsLoaded = false;
-    window.gradesLoaded = false;
-    window.attendanceLoaded = false;
-    window.teachersLoaded = false;
-    
-    // Admin Translations
-    window.AdminUtils = window.AdminUtils || {};
-    window.AdminUtils.Translations = {
-        loading: '{% trans "Yuklanmoqda..." %}',
-        success_save: '{% trans "Muvaffaqiyatli saqlandi!" %}',
-        error_general: '{% trans "Xatolik yuz berdi!" %}',
-        error_network: '{% trans "Tarmoq xatosi!" %}',
-        save: '{% trans "Saqlash" %}',
-        no_selection: '{% trans "Hech narsa tanlanmagan!" %}',
-        delete_confirm: '{% trans "ni o\'chirishga ishonchingiz komilmi?" %}',
-        success_delete: '{% trans "Muvaffaqiyatli o\'chirildi!" %}',
-    };
-</script>
 {% endblock %}
