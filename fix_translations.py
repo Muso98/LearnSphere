@@ -1,38 +1,42 @@
 import os
+import re
 
-def update_po_file(lang, translations):
+def update_translations(lang, translations):
     po_path = f'locale/{lang}/LC_MESSAGES/django.po'
     if not os.path.exists(po_path):
         print(f"Error: {po_path} not found!")
         return
 
     with open(po_path, 'r', encoding='utf-8') as f:
-        lines = f.readlines()
+        content = f.read()
 
-    existing_msgids = set()
-    for line in lines:
-        if line.startswith('msgid "'):
-            msgid = line[7:-2]
-            if msgid:
-                existing_msgids.add(msgid)
+    # Split into header and entries
+    parts = re.split(r'\n\n', content)
+    header = parts[0]
+    
+    # Parse existing entries
+    existing_entries = {}
+    for entry in parts[1:]:
+        if not entry.strip(): continue
+        match = re.search(r'msgid "(.*?)"\nmsgstr "(.*?)"', entry, re.DOTALL)
+        if match:
+            msgid = match.group(1).replace('"\n"', '')
+            msgstr = match.group(2).replace('"\n"', '')
+            existing_entries[msgid] = msgstr
 
-    new_entries = []
+    # Update with our translations
     for msgid, msgstr in translations.items():
-        if msgid not in existing_msgids:
-            new_entries.append(f'\nmsgid "{msgid}"\nmsgstr "{msgstr}"\n')
-        else:
-            # Update existing empty msgstr
-            for i, line in enumerate(lines):
-                if line.strip() == f'msgid "{msgid}"':
-                    if i + 1 < len(lines) and lines[i+1].strip() == 'msgstr ""':
-                        lines[i+1] = f'msgstr "{msgstr}"\n'
+        existing_entries[msgid] = msgstr
+
+    # Rebuild file content
+    new_content = header + "\n"
+    for msgid, msgstr in sorted(existing_entries.items()):
+        new_content += f'\nmsgid "{msgid}"\nmsgstr "{msgstr}"\n'
 
     with open(po_path, 'w', encoding='utf-8') as f:
-        f.writelines(lines)
-        if new_entries:
-            f.write("".join(new_entries))
+        f.write(new_content)
     
-    print(f"Successfully updated {po_path}")
+    print(f"Successfully rebuilt {po_path} with {len(existing_entries)} entries.")
 
 ru_translations = {
     "Kelajak Ta'limini": "Образование Будущего",
@@ -87,6 +91,12 @@ ru_translations = {
     "Yuklanmoqda...": "Загрузка...",
     "Muvaffaqiyatli saqlandi!": "Успешно сохранено!",
     "Xatolik yuz berdi!": "Произошла ошибка!",
+    "Tarmoq xatosi!": "Сетевая ошибка!",
+    "Hech narsa tanlanmagan!": "Ничего не выбрано!",
+    "ni o'chirishga ishonchingiz komilmi?": " вы уверены, что хотите удалить?",
+    "Muvaffaqiyatli o'chirildi!": "Успешно удалено!",
+    "Yangi": "Новый",
+    "chat": "чат",
 }
 
 en_translations = {
@@ -142,6 +152,5 @@ en_translations = {
     "Yuklanmoqda...": "Loading...",
 }
 
-
-update_po_file('ru', ru_translations)
-update_po_file('en', en_translations)
+update_translations('ru', ru_translations)
+update_translations('en', en_translations)
