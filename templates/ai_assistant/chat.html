@@ -112,6 +112,9 @@
         // Auto-load most recent conversation if available
         if (convItems.length > 0) {
             loadConversation(convItems[0].dataset.convId);
+        } else {
+            // Automatically start a new chat if no conversations exist
+            startNewConversation();
         }
     });
 
