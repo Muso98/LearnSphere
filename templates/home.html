@@ -22,7 +22,7 @@
                 <a href="{% url 'parent_dashboard' %}" class="btn btn-primary btn-lg rounded-pill shadow px-4">{% trans "Kabinetga o'tish" %}</a>
                 {% elif user.role == 'teacher' %}
                 <a href="{% url 'gradebook' %}" class="btn btn-primary btn-lg rounded-pill shadow px-4">{% trans "Jurnalga o'tish" %}</a>
-                {% elif user.role == 'director' %}
+                {% elif user.role == 'director' or user.role == 'admin' %}
                 <a href="{% url 'director_dashboard' %}"
                     class="btn btn-primary btn-lg rounded-pill shadow px-4">{% trans "Boshqaruv Paneli" %}</a>
                 {% endif %}
