@@ -174,7 +174,7 @@
     const usersPerPage = 20;
     let userModal;
 
-    function loadUsers() {
+    window.loadUsers = function() {
         const search = document.getElementById('userSearch')?.value || '';
         const role = document.getElementById('roleFilter')?.value || '';
         const status = document.getElementById('statusFilter')?.value || '';
@@ -187,7 +187,7 @@
             .then(r => r.json())
             .then(data => {
                 usersData = data.users;
-                renderUsersTable();
+                window.renderUsersTable();
                 renderPagination();
             })
             .catch(err => {
@@ -196,7 +196,7 @@
             });
     }
 
-    function renderUsersTable() {
+    window.renderUsersTable = function() {
         const tbody = document.getElementById('usersTableBody');
         if (!usersData || usersData.length === 0) {
             tbody.innerHTML = `<tr><td colspan="8" class="text-center py-5">
@@ -256,30 +256,55 @@
         return colors[role] || 'secondary';
     }
 
-    function showUserModal(mode, userId = null) {
+    window.showUserModal = function(mode, userId = null) {
         if (!userModal) {
-            userModal = new bootstrap.Modal(document.getElementById('userModal'));
+            const modalEl = document.getElementById('userModal');
+            if (modalEl) userModal = new bootstrap.Modal(modalEl);
         }
 
-        document.getElementById('userForm').reset();
-        document.getElementById('userId').value = userId || '';
+        const form = document.getElementById('userForm');
+        if (form) form.reset();
+        
+        const idInput = document.getElementById('userId');
+        if (idInput) idInput.value = userId || '';
+
+        const passwordField = document.getElementById('passwordField');
+        const passwordConfirmField = document.getElementById('passwordConfirmField');
 
         if (mode === 'create') {
             document.getElementById('userModalTitle').textContent = '{% trans "Yangi Foydalanuvchi" %}';
-            document.getElementById('passwordField').style.display = 'block';
-            document.getElementById('passwordConfirmField').style.display = 'block';
+            if (passwordField) passwordField.style.display = 'block';
+            if (passwordConfirmField) passwordConfirmField.style.display = 'block';
         } else {
             document.getElementById('userModalTitle').textContent = '{% trans "Foydalanuvchini Tahrirlash" %}';
-            document.getElementById('passwordField').style.display = 'none';
-            document.getElementById('passwordConfirmField').style.display = 'none';
-            // Load user data
-            // TODO: Implement
+            if (passwordField) passwordField.style.display = 'none';
+            if (passwordConfirmField) passwordConfirmField.style.display = 'none';
+            
+            // Load user data if needed or find in usersData
+            const user = usersData.find(u => u.id == userId);
+            if (user) {
+                const f = document.getElementById('userForm');
+                f.querySelector('[name="username"]').value = user.username;
+                f.querySelector('[name="first_name"]').value = user.full_name.split(' ')[0] || '';
+                f.querySelector('[name="last_name"]').value = user.full_name.split(' ')[1] || '';
+                f.querySelector('[name="email"]').value = user.email;
+                f.querySelector('[name="phone"]').value = user.phone;
+                f.querySelector('[name="role"]').value = user.role;
+                f.querySelector('[name="is_active"]').checked = user.is_active;
+                if (user.student_class) {
+                    // Logic to select class
+                }
+            }
         }
 
-        userModal.show();
+        if (userModal) userModal.show();
     }
 
-    function saveUser() {
+    window.editUser = function(userId) {
+        window.showUserModal('edit', userId);
+    };
+
+    window.saveUser = function() {
         const form = document.getElementById('userForm');
         const formData = new FormData(form);
         const userId = document.getElementById('userId').value;
@@ -299,7 +324,7 @@
                 if (data.success) {
                     AdminUtils.Toast.show(data.message || '{% trans "Muvaffaqiyatli saqlandi!" %}', 'success');
                     userModal.hide();
-                    loadUsers();
+                    window.loadUsers();
                 } else {
                     if (data.errors) {
                         let errorMsg = '{% trans "Xatoliklar" %}:<br>';
@@ -319,7 +344,7 @@
             });
     }
 
-    function deleteUser(userId, username) {
+    window.deleteUser = function(userId, username) {
         if (!confirm(`{% trans "ni o'chirishga ishonchingiz komilmi?" %}`.replace('ni', username + 'ni'))) return;
 
         const url = "{% url 'user_delete' 0 %}".replace('0', userId);
@@ -334,18 +359,21 @@
             .then(data => {
                 if (data.success) {
                     AdminUtils.Toast.show(data.message || '{% trans "Muvaffaqiyatli o\'chirildi!" %}', 'success');
-                    loadUsers();
+                    window.loadUsers();
                 } else {
                     AdminUtils.Toast.show(data.message || '{% trans "Xatolik yuz berdi!" %}', 'error');
                 }
             });
     }
 
-    function resetUserFilters() {
-        document.getElementById('userSearch').value = '';
-        document.getElementById('roleFilter').value = '';
-        document.getElementById('statusFilter').value = '';
-        loadUsers();
+    window.resetUserFilters = function() {
+        const search = document.getElementById('userSearch');
+        const role = document.getElementById('roleFilter');
+        const status = document.getElementById('statusFilter');
+        if (search) search.value = '';
+        if (role) role.value = '';
+        if (status) status.value = '';
+        window.loadUsers();
     }
 
     // Initialize on tab show
