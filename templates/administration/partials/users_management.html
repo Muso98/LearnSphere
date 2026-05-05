@@ -3,9 +3,14 @@
 
 <div class="management-header">
     <h3 class="management-title"><i class="bi bi-people me-2"></i>{% trans "Foydalanuvchilar Boshqaruvi" %}</h3>
-    <button class="btn btn-action btn-action-primary" onclick="showUserModal('create')">
-        <i class="bi bi-plus-circle"></i> {% trans "Yangi Foydalanuvchi" %}
-    </button>
+    <div class="d-flex gap-2">
+        <a href="{% url 'export_all_users' %}" class="btn btn-action btn-action-success">
+            <i class="bi bi-file-earmark-excel"></i> {% trans "Excelga yuklash" %}
+        </a>
+        <button class="btn btn-action btn-action-primary" onclick="showUserModal('create')">
+            <i class="bi bi-plus-circle"></i> {% trans "Yangi Foydalanuvchi" %}
+        </button>
+    </div>
 </div>
 
 <!-- Filter Panel -->

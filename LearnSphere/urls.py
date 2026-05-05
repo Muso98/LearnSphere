@@ -9,7 +9,7 @@ from core.views import parent_dashboard, notifications_view
 from core.views_extra import student_dashboard, director_dashboard
 from core.schedule_views import schedule_list, schedule_create, schedule_edit, schedule_delete
 from journal.views import gradebook_view, attendance_view
-from journal.export_views import export_grades_excel, export_attendance_excel, export_students_excel
+from journal.export_views import export_grades_excel, export_attendance_excel, export_students_excel, export_all_users_excel
 from journal.import_views import download_students_template, import_students
 from homework.views import create_assignment, assignment_list, submit_homework, view_submissions, grade_submission
 from accounts.views import profile_view
@@ -61,6 +61,7 @@ urlpatterns += i18n_patterns(
     path('export/grades/', export_grades_excel, name='export_grades'),
     path('export/attendance/', export_attendance_excel, name='export_attendance'),
     path('export/students/', export_students_excel, name='export_students'),
+    path('export/users/', export_all_users_excel, name='export_all_users'),
     # Excel Import URLs
     path('import/students/', import_students, name='import_students'),
     path('import/students/template/', download_students_template, name='download_students_template'),

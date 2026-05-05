@@ -233,3 +233,78 @@ def export_students_excel(request):
     
     wb.save(response)
     return response
+
+
+@login_required
+def export_all_users_excel(request):
+    """Export ALL users list to Excel file"""
+    if request.user.role not in ['admin', 'director', 'vice_director']:
+        messages.error(request, "Ruxsat yo'q!")
+        return redirect('home')
+    
+    # Create workbook
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Barcha Foydalanuvchilar"
+    
+    # Header styling
+    header_fill = PatternFill(start_color="4472C4", end_color="4472C4", fill_type="solid")
+    header_font = Font(bold=True, color="FFFFFF")
+    
+    # Title
+    ws['A1'] = "LearnSphere - Barcha Foydalanuvchilar Ro'yxati"
+    ws['A1'].font = Font(bold=True, size=16)
+    ws.merge_cells('A1:G1')
+    
+    ws['A2'] = f"Export sanasi: {datetime.now().strftime('%d.%m.%Y %H:%M')}"
+    ws.merge_cells('A2:G2')
+    
+    # Headers
+    headers = ['#', 'ID', 'Ism', 'Familiya', 'Username', 'Rol', 'E-mail']
+    for col, header in enumerate(headers, 1):
+        cell = ws.cell(row=4, column=col)
+        cell.value = header
+        cell.fill = header_fill
+        cell.font = header_font
+        cell.alignment = Alignment(horizontal='center')
+    
+    # Data
+    users = User.objects.all().order_by('role', 'last_name')
+    
+    role_map = {
+        'admin': 'Administrator',
+        'director': 'Direktor',
+        'teacher': "O'qituvchi",
+        'student': "O'quvchi",
+        'parent': "Ota-ona",
+    }
+    
+    row = 5
+    for idx, user in enumerate(users, 1):
+        ws.cell(row=row, column=1, value=idx)
+        ws.cell(row=row, column=2, value=user.id)
+        ws.cell(row=row, column=3, value=user.first_name)
+        ws.cell(row=row, column=4, value=user.last_name)
+        ws.cell(row=row, column=5, value=user.username)
+        ws.cell(row=row, column=6, value=role_map.get(user.role, user.role))
+        ws.cell(row=row, column=7, value=user.email or '')
+        row += 1
+    
+    # Adjust column widths
+    ws.column_dimensions['A'].width = 5
+    ws.column_dimensions['B'].width = 8
+    ws.column_dimensions['C'].width = 20
+    ws.column_dimensions['D'].width = 20
+    ws.column_dimensions['E'].width = 15
+    ws.column_dimensions['F'].width = 15
+    ws.column_dimensions['G'].width = 25
+    
+    # Create response
+    response = HttpResponse(
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+    filename = f"barcha_foydalanuvchilar_{datetime.now().strftime('%Y%m%d')}.xlsx"
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    
+    wb.save(response)
+    return response
