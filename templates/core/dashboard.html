@@ -123,7 +123,7 @@
     new Chart(ctx{{ forloop.counter }}, {
         type: 'radar',
         data: {
-            labels: ['Tanqidiy Fikr', 'Ijodkorlik', 'Muloqot', 'Jamoaviy', 'Moslashuv'],
+            labels: ['{% trans "Tanqidiy Fikr" %}', '{% trans "Ijodkorlik" %}', '{% trans "Muloqot" %}', '{% trans "Jamoaviy" %}', '{% trans "Moslashuv" %}'],
             datasets: [{
                 label: '{{ item.child.first_name }}',
                 data: [

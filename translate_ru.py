@@ -114,6 +114,11 @@ translations = {
     "Foydalanuvchilar topilmadi": "Пользователи не найдены",
     "Birinchi": "Первый",
     "Oxirgi": "Последний",
+    "Tanqidiy Fikr": "Критическое мышление",
+    "Ijodkorlik": "Креативность",
+    "Muloqot": "Коммуникация",
+    "Jamoaviy": "Командная работа",
+    "Moslashuv": "Адаптивность",
 }
 
 po_path = 'locale/ru/LC_MESSAGES/django.po'
