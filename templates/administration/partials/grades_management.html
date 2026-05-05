@@ -161,6 +161,12 @@
     }
 
     function exportGrades() {
-        window.location.href = '/administration/grades/export/';
+        const classId = document.getElementById('gradeClassFilter')?.value || '';
+        const subjectId = document.getElementById('gradeSubjectFilter')?.value || '';
+        if (!classId || !subjectId) {
+            AdminUtils.Toast.show('{% trans "Sinf va fanni tanlang!"|escapejs %}', 'warning');
+            return;
+        }
+        window.location.href = `{% url 'export_grades' %}?class_id=${classId}&subject_id=${subjectId}`;
     }
 </script>

@@ -13,7 +13,7 @@ from datetime import datetime
 @login_required
 def export_grades_excel(request):
     """Export grades to Excel file"""
-    if request.user.role not in ['teacher', 'director']:
+    if request.user.role not in ['admin', 'director', 'vice_director', 'teacher']:
         messages.error(request, "Ruxsat yo'q!")
         return redirect('home')
     
@@ -87,7 +87,7 @@ def export_grades_excel(request):
 @login_required
 def export_attendance_excel(request):
     """Export attendance to Excel file"""
-    if request.user.role not in ['teacher', 'director']:
+    if request.user.role not in ['admin', 'director', 'vice_director', 'teacher']:
         messages.error(request, "Ruxsat yo'q!")
         return redirect('home')
     
@@ -165,7 +165,7 @@ def export_attendance_excel(request):
 @login_required
 def export_students_excel(request):
     """Export students list to Excel file"""
-    if request.user.role not in ['teacher', 'director']:
+    if request.user.role not in ['admin', 'director', 'vice_director', 'teacher']:
         messages.error(request, "Ruxsat yo'q!")
         return redirect('home')
     
