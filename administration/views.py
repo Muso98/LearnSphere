@@ -153,6 +153,7 @@ def admin_dashboard(request):
         'recent_users': recent_users,
         'classes': Class.objects.all(),
         'subjects': Subject.objects.all(),
+        'teachers': UserModel.objects.filter(role='teacher'),
     }
     return render(request, 'administration/admin_dashboard.html', context)
 
@@ -1101,4 +1102,87 @@ def shop_redemption_process(request, redemption_id):
         return JsonResponse({'success': False, 'message': 'Invalid status'})
     except Exception as e:
         return JsonResponse({'success': False, 'message': str(e)})
+
+
+# Homework Management Views
+
+@login_required
+def homework_list(request):
+    """List all homework assignments - support AJAX"""
+    if not is_admin_user(request.user):
+        return JsonResponse({'error': 'Unauthorized'}, status=403)
+    
+    from homework.models import Assignment
+    assignments = Assignment.objects.select_related('subject', 'target_class').order_by('-created_at')
+    
+    # Filter
+    subject_id = request.GET.get('subject')
+    class_id = request.GET.get('class')
+    
+    if subject_id:
+        assignments = assignments.filter(subject_id=subject_id)
+    if class_id:
+        assignments = assignments.filter(target_class_id=class_id)
+    
+    data = [{
+        'id': a.id,
+        'subject': a.subject.name,
+        'class': a.target_class.name,
+        'description': a.description[:50] + '...' if len(a.description) > 50 else a.description,
+        'deadline': a.deadline.strftime('%d.%m.%Y %H:%M'),
+        'submissions_count': a.submissions.count(),
+        'has_file': bool(a.file_upload)
+    } for a in assignments]
+    
+    return JsonResponse({'assignments': data})
+
+@login_required
+@require_POST
+def homework_create(request):
+    """Create homework assignment via AJAX"""
+    if not is_admin_user(request.user):
+        return JsonResponse({'success': False, 'message': 'Unauthorized'}, status=403)
+    
+    try:
+        from homework.models import Assignment
+        from django.utils.dateparse import parse_datetime
+        from datetime import timedelta
+        
+        subject_id = request.POST.get('subject')
+        class_id = request.POST.get('target_class')
+        description = request.POST.get('description')
+        deadline_str = request.POST.get('deadline')
+        file = request.FILES.get('file_upload')
+        
+        if not all([subject_id, class_id, description, deadline_str]):
+            return JsonResponse({'success': False, 'message': "Barcha maydonlarni to'ldiring"})
+            
+        deadline = parse_datetime(deadline_str.replace('T', ' '))
+        if not deadline:
+             # Try another format if browser sends differently
+             from django.utils import timezone
+             deadline = timezone.now() + timedelta(days=1)
+        
+        Assignment.objects.create(
+            subject_id=subject_id,
+            target_class_id=class_id,
+            description=description,
+            deadline=deadline,
+            file_upload=file
+        )
+        return JsonResponse({'success': True, 'message': 'Topshiriq yaratildi'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)})
+
+@login_required
+@require_POST
+def homework_delete(request, assignment_id):
+    """Delete homework assignment"""
+    if not is_admin_user(request.user):
+        return JsonResponse({'success': False, 'message': 'Unauthorized'}, status=403)
+    
+    from homework.models import Assignment
+    assignment = get_object_or_404(Assignment, id=assignment_id)
+    assignment.delete()
+    return JsonResponse({'success': True, 'message': 'Topshiriq o\'chirildi'})
 

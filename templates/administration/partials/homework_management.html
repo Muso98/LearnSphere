@@ -1,0 +1,196 @@
+{% load i18n %}
+<!-- Homework Management Partial -->
+
+<div class="management-header">
+    <h3 class="management-title"><i class="bi bi-journal-text me-2"></i>{% trans "Topshiriqlarni Boshqarish" %}</h3>
+    <button type="button" class="btn btn-action btn-action-primary" onclick="window.showHomeworkModal()">
+        <i class="bi bi-plus-circle"></i> {% trans "Yangi Topshiriq" %}
+    </button>
+</div>
+
+<!-- Create Homework Modal -->
+<div class="modal fade" id="homeworkModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content glass-card">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans "Yangi Topshiriq Yaratish" %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="homeworkForm" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label class="form-label">{% trans "Fan" %}</label>
+                        <select name="subject" class="form-select" required>
+                            <option value="">{% trans "Tanlang" %}...</option>
+                            {% for subject in subjects %}
+                            <option value="{{ subject.id }}">{{ subject.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{% trans "Sinf" %}</label>
+                        <select name="target_class" class="form-select" required>
+                            <option value="">{% trans "Tanlang" %}...</option>
+                            {% for cls in classes %}
+                            <option value="{{ cls.id }}">{{ cls.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{% trans "Tavsif" %}</label>
+                        <textarea name="description" class="form-control" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{% trans "Muddat (Deadline)" %}</label>
+                        <input type="datetime-local" name="deadline" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{% trans "Fayl (Ixtiyoriy)" %}</label>
+                        <input type="file" name="file_upload" class="form-control">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">{% trans "Bekor qilish" %}</button>
+                <button type="button" class="btn btn-primary rounded-pill px-4" onclick="window.saveHomework()">{% trans "Saqlash" %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Filters -->
+<div class="filter-panel">
+    <div class="row g-3">
+        <div class="col-md-4">
+            <select id="hwSubjectFilter" class="form-select">
+                <option value="">{% trans "Barcha fanlar" %}</option>
+                {% for subject in subjects %}
+                <option value="{{ subject.id }}">{{ subject.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-4">
+            <select id="hwClassFilter" class="form-select">
+                <option value="">{% trans "Barcha sinflar" %}</option>
+                {% for cls in classes %}
+                <option value="{{ cls.id }}">{{ cls.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+</div>
+
+<!-- Table -->
+<div class="modern-table">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>{% trans "Fan" %}</th>
+                <th>{% trans "Sinf" %}</th>
+                <th>{% trans "Tavsif" %}</th>
+                <th>{% trans "Muddat" %}</th>
+                <th>{% trans "Topshirganlar" %}</th>
+                <th style="width: 100px;">{% trans "Harakatlar" %}</th>
+            </tr>
+        </thead>
+        <tbody id="homeworkTableBody">
+            <tr>
+                <td colspan="6" class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status"></div>
+                    <p class="mt-2 text-muted">{% trans "Yuklanmoqda..." %}</p>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    window.loadHomework = function() {
+        const tbody = document.getElementById('homeworkTableBody');
+        if (!tbody) return;
+
+        const subject = document.getElementById('hwSubjectFilter')?.value || '';
+        const cls = document.getElementById('hwClassFilter')?.value || '';
+
+        fetch(`{% url 'api_homework_list' %}?subject=${subject}&class=${cls}`, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+            .then(r => r.json())
+            .then(data => {
+                if (!data.assignments || data.assignments.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted">{% trans "Topshiriqlar topilmadi"|escapejs %}</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = data.assignments.map(a => `
+                    <tr>
+                        <td><strong>${a.subject}</strong></td>
+                        <td><span class="badge bg-info">${a.class}</span></td>
+                        <td><small>${a.description}</small></td>
+                        <td><span class="text-danger"><i class="bi bi-clock me-1"></i>${a.deadline}</span></td>
+                        <td><span class="badge bg-secondary">${a.submissions_count} {% trans "ta"|escapejs %}</span></td>
+                        <td>
+                            <button onclick="window.deleteHomework(${a.id})" class="btn btn-sm btn-danger">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            });
+    }
+
+    // Modal Handlers
+    let hwModal;
+    window.showHomeworkModal = function() {
+        if (!hwModal) {
+            hwModal = new bootstrap.Modal(document.getElementById('homeworkModal'));
+        }
+        document.getElementById('homeworkForm').reset();
+        hwModal.show();
+    }
+
+    window.saveHomework = function() {
+        const form = document.getElementById('homeworkForm');
+        const formData = new FormData(form);
+
+        fetch('{% url "api_homework_create" %}', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': AdminUtils.csrftoken,
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: formData
+        })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    AdminUtils.Toast.show(data.message, 'success');
+                    hwModal.hide();
+                    window.loadHomework();
+                } else {
+                    AdminUtils.Toast.show(data.message, 'error');
+                }
+            });
+    }
+
+    window.deleteHomework = function(id) {
+        if (!confirm('{% trans "Topshiriqni o\'chirishga ishonchingiz komilmi?"|escapejs %}')) return;
+
+        let url = "{% url 'api_homework_delete' 0 %}".replace('0', id);
+        fetch(url, {
+            method: 'POST',
+            headers: { 'X-CSRFToken': AdminUtils.csrftoken }
+        })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    AdminUtils.Toast.show(data.message, 'success');
+                    window.loadHomework();
+                }
+            });
+    }
+
+    // Filter Listeners
+    document.getElementById('hwSubjectFilter')?.addEventListener('change', () => window.loadHomework());
+    document.getElementById('hwClassFilter')?.addEventListener('change', () => window.loadHomework());
+</script>

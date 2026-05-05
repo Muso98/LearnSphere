@@ -49,4 +49,9 @@ urlpatterns = [
     path('api/shop/rewards/<int:reward_id>/delete/', views.shop_reward_delete, name='shop_reward_delete'),
     path('api/shop/redemptions/', views.shop_redemptions_list, name='shop_redemptions_list'),
     path('api/shop/redemptions/<int:redemption_id>/process/', views.shop_redemption_process, name='shop_redemption_process'),
+    
+    # Homework Management
+    path('api/homework/', views.homework_list, name='api_homework_list'),
+    path('api/homework/create/', views.homework_create, name='api_homework_create'),
+    path('api/homework/<int:assignment_id>/delete/', views.homework_delete, name='api_homework_delete'),
 ]

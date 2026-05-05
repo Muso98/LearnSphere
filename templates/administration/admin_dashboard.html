@@ -104,6 +104,11 @@
                 <i class="bi bi-shop me-2"></i>{% trans "Do'kon" %}
             </button>
         </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="homework-tab" data-bs-toggle="tab" data-bs-target="#homework" type="button" role="tab">
+                <i class="bi bi-journal-text me-2"></i>{% trans "Topshiriqlar" %}
+            </button>
+        </li>
     </ul>
 
     <!-- Admin JS Utilities and Translations -->
@@ -129,6 +134,7 @@
         window.gradesLoaded = false;
         window.attendanceLoaded = false;
         window.teachersLoaded = false;
+        window.homeworkLoaded = false;
 
         document.addEventListener('DOMContentLoaded', function() {
             const tabs = document.querySelectorAll('[data-bs-toggle="tab"]');
@@ -153,6 +159,9 @@
                     } else if (targetId === 'teachers-tab' && !window.teachersLoaded) {
                         window.loadTeacherAssignments?.();
                         window.teachersLoaded = true;
+                    } else if (targetId === 'homework-tab' && !window.homeworkLoaded) {
+                        window.loadHomework?.();
+                        window.homeworkLoaded = true;
                     }
                 });
             });
@@ -199,6 +208,11 @@
         <!-- Shop Tab -->
         <div class="tab-pane fade" id="shop" role="tabpanel">
             {% include 'administration/partials/shop_management.html' %}
+        </div>
+
+        <!-- Homework Tab -->
+        <div class="tab-pane fade" id="homework" role="tabpanel">
+            {% include 'administration/partials/homework_management.html' %}
         </div>
     </div>
 </div>

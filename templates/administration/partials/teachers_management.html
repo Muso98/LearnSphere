@@ -3,9 +3,56 @@
 
 <div class="management-header">
     <h3 class="management-title"><i class="bi bi-person-badge me-2"></i>{% trans "O'qituvchilarni Boshqarish" %}</h3>
-    <a href="{% url 'teacher_assignment' %}" class="btn btn-action btn-action-primary">
+    <button type="button" class="btn btn-action btn-action-primary" onclick="window.showAssignmentModal()">
         <i class="bi bi-plus-circle"></i> {% trans "Yangi Tayinlash" %}
-    </a>
+    </button>
+</div>
+
+<!-- Teacher Assignment Modal -->
+<div class="modal fade" id="assignmentModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content glass-card">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans "O'qituvchini Biriktirish" %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="assignmentForm">
+                    <div class="mb-3">
+                        <label class="form-label">{% trans "O'qituvchi" %}</label>
+                        <select name="teacher" class="form-select" required>
+                            <option value="">{% trans "Tanlang" %}...</option>
+                            {% for teacher in teachers %}
+                            <option value="{{ teacher.id }}">{{ teacher.get_full_name }} ({{ teacher.username }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{% trans "Fan" %}</label>
+                        <select name="subject" class="form-select" required>
+                            <option value="">{% trans "Tanlang" %}...</option>
+                            {% for subject in subjects %}
+                            <option value="{{ subject.id }}">{{ subject.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{% trans "Sinf" %}</label>
+                        <select name="assigned_class" class="form-select" required>
+                            <option value="">{% trans "Tanlang" %}...</option>
+                            {% for cls in classes %}
+                            <option value="{{ cls.id }}">{{ cls.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">{% trans "Bekor qilish" %}</button>
+                <button type="button" class="btn btn-primary rounded-pill px-4" onclick="window.saveAssignment()">{% trans "Saqlash" %}</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Search -->
@@ -110,16 +157,50 @@
         })
             .then(r => r.json())
             .then(data => {
-                // The delete view currently redirects, but if we make it return JSON:
                 if (data.success || !data.error) {
                     AdminUtils.Toast.show('{% trans "Tayinlash bekor qilindi!"|escapejs %}', 'success');
                     window.loadTeacherAssignments();
                 }
             })
             .catch(() => {
-                // If it redirected, it might fail to parse as JSON, but the action might have succeeded
                 window.loadTeacherAssignments();
             });
     }
 
+    let assignmentModal;
+    window.showAssignmentModal = function() {
+        if (!assignmentModal) {
+            assignmentModal = new bootstrap.Modal(document.getElementById('assignmentModal'));
+        }
+        document.getElementById('assignmentForm').reset();
+        assignmentModal.show();
+    }
+
+    window.saveAssignment = function() {
+        const form = document.getElementById('assignmentForm');
+        const formData = new FormData(form);
+
+        fetch('{% url "teacher_assignment" %}', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': AdminUtils.csrftoken,
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: formData
+        })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    AdminUtils.Toast.show(data.message || '{% trans "Muvaffaqiyatli biriktirildi!"|escapejs %}', 'success');
+                    assignmentModal.hide();
+                    window.loadTeacherAssignments();
+                } else {
+                    AdminUtils.Toast.show(data.message || '{% trans "Xatolik yuz berdi!"|escapejs %}', 'error');
+                }
+            })
+            .catch(err => {
+                console.error('Save error:', err);
+                AdminUtils.Toast.show('{% trans "Tarmoq xatosi!"|escapejs %}', 'error');
+            });
+    }
 </script>
