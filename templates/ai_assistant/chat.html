@@ -133,18 +133,18 @@
             if (response.ok) {
                 currentConversationId = data.conversation_id;
                 const agentLabels = {
-                    'teacher': '{% trans "Teacher" %}',
-                    'parent': '{% trans "Parent" %}',
-                    'student': '{% trans "Student" %}'
+                    'teacher': '{% trans "Teacher"|escapejs %}',
+                    'parent': '{% trans "Parent"|escapejs %}',
+                    'student': '{% trans "Student"|escapejs %}'
                 };
                 const agentLabel = agentLabels[currentAgentType] || currentAgentType;
-                document.getElementById('chatTitle').textContent = `{% trans "Yangi" %} ${agentLabel} {% trans "chat" %}`;
+                document.getElementById('chatTitle').textContent = `{% trans "Yangi"|escapejs %} ${agentLabel} {% trans "chat"|escapejs %}`;
                 document.getElementById('agentType').textContent = data.agent_type;
                 document.getElementById('chatMessages').innerHTML = '';
                 document.getElementById('messageInput').disabled = false;
                 document.getElementById('sendBtn').disabled = false;
             } else {
-                alert('{% trans "Error starting conversation" %}: ' + data.error);
+                alert('{% trans "Error starting conversation"|escapejs %}: ' + data.error);
             }
         } catch (error) {
             console.error('Error:', error);
@@ -153,7 +153,7 @@
                 // Try to get text if JSON failed
                 response.text().then(text => console.error('Response text:', text));
             } else {
-                alert('{% trans "Failed to start conversation. Network error or code issue" %}: ' + error.message);
+                alert('{% trans "Failed to start conversation. Network error or code issue"|escapejs %}: ' + error.message);
             }
         }
     }
@@ -188,12 +188,12 @@
                     addActionsToChat(data.actions);
                 }
             } else {
-                alert('{% trans "Error sending message" %}: ' + data.error);
+                alert('{% trans "Error sending message"|escapejs %}: ' + data.error);
             }
         } catch (error) {
             console.error('Error:', error);
             document.getElementById('typingIndicator').style.display = 'none';
-            alert('{% trans "Failed to send message" %}');
+            alert('{% trans "Failed to send message"|escapejs %}');
         }
     }
 
