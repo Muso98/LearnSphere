@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Testni Tahrirlash - {{ quiz.title }}{% endblock %}
+{% block title %}{% trans "Testni Tahrirlash" %} - {{ quiz.title }}{% endblock %}
 
 {% block content %}
 <div class="row mb-5">
@@ -13,16 +14,16 @@
                     </span>
                     <h2 class="fw-bold mb-0">{{ quiz.title }}</h2>
                     <p class="text-muted mb-0">
-                        <i class="bi bi-clock me-1"></i> {{ quiz.time_limit }} daqiqa |
-                        <i class="bi bi-question-circle me-1"></i> {{ questions.count }} ta savol
+                        <i class="bi bi-clock me-1"></i> {% blocktrans with limit=quiz.time_limit %}{{ limit }} daqiqa{% endblocktrans %} |
+                        <i class="bi bi-question-circle me-1"></i> {% blocktrans with count=questions.count %}{{ count }} ta savol{% endblocktrans %}
                     </p>
                 </div>
                 <div>
                     <a href="{% url 'quiz_detail' quiz.id %}" class="btn btn-outline-primary rounded-pill me-2">
-                        <i class="bi bi-eye"></i> Ko'rish
+                        <i class="bi bi-eye"></i> {% trans "Ko'rish" %}
                     </a>
                     <a href="{% url 'quiz_list' %}" class="btn btn-light rounded-pill">
-                        <i class="bi bi-check-lg"></i> Yakunlash
+                        <i class="bi bi-check-lg"></i> {% trans "Yakunlash" %}
                     </a>
                 </div>
             </div>
@@ -34,22 +35,22 @@
     <!-- Manual Question Add -->
     <div class="col-lg-6 mb-4">
         <div class="glass-card p-4 h-100">
-            <h4 class="fw-bold mb-3"><i class="bi bi-plus-circle me-2"></i> Savol Qo'shish</h4>
+            <h4 class="fw-bold mb-3"><i class="bi bi-plus-circle me-2"></i> {% trans "Savol Qo'shish" %}</h4>
             <form method="post">
                 {% csrf_token %}
                 <input type="hidden" name="add_question" value="1">
 
                 <div class="mb-3">
-                    <label class="form-label fw-bold">Savol Matni</label>
+                    <label class="form-label fw-bold">{% trans "Savol Matni" %}</label>
                     <textarea class="form-control rounded-3" name="question_text" rows="2" required></textarea>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label fw-bold">Ball</label>
+                    <label class="form-label fw-bold">{% trans "Ball" %}</label>
                     <input type="number" class="form-control rounded-3" name="points" value="1" min="1" required>
                 </div>
 
-                <label class="form-label fw-bold">Javob Variantlari</label>
+                <label class="form-label fw-bold">{% trans "Javob Variantlari" %}</label>
                 <div class="input-group mb-2">
                     <div class="input-group-text">
                         <input class="form-check-input mt-0" type="radio" name="correct_option" value="1" required>
@@ -76,7 +77,7 @@
                 </div>
 
                 <button type="submit" class="btn btn-primary w-100 rounded-pill">
-                    Qo'shish
+                    {% trans "Qo'shish" %}
                 </button>
             </form>
         </div>
@@ -85,11 +86,11 @@
     <!-- Excel Import -->
     <div class="col-lg-6 mb-4">
         <div class="glass-card p-4 h-100">
-            <h4 class="fw-bold mb-3"><i class="bi bi-file-earmark-excel me-2"></i> Exceldan Yuklash</h4>
+            <h4 class="fw-bold mb-3"><i class="bi bi-file-earmark-excel me-2"></i> {% trans "Exceldan Yuklash" %}</h4>
             <p class="text-muted small">
-                Excel fayl quyidagi ustunlarga ega bo'lishi kerak:<br>
+                {% trans "Excel fayl quyidagi ustunlarga ega bo'lishi kerak:" %}<br>
                 <code>Question</code>, <code>Option A</code>, <code>Option B</code>, <code>Option C</code>,
-                <code>Option D</code>, <code>Correct Answer</code> (A, B, C yoki D)
+                <code>Option D</code>, <code>Correct Answer</code> (A, B, C {% trans "yoki" %} D)
             </p>
 
             <form method="post" enctype="multipart/form-data" class="mt-4">
@@ -101,13 +102,13 @@
                 </div>
 
                 <button type="submit" class="btn btn-success w-100 rounded-pill text-white">
-                    <i class="bi bi-upload me-2"></i> Yuklash
+                    <i class="bi bi-upload me-2"></i> {% trans "Yuklash" %}
                 </button>
             </form>
 
             <hr class="my-4">
 
-            <h5 class="fw-bold mb-3">Mavjud Savollar ({{ questions.count }})</h5>
+            <h5 class="fw-bold mb-3">{% blocktrans with count=questions.count %}Mavjud Savollar ({{ count }}){% endblocktrans %}</h5>
             <div class="list-group list-group-flush overflow-auto" style="max-height: 300px;">
                 {% for question in questions %}
                 <div class="list-group-item bg-transparent px-0">
@@ -118,7 +119,7 @@
                     </div>
                 </div>
                 {% empty %}
-                <p class="text-muted text-center my-3">Savollar yo'q</p>
+                <p class="text-muted text-center my-3">{% trans "Savollar yo'q" %}</p>
                 {% endfor %}
             </div>
         </div>

@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
 {% block title %}{{ quiz.title }} - LearnSphere{% endblock %}
 
@@ -14,24 +15,24 @@
 
             {% if last_result %}
             <div class="alert alert-info glass-card border-0 mb-4">
-                <h5 class="fw-bold"><i class="bi bi-clock-history me-2"></i> Oxirgi natijangiz</h5>
+                <h5 class="fw-bold"><i class="bi bi-clock-history me-2"></i> {% trans "Oxirgi natijangiz" %}</h5>
                 <h2 class="display-4 fw-bold text-primary mb-0">{{ last_result.score }}</h2>
-                <p class="mb-0">ball ({{ last_result.date_taken|date:"d.m.Y H:i" }})</p>
+                <p class="mb-0">{% trans "ball" %} ({{ last_result.date_taken|date:"d.m.Y H:i" }})</p>
             </div>
             {% endif %}
 
             <a href="{% url 'quiz_take' quiz.id %}" class="btn btn-primary btn-lg rounded-pill px-5 shadow-sm">
                 {% if last_result %}
-                Qayta topshirish
+                {% trans "Qayta topshirish" %}
                 {% else %}
-                Testni Boshlash
+                {% trans "Testni Boshlash" %}
                 {% endif %}
                 <i class="bi bi-arrow-right ms-2"></i>
             </a>
 
             <div class="mt-4">
                 <a href="{% url 'quiz_list' %}" class="text-decoration-none text-muted">
-                    <i class="bi bi-arrow-left me-1"></i> Ortga qaytish
+                    <i class="bi bi-arrow-left me-1"></i> {% trans "Ortga qaytish" %}
                 </a>
             </div>
         </div>

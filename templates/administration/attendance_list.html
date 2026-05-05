@@ -69,11 +69,11 @@
                         <td>
                             <div class="btn-group btn-group-sm">
                                 <button class="btn btn-outline-success"
-                                    onclick="updateAttendance({{ att.id }}, 'present')">K</button>
+                                    onclick="updateAttendance({{ att.id }}, 'present')">{% trans "K" %}</button>
                                 <button class="btn btn-outline-warning"
-                                    onclick="updateAttendance({{ att.id }}, 'late')">Kish</button>
+                                    onclick="updateAttendance({{ att.id }}, 'late')">{% trans "Kish" %}</button>
                                 <button class="btn btn-outline-danger"
-                                    onclick="updateAttendance({{ att.id }}, 'absent')">Yo'q</button>
+                                    onclick="updateAttendance({{ att.id }}, 'absent')">{% trans "Yo'q" %}</button>
                             </div>
                         </td>
                     </tr>
@@ -124,7 +124,7 @@
                 if (data.success) {
                     location.reload(); // Refresh to update badges easily
                 } else {
-                    alert('Xatolik yuz berdi');
+                    alert('{% trans "Xatolik yuz berdi" %}');
                 }
             });
     }

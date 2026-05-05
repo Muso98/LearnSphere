@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Director Dashboard - LearnSphere{% endblock %}
+{% block title %}{% trans "Director Dashboard" %} - LearnSphere{% endblock %}
 
 {% block content %}
 <style>
@@ -78,15 +79,15 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h2 class="fw-bold text-dark">Director Dashboard</h2>
-        <p class="text-muted">Maktab faoliyati bo'yicha sun'iy intellekt tahlili</p>
+        <h2 class="fw-bold text-dark">{% trans "Director Dashboard" %}</h2>
+        <p class="text-muted">{% trans "Maktab faoliyati bo'yicha sun'iy intellekt tahlili" %}</p>
     </div>
     <div class="d-flex gap-2">
         <a href="{% url 'export_students' %}" class="btn btn-dark rounded-pill shadow-sm">
-            <i class="bi bi-download me-2"></i>Hisobotni Yuklash
+            <i class="bi bi-download me-2"></i>{% trans "Hisobotni Yuklash" %}
         </a>
         <a href="{% url 'import_students' %}" class="btn btn-light rounded-pill shadow-sm border">
-            <i class="bi bi-upload me-2"></i>Import
+            <i class="bi bi-upload me-2"></i>{% trans "Import" %}
         </a>
     </div>
 </div>
@@ -97,7 +98,7 @@
         <div class="card stat-card bg-gradient-primary h-100 shadow-lg p-3">
             <div class="card-body d-flex justify-content-between align-items-center">
                 <div>
-                    <h6 class="text-uppercase mb-2 opacity-75">O'quvchilar</h6>
+                    <h6 class="text-uppercase mb-2 opacity-75">{% trans "O'quvchilar" %}</h6>
                     <h2 class="display-5 fw-bold mb-0">{{ total_students }}</h2>
                 </div>
                 <i class="bi bi-people-fill fs-1 opacity-50"></i>
@@ -108,7 +109,7 @@
         <div class="card stat-card bg-gradient-success h-100 shadow-lg p-3">
             <div class="card-body d-flex justify-content-between align-items-center">
                 <div>
-                    <h6 class="text-uppercase mb-2 opacity-75">O'qituvchilar</h6>
+                    <h6 class="text-uppercase mb-2 opacity-75">{% trans "O'qituvchilar" %}</h6>
                     <h2 class="display-5 fw-bold mb-0">{{ total_teachers }}</h2>
                 </div>
                 <i class="bi bi-person-workspace fs-1 opacity-50"></i>
@@ -119,7 +120,7 @@
         <div class="card stat-card bg-gradient-warning h-100 shadow-lg p-3">
             <div class="card-body d-flex justify-content-between align-items-center">
                 <div>
-                    <h6 class="text-uppercase mb-2 opacity-75">Faol Sinflar</h6>
+                    <h6 class="text-uppercase mb-2 opacity-75">{% trans "Faol Sinflar" %}</h6>
                     <h2 class="display-5 fw-bold mb-0">{{ total_classes }}</h2>
                 </div>
                 <i class="bi bi-mortarboard-fill fs-1 opacity-50"></i>
@@ -133,7 +134,7 @@
     <div class="col-md-8">
         <div class="glass-card h-100 p-4">
             <h5 class="fw-bold mb-4 text-dark">
-                <i class="bi bi-bar-chart-fill text-primary me-2"></i>Fanlar O'zlashtirishi
+                <i class="bi bi-bar-chart-fill text-primary me-2"></i>{% trans "Fanlar O'zlashtirishi" %}
             </h5>
             <div class="chart-container">
                 <canvas id="subjectChart"></canvas>
@@ -143,7 +144,7 @@
     <div class="col-md-4">
         <div class="glass-card h-100 p-4">
             <h5 class="fw-bold mb-4 text-dark">
-                <i class="bi bi-pie-chart-fill text-success me-2"></i>Davomat Tahlili
+                <i class="bi bi-pie-chart-fill text-success me-2"></i>{% trans "Davomat Tahlili" %}
             </h5>
             <div class="chart-container">
                 <canvas id="attendanceChart"></canvas>
@@ -158,7 +159,7 @@
         <div class="glass-card h-100 p-0 overflow-hidden">
             <div class="p-4 bg-light bg-opacity-50 border-bottom d-flex align-items-center">
                 <i class="bi bi-trophy-fill text-warning fs-4 me-3"></i>
-                <h5 class="fw-bold mb-0 text-dark">Top 5 Faol O'qituvchilar</h5>
+                <h5 class="fw-bold mb-0 text-dark">{% trans "Top 5 Faol O'qituvchilar" %}</h5>
             </div>
             <div class="list-group list-group-flush">
                 {% for t in top_teachers %}
@@ -171,13 +172,13 @@
                         <div>
                             <h6 class="mb-0 fw-bold text-dark">{{ t.teacher__first_name }} {{ t.teacher__last_name }}
                             </h6>
-                            <small class="text-muted">Faoliyat reytingi</small>
+                            <small class="text-muted">{% trans "Faoliyat reytingi" %}</small>
                         </div>
                     </div>
-                    <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-3 py-2 border border-primary border-opacity-25">{{ t.grade_count|default:0 }} ta baho</span>
+                    <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-3 py-2 border border-primary border-opacity-25">{{ t.grade_count|default:0 }} {% trans "ta baho" %}</span>
                 </div>
                 {% empty %}
-                <div class="p-4 text-center text-muted">Ma'lumotlar yetarli emas</div>
+                <div class="p-4 text-center text-muted">{% trans "Ma'lumotlar yetarli emas" %}</div>
                 {% endfor %}
             </div>
         </div>
@@ -186,7 +187,7 @@
         <div class="glass-card h-100 p-0 overflow-hidden">
             <div class="p-4 bg-light bg-opacity-50 border-bottom d-flex align-items-center">
                 <i class="bi bi-award-fill text-info fs-4 me-3"></i>
-                <h5 class="fw-bold mb-0 text-dark">Top 5 A'lochi O'quvchilar</h5>
+                <h5 class="fw-bold mb-0 text-dark">{% trans "Top 5 A'lochi O'quvchilar" %}</h5>
             </div>
             <div class="list-group list-group-flush">
                 {% for s in top_students %}
@@ -199,7 +200,7 @@
                         <div>
                             <h6 class="mb-0 fw-bold text-dark">{{ s.student__first_name }} {{ s.student__last_name }}
                             </h6>
-                            <small class="text-muted">{{ s.student__student_class__name }} sinf</small>
+                            <small class="text-muted">{% blocktrans with name=s.student__student_class__name %}{{ name }} sinf{% endblocktrans %}</small>
                         </div>
                     </div>
                     <span
@@ -207,7 +208,7 @@
                         {{ s.gpa|floatformat:1 }}</span>
                 </div>
                 {% empty %}
-                <div class="p-4 text-center text-muted">Ma'lumotlar yetarli emas</div>
+                <div class="p-4 text-center text-muted">{% trans "Ma'lumotlar yetarli emas" %}</div>
                 {% endfor %}
             </div>
         </div>
@@ -216,19 +217,19 @@
 
 <div class="glass-card mb-4 p-0 overflow-hidden">
     <div class="p-4 border-bottom bg-light bg-opacity-50">
-        <h5 class="fw-bold mb-0 text-dark"><i class="bi bi-activity me-2 text-secondary"></i>So'nggi Akademik Faoliyat
+        <h5 class="fw-bold mb-0 text-dark"><i class="bi bi-activity me-2 text-secondary"></i>{% trans "So'nggi Akademik Faoliyat" %}
         </h5>
     </div>
     <div class="table-responsive">
         <table class="table table-hover mb-0 align-middle">
             <thead class="bg-light bg-opacity-75 text-secondary text-uppercase small">
                 <tr>
-                    <th class="py-3 ps-4 border-0">Sana</th>
-                    <th class="py-3 border-0">O'quvchi</th>
-                    <th class="py-3 border-0">Sinf</th>
-                    <th class="py-3 border-0">Fan</th>
-                    <th class="py-3 border-0">Baho</th>
-                    <th class="py-3 border-0 pe-4">O'qituvchi</th>
+                    <th class="py-3 ps-4 border-0">{% trans "Sana" %}</th>
+                    <th class="py-3 border-0">{% trans "O'quvchi" %}</th>
+                    <th class="py-3 border-0">{% trans "Sinf" %}</th>
+                    <th class="py-3 border-0">{% trans "Fan" %}</th>
+                    <th class="py-3 border-0">{% trans "Baho" %}</th>
+                    <th class="py-3 border-0 pe-4">{% trans "O'qituvchi" %}</th>
                 </tr>
             </thead>
             <tbody>
@@ -240,9 +241,9 @@
                     <td class="text-secondary">{{ grade.subject.name }}</td>
                     <td>
                         {% if grade.value >= 5 %}
-                        <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-pill px-3">5 (A'lo)</span>
+                        <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-pill px-3">5 ({% trans "A'lo" %})</span>
                         {% elif grade.value == 4 %}
-                        <span class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-25 rounded-pill px-3">4 (Yaxshi)</span>
+                        <span class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-25 rounded-pill px-3">4 ({% trans "Yaxshi" %})</span>
                         {% else %}
                         <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 rounded-pill px-3">{% firstof grade.value "N/A" %}</span>
                         {% endif %}
@@ -273,7 +274,7 @@
         data: {
             labels: {{ subject_labels| safe }},
         datasets: [{
-            label: "O'rtacha Baho",
+            label: "{% trans "O'rtacha Baho" %}",
             data: {{ subject_data| safe }},
         backgroundColor: gradientSubject,
         borderColor: '#4e54c8',

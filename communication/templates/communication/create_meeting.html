@@ -1,36 +1,37 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Majlis Yaratish - LearnSphere{% endblock %}
+{% block title %}{% trans "Majlis Yaratish" %} - LearnSphere{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-6">
         <div class="glass-card p-4">
-            <h4 class="fw-bold mb-4">Yangi Majlis Yaratish</h4>
+            <h4 class="fw-bold mb-4">{% trans "Yangi Majlis Yaratish" %}</h4>
 
             <form method="post">
                 {% csrf_token %}
                 <div class="mb-3">
-                    <label class="form-label fw-bold">Majlis Mavzusi</label>
+                    <label class="form-label fw-bold">{% trans "Majlis Mavzusi" %}</label>
                     <input type="text" name="title" class="form-control rounded-3" required
-                        placeholder="Masalan: 9-A sinf ota-onalar majlisi">
+                        placeholder="{% trans 'Masalan: 9-A sinf ota-onalar majlisi' %}">
                 </div>
 
                 {% if user.role == 'director' or user.role == 'admin' %}
                 <div class="mb-3">
-                    <label class="form-label">Kimlar uchun?</label>
+                    <label class="form-label">{% trans "Kimlar uchun?" %}</label>
                     <select name="audience" class="form-select" id="audienceSelect" onchange="toggleClassSelect()">
-                        <option value="class">Aniq bir sinf uchun</option>
-                        <option value="teachers">Barcha O'qituvchilar uchun</option>
-                        <option value="parents">Barcha Ota-onalar uchun</option>
+                        <option value="class">{% trans "Aniq bir sinf uchun" %}</option>
+                        <option value="teachers">{% trans "Barcha O'qituvchilar uchun" %}</option>
+                        <option value="parents">{% trans "Barcha Ota-onalar uchun" %}</option>
                     </select>
                 </div>
                 {% endif %}
 
                 <div class="mb-3" id="classSelectDiv">
-                    <label class="form-label">Sinf</label>
+                    <label class="form-label">{% trans "Sinf" %}</label>
                     <select name="class_id" class="form-select">
-                        <option value="">-- Tanlang --</option>
+                        <option value="">-- {% trans "Tanlang" %} --</option>
                         {% for number in classes %}
                         <option value="{{ number.id }}">{{ number.name }}</option>
                         {% endfor %}
@@ -38,12 +39,12 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label fw-bold">Boshlanish Vaqti</label>
+                    <label class="form-label fw-bold">{% trans "Boshlanish Vaqti" %}</label>
                     <input type="datetime-local" name="start_time" class="form-control rounded-3" required>
                 </div>
 
                 <div class="mb-4">
-                    <label class="form-label fw-bold">Video Link (Zoom/Meet)</label>
+                    <label class="form-label fw-bold">{% trans "Video Link (Zoom/Meet)" %}</label>
                     <div class="input-group">
                         <span class="input-group-text bg-light"><i class="bi bi-link-45deg"></i></span>
                         <input type="url" name="link" class="form-control" required
@@ -52,8 +53,8 @@
                 </div>
 
                 <div class="d-flex justify-content-end gap-2">
-                    <a href="{% url 'meeting_list' %}" class="btn btn-light rounded-pill px-4">Bekor qilish</a>
-                    <button type="submit" class="btn btn-primary rounded-pill px-4">Saqlash</button>
+                    <a href="{% url 'meeting_list' %}" class="btn btn-light rounded-pill px-4">{% trans "Bekor qilish" %}</a>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4">{% trans "Saqlash" %}</button>
                 </div>
             </form>
         </div>

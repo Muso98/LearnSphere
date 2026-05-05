@@ -1,16 +1,17 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Vazifalar - LearnSphere{% endblock %}
+{% block title %}{% trans "Vazifalar" %} - LearnSphere{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h2 class="fw-bold text-dark">Uy Vazifalari</h2>
-        <p class="text-muted">Joriy topshiriqlar va loyihalar</p>
+        <h2 class="fw-bold text-dark">{% trans "Uy Vazifalari" %}</h2>
+        <p class="text-muted">{% trans "Joriy topshiriqlar va loyihalar" %}</p>
     </div>
     {% if user.role == 'teacher' %}
     <a href="{% url 'create_assignment' %}" class="btn btn-success rounded-pill shadow-sm">
-        <i class="bi bi-plus-lg me-2"></i>Yangi Yaratish
+        <i class="bi bi-plus-lg me-2"></i>{% trans "Yangi Yaratish" %}
     </a>
     {% endif %}
 </div>
@@ -21,24 +22,24 @@
         <div class="glass-card h-100 p-0 d-flex flex-column">
             <div class="p-3 border-bottom d-flex justify-content-between align-items-center bg-light bg-opacity-50">
                 <span class="badge bg-white text-primary border shadow-sm">
-                    {{ assignment.subject.name|default:"Fan Noma'lum" }}
+                    {{ assignment.subject.name|default:_("Fan Noma'lum") }}
                 </span>
                 <small class="text-danger fw-bold">
                     <i class="bi bi-clock-history me-1"></i>
-                    {{ assignment.deadline|date:"d-M H:i"|default:"Muddatsiz" }}
+                    {{ assignment.deadline|date:"d-M H:i"|default:_("Muddatsiz") }}
                 </small>
             </div>
 
             <div class="p-4 flex-grow-1">
                 <h5 class="fw-bold text-dark mb-2">{{ assignment.description|truncatewords:8 }}</h5>
-                <p class="text-muted small mb-3">{{ assignment.target_class.name }} sinfi uchun</p>
+                <p class="text-muted small mb-3">{% blocktrans with name=assignment.target_class.name %}{{ name }} sinfi uchun{% endblocktrans %}</p>
 
                 <div class="d-flex flex-wrap gap-2 mt-3">
                     {% if assignment.file_upload %}
                     <a href="{{ assignment.file_upload.url }}"
                         class="btn btn-sm btn-outline-primary rounded-pill border-0 bg-primary bg-opacity-10"
                         target="_blank">
-                        <i class="bi bi-paperclip me-1"></i>Ilova
+                        <i class="bi bi-paperclip me-1"></i>{% trans "Ilova" %}
                     </a>
                     {% endif %}
                 </div>
@@ -49,25 +50,25 @@
                     {% if user.role == 'student' %}
                     {% if assignment.is_submitted %}
                     <button class="btn btn-success rounded-pill shadow-sm disabled" style="opacity: 0.8;">
-                        <i class="bi bi-check-circle-fill me-2"></i>Topshirildi
+                        <i class="bi bi-check-circle-fill me-2"></i>{% trans "Topshirildi" %}
                     </button>
                     {% else %}
                     <a href="{% url 'submit_homework' assignment.id %}" class="btn btn-primary rounded-pill shadow-sm"
                         style="background: var(--primary-gradient); border: none;">
-                        Topshirish <i class="bi bi-arrow-right ms-2"></i>
+                        {% trans "Topshirish" %} <i class="bi bi-arrow-right ms-2"></i>
                     </a>
                     {% endif %}
                     {% elif user.role == 'teacher' %}
                     <a href="{% url 'view_submissions' assignment.id %}"
                         class="btn btn-info text-white rounded-pill shadow-sm"
                         style="background: linear-gradient(135deg, #36D1DC 0%, #5B86E5 100%); border: none;">
-                        <i class="bi bi-eye-fill me-2"></i>Javoblarni Ko'rish
+                        <i class="bi bi-eye-fill me-2"></i>{% trans "Javoblarni Ko'rish" %}
                     </a>
                     {% endif %}
                 </div>
                 <div class="text-center mt-2">
                     <small class="text-muted" style="font-size: 0.75rem;">
-                        Qolgan vaqt: {{ assignment.deadline|timeuntil }}
+                        {% trans "Qolgan vaqt" %}: {{ assignment.deadline|timeuntil }}
                     </small>
                 </div>
             </div>
@@ -79,8 +80,8 @@
             <div class="mb-3 text-muted opacity-25">
                 <i class="bi bi-emoji-smile fs-1"></i>
             </div>
-            <h5 class="fw-bold text-muted">Vazifalar yo'q</h5>
-            <p class="text-muted small">Ayni damda faol topshiriqlar mavjud emas.</p>
+            <h5 class="fw-bold text-muted">{% trans "Vazifalar yo'q" %}</h5>
+            <p class="text-muted small">{% trans "Ayni damda faol topshiriqlar mavjud emas." %}</p>
         </div>
     </div>
     {% endfor %}

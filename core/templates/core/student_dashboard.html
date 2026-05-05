@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Talaba Kabineti - LearnSphere{% endblock %}
+{% block title %}{% trans "Talaba Kabineti" %} - LearnSphere{% endblock %}
 
 {% block content %}
 <div class="row mb-4">
@@ -14,14 +15,14 @@
                 <div>
                     <h2 class="fw-bold mb-1">{{ user.first_name }} {{ user.last_name }}</h2>
                     <p class="text-muted mb-0 fs-5">
-                        <i class="bi bi-mortarboard-fill me-2 text-primary"></i> Sinf: <strong>{{ user.student_class
+                        <i class="bi bi-mortarboard-fill me-2 text-primary"></i> {% trans "Sinf" %}: <strong>{{ user.student_class
                             }}</strong>
                     </p>
                 </div>
             </div>
             <div class="text-end d-none d-md-block">
                 <span class="badge bg-light text-dark border p-3 rounded-pill">
-                    <i class="bi bi-calendar-event me-2"></i> Bugun: {% now "d.m.Y" %}
+                    <i class="bi bi-calendar-event me-2"></i> {% trans "Bugun" %}: {% now "d.m.Y" %}
                 </span>
             </div>
         </div>
@@ -34,19 +35,19 @@
             <li class="nav-item" role="presentation">
                 <button class="nav-link active rounded-pill fw-bold py-2 mx-1" id="grades-tab" data-bs-toggle="tab"
                     data-bs-target="#grades" type="button" role="tab">
-                    <i class="bi bi-journal-check me-2"></i> Baholarim
+                    <i class="bi bi-journal-check me-2"></i> {% trans "Baholarim" %}
                 </button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link rounded-pill fw-bold py-2 mx-1" id="attendance-tab" data-bs-toggle="tab"
                     data-bs-target="#attendance" type="button" role="tab">
-                    <i class="bi bi-calendar-check me-2"></i> Davomat
+                    <i class="bi bi-calendar-check me-2"></i> {% trans "Davomat" %}
                 </button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link rounded-pill fw-bold py-2 mx-1 position-relative" id="competencies-tab"
                     data-bs-toggle="tab" data-bs-target="#competencies" type="button" role="tab">
-                    <i class="bi bi-cpu-fill me-2"></i> AI Kompetensiya
+                    <i class="bi bi-cpu-fill me-2"></i> {% trans "AI Kompetensiya" %}
                     <span
                         class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle">
                         <span class="visually-hidden">New alerts</span>
@@ -64,11 +65,11 @@
                     style="border-collapse: separate; border-spacing: 0 0.5rem;">
                     <thead class="text-secondary text-uppercase small">
                         <tr>
-                            <th class="border-0 ps-3">Sana</th>
-                            <th class="border-0">Fan</th>
-                            <th class="border-0 text-center">Baho</th>
-                            <th class="border-0">Izoh</th>
-                            <th class="border-0 pe-3">O'qituvchi</th>
+                            <th class="border-0 ps-3">{% trans "Sana" %}</th>
+                            <th class="border-0">{% trans "Fan" %}</th>
+                            <th class="border-0 text-center">{% trans "Baho" %}</th>
+                            <th class="border-0">{% trans "Izoh" %}</th>
+                            <th class="border-0 pe-3">{% trans "O'qituvchi" %}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -78,13 +79,13 @@
                             <td class="border-0 fw-bold text-dark">{{ grade.subject.name }}</td>
                             <td class="border-0 text-center">
                                 {% if grade.value >= 5 %}
-                                <span class="badge bg-success rounded-pill px-3 py-2">5 (A'lo)</span>
+                                <span class="badge bg-success rounded-pill px-3 py-2">5 ({% trans "A'lo" %})</span>
                                 {% elif grade.value == 4 %}
-                                <span class="badge bg-primary rounded-pill px-3 py-2">4 (Yaxshi)</span>
+                                <span class="badge bg-primary rounded-pill px-3 py-2">4 ({% trans "Yaxshi" %})</span>
                                 {% elif grade.value == 3 %}
-                                <span class="badge bg-warning text-dark rounded-pill px-3 py-2">3 (Qon.)</span>
+                                <span class="badge bg-warning text-dark rounded-pill px-3 py-2">3 ({% trans "Qon." %})</span>
                                 {% else %}
-                                <span class="badge bg-danger rounded-pill px-3 py-2">{{ grade.value }} (Yomon)</span>
+                                <span class="badge bg-danger rounded-pill px-3 py-2">{{ grade.value }} ({% trans "Yomon" %})</span>
                                 {% endif %}
                             </td>
                             <td class="border-0 text-muted small">{{ grade.comment|default:"-" }}</td>
@@ -95,7 +96,7 @@
                         <tr>
                             <td colspan="5" class="text-center py-5">
                                 <i class="bi bi-journal-x fs-1 text-muted opacity-50 mb-2 d-block"></i>
-                                <span class="text-muted">Hozircha baholar yo'q</span>
+                                <span class="text-muted">{% trans "Hozircha baholar yo'q" %}</span>
                             </td>
                         </tr>
                         {% endfor %}
@@ -110,8 +111,8 @@
                 <table class="table table-hover align-middle mb-0">
                     <thead class="text-secondary text-uppercase small">
                         <tr>
-                            <th class="border-0 ps-3">Sana</th>
-                            <th class="border-0">Holat</th>
+                            <th class="border-0 ps-3">{% trans "Sana" %}</th>
+                            <th class="border-0">{% trans "Holat" %}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -122,25 +123,25 @@
                                 {% if att.status == 'present' %}
                                 <span
                                     class="badge bg-success-subtle text-success border border-success px-3 rounded-pill"><i
-                                        class="bi bi-check-circle me-1"></i> Bor</span>
+                                        class="bi bi-check-circle me-1"></i> {% trans "Bor" %}</span>
                                 {% elif att.status == 'absent' %}
                                 <span
                                     class="badge bg-danger-subtle text-danger border border-danger px-3 rounded-pill"><i
-                                        class="bi bi-x-circle me-1"></i> Yo'q</span>
+                                        class="bi bi-x-circle me-1"></i> {% trans "Yo'q" %}</span>
                                 {% elif att.status == 'late' %}
                                 <span
                                     class="badge bg-warning-subtle text-warning border border-warning px-3 rounded-pill"><i
-                                        class="bi bi-clock me-1"></i> Kech</span>
+                                        class="bi bi-clock me-1"></i> {% trans "Kech" %}</span>
                                 {% else %}
                                 <span
                                     class="badge bg-secondary-subtle text-secondary border border-secondary px-3 rounded-pill"><i
-                                        class="bi bi-shield-check me-1"></i> Sababli</span>
+                                        class="bi bi-shield-check me-1"></i> {% trans "Sababli" %}</span>
                                 {% endif %}
                             </td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="2" class="text-center py-5 text-muted">Davomat ma'lumotlari topilmadi.</td>
+                            <td colspan="2" class="text-center py-5 text-muted">{% trans "Davomat ma'lumotlari topilmadi." %}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -150,7 +151,7 @@
 
         <!-- AI Competencies Tab -->
         <div class="tab-pane fade" id="competencies" role="tabpanel">
-            <h5 class="fw-bold mb-4 text-dark"><i class="bi bi-stars text-warning me-2"></i>Sun'iy Intellekt Tahlili
+            <h5 class="fw-bold mb-4 text-dark"><i class="bi bi-stars text-warning me-2"></i>{% trans "Sun'iy Intellekt Tahlili" %}
             </h5>
 
             {% if competencies %}
@@ -164,14 +165,14 @@
                         <div class="card-body p-4">
                             <h5 class="fw-bold text-primary mb-3">{{ item.subject }}</h5>
 
-                            <h6 class="text-uppercase text-muted small fw-bold mb-2">Ko'nikmalar</h6>
+                            <h6 class="text-uppercase text-muted small fw-bold mb-2">{% trans "Ko'nikmalar" %}</h6>
                             <div class="d-flex flex-wrap gap-2 mb-4">
                                 {% for skill in item.skills %}
                                 <span class="badge bg-light text-dark border px-3 py-2 rounded-pill fw-normal">
                                     {{ skill }}
                                 </span>
                                 {% empty %}
-                                <span class="text-muted small fst-italic">Kiritilmagan</span>
+                                <span class="text-muted small fst-italic">{% trans "Kiritilmagan" %}</span>
                                 {% endfor %}
                             </div>
 
@@ -180,8 +181,7 @@
                                 <div class="d-flex gap-2">
                                     <i class="bi bi-robot text-primary fs-5"></i>
                                     <div>
-                                        <h6 class="fw-bold text-primary mb-1" style="font-size: 0.9rem;">AI Tutor
-                                            Maslahati:</h6>
+                                        <h6 class="fw-bold text-primary mb-1" style="font-size: 0.9rem;">{% trans "AI Tutor Maslahati" %}:</h6>
                                         <p class="mb-0 small text-dark opacity-75" style="line-height: 1.4;">
                                             {{ item.metadata.ai_tutor.recommendation }}
                                         </p>
@@ -197,9 +197,8 @@
             {% else %}
             <div class="text-center py-5">
                 <div class="display-1 text-muted opacity-25 mb-3"><i class="bi bi-robot"></i></div>
-                <h5 class="text-muted">Hozircha ma'lumotlar yetarli emas</h5>
-                <p class="text-muted small">O'qituvchi baholash jarayonida kompetensiyalarni kiritgach, bu yerda AI
-                    tahlili paydo bo'ladi.</p>
+                <h5 class="text-muted">{% trans "Hozircha ma'lumotlar yetarli emas" %}</h5>
+                <p class="text-muted small">{% trans "O'qituvchi baholash jarayonida kompetensiyalarni kiritgach, bu yerda AI tahlili paydo bo'ladi." %}</p>
             </div>
             {% endif %}
         </div>

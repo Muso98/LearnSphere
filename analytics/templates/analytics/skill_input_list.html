@@ -1,12 +1,13 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Sinf Tanlash - LearnSphere{% endblock %}
+{% block title %}{% trans "Sinf Tanlash" %} - LearnSphere{% endblock %}
 
 {% block content %}
 <div class="row mb-4">
     <div class="col-12">
-        <h2 class="fw-bold">Qobiliyatlar Xaritasi (AI Data)</h2>
-        <p class="text-muted">O'quvchilarning "Soft Skills" ko'rsatkichlarini kiritish uchun sinfni tanlang.</p>
+        <h2 class="fw-bold">{% trans "Qobiliyatlar Xaritasi (AI Data)" %}</h2>
+        <p class="text-muted">{% trans "O'quvchilarning 'Soft Skills' ko'rsatkichlarini kiritish uchun sinfni tanlang." %}</p>
     </div>
 </div>
 
@@ -17,10 +18,10 @@
             <div class="display-4 mb-3 text-primary">
                 {{ class_obj.name }}
             </div>
-            <p class="text-muted">{{ class_obj.students.count }} o'quvchi</p>
+            <p class="text-muted">{% blocktrans with count=class_obj.students.count %}{{ count }} o'quvchi{% endblocktrans %}</p>
             <a href="{% url 'skill_input_detail' class_obj.id %}"
                 class="btn btn-primary w-100 rounded-pill stretched-link">
-                Kirish <i class="bi bi-arrow-right ms-2"></i>
+                {% trans "Kirish" %} <i class="bi bi-arrow-right ms-2"></i>
             </a>
         </div>
     </div>

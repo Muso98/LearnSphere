@@ -56,7 +56,7 @@
     }
 
     function deleteSubject(id, name) {
-        if (!confirm(`${name} fanini o'chirishga ishonchingiz komilmi?`)) return;
+        if (!confirm(`${name} {% trans "fanini o'chirishga ishonchingiz komilmi?" %}`)) return;
 
         fetch(`/administration/subjects/${id}/delete/`, {
             method: 'POST',
@@ -65,10 +65,10 @@
             .then(r => r.json())
             .then(data => {
                 if (data.success) {
-                    AdminUtils.Toast.show('Fan o\'chirildi!', 'success');
+                    AdminUtils.Toast.show('{% trans "Fan o\'chirildi!" %}', 'success');
                     loadSubjects();
                 } else {
-                    AdminUtils.Toast.show(data.message || 'Xatolik!', 'error');
+                    AdminUtils.Toast.show(data.message || '{% trans "Xatolik!" %}', 'error');
                 }
             });
     }

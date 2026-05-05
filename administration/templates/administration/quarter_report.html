@@ -1,18 +1,19 @@
 {% extends 'base.html' %}
+{% load i18n %}
 {% load admin_filters %}
 
-{% block title %}Chorak Hisoboti - LearnSphere{% endblock %}
+{% block title %}{% trans "Chorak Hisoboti" %} - LearnSphere{% endblock %}
 
 {% block content %}
 <div class="row mb-4">
     <div class="col-md-8">
-        <h2 class="fw-bold">Chorak Hisoboti</h2>
-        <p class="text-muted">Sinf o'quvchilarining fanlar kesimida o'zlashtirish ko'rsatkichlari</p>
+        <h2 class="fw-bold">{% trans "Chorak Hisoboti" %}</h2>
+        <p class="text-muted">{% trans "Sinf o'quvchilarining fanlar kesimida o'zlashtirish ko'rsatkichlari" %}</p>
     </div>
     <div class="col-md-4 text-md-end">
         {% if selected_class and report_data %}
         <a href="{{ request.get_full_path }}&export=excel" class="btn btn-success rounded-pill shadow-sm">
-            <i class="bi bi-file-earmark-excel-fill me-2"></i> Excel Yuklash
+            <i class="bi bi-file-earmark-excel-fill me-2"></i> {% trans "Excel Yuklash" %}
         </a>
         {% endif %}
     </div>
@@ -22,9 +23,9 @@
 <div class="glass-card p-4 mb-4">
     <form method="get" class="row g-3 align-items-end">
         <div class="col-md-3">
-            <label class="form-label fw-bold">Sinf</label>
+            <label class="form-label fw-bold">{% trans "Sinf" %}</label>
             <select name="class" class="form-select rounded-3" required>
-                <option value="">Tanlang...</option>
+                <option value="">{% trans "Tanlang..." %}</option>
                 {% for class_obj in classes %}
                 {% if selected_class and selected_class.id == class_obj.id %}
                 <option value="{{ class_obj.id }}" selected>{{ class_obj.name }}</option>
@@ -35,16 +36,16 @@
             </select>
         </div>
         <div class="col-md-3">
-            <label class="form-label fw-bold">Boshlanish Sanasi</label>
+            <label class="form-label fw-bold">{% trans "Boshlanish Sanasi" %}</label>
             <input type="date" name="start_date" class="form-control rounded-3" value="{{ start_date }}">
         </div>
         <div class="col-md-3">
-            <label class="form-label fw-bold">Tugash Sanasi</label>
+            <label class="form-label fw-bold">{% trans "Tugash Sanasi" %}</label>
             <input type="date" name="end_date" class="form-control rounded-3" value="{{ end_date }}">
         </div>
         <div class="col-md-3">
             <button type="submit" class="btn btn-primary w-100 rounded-pill">
-                <i class="bi bi-table me-2"></i> Hisobot Yaratish
+                <i class="bi bi-table me-2"></i> {% trans "Hisobot Yaratish" %}
             </button>
         </div>
     </form>
@@ -53,12 +54,12 @@
 <!-- Report Table -->
 {% if selected_class %}
 <div class="glass-card p-4 overflow-auto">
-    <h5 class="fw-bold mb-4 text-center">{{ selected_class.name }} sinf - O'zlashtirish Jadvali</h5>
+    <h5 class="fw-bold mb-4 text-center">{% blocktrans with name=selected_class.name %}{{ name }} sinf - O'zlashtirish Jadvali{% endblocktrans %}</h5>
 
     <table class="table table-hover align-middle">
         <thead class="table-light">
             <tr>
-                <th scope="col" class="py-3">O'quvchi</th>
+                <th scope="col" class="py-3">{% trans "O'quvchi" %}</th>
                 {% for subject in subjects %}
                 <th scope="col" class="py-3 text-center">{{ subject.name }}</th>
                 {% endfor %}
@@ -86,7 +87,7 @@
             {% empty %}
             <tr>
                 <td colspan="{{ subjects|length|add:1 }}" class="text-center py-4 text-muted">
-                    Ma'lumot topilmadi
+                    {% trans "Ma'lumot topilmadi" %}
                 </td>
             </tr>
             {% endfor %}
@@ -97,7 +98,7 @@
 <div class="text-center py-5">
     <div class="glass-card p-5 d-inline-block">
         <i class="bi bi-exclamation-circle fs-1 text-muted opacity-50 mb-3 d-block"></i>
-        <h5 class="text-muted mb-0">Ma'lumot topilmadi</h5>
+        <h5 class="text-muted mb-0">{% trans "Ma'lumot topilmadi" %}</h5>
     </div>
 </div>
 {% endif %}

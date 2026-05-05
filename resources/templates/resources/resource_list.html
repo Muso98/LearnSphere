@@ -1,17 +1,18 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Ta'lim Resurslari - LearnSphere{% endblock %}
+{% block title %}{% trans "Ta'lim Resurslari" %} - LearnSphere{% endblock %}
 
 {% block content %}
 <div class="row mb-4">
     <div class="col-md-8">
-        <h2 class="fw-bold">Ta'lim Resurslari</h2>
-        <p class="text-muted">Darsliklar, qo'llanmalar va video darslar to'plami</p>
+        <h2 class="fw-bold">{% trans "Ta'lim Resurslari" %}</h2>
+        <p class="text-muted">{% trans "Darsliklar, qo'llanmalar va video darslar to'plami" %}</p>
     </div>
     <div class="col-md-4 text-md-end">
         {% if user.role == 'teacher' or user.role == 'admin' or user.role == 'director' %}
         <a href="{% url 'resource_create' %}" class="btn btn-primary rounded-pill shadow-sm">
-            <i class="bi bi-cloud-upload-fill me-2"></i> Resurs Yuklash
+            <i class="bi bi-cloud-upload-fill me-2"></i> {% trans "Resurs Yuklash" %}
         </a>
         {% endif %}
     </div>
@@ -21,9 +22,9 @@
 <div class="glass-card p-4 mb-4">
     <form method="get" class="row g-3">
         <div class="col-md-4">
-            <label for="subject" class="form-label fw-bold">Fan</label>
+            <label for="subject" class="form-label fw-bold">{% trans "Fan" %}</label>
             <select name="subject" id="subject" class="form-select rounded-3">
-                <option value="">Barcha Fanlar</option>
+                <option value="">{% trans "Barcha Fanlar" %}</option>
                 {% for subject in subjects %}
                 {% if selected_subject == subject.id %}
                 <option value="{{ subject.id }}" selected>{{ subject.name }}</option>
@@ -34,38 +35,38 @@
             </select>
         </div>
         <div class="col-md-4">
-            <label for="type" class="form-label fw-bold">Resurs Turi</label>
+            <label for="type" class="form-label fw-bold">{% trans "Resurs Turi" %}</label>
             <select name="type" id="type" class="form-select rounded-3">
-                <option value="">Barcha Turlar</option>
+                <option value="">{% trans "Barcha Turlar" %}</option>
 
                 {% if selected_type == 'video' %}
-                <option value="video" selected>Video Dars</option>
+                <option value="video" selected>{% trans "Video Dars" %}</option>
                 {% else %}
-                <option value="video">Video Dars</option>
+                <option value="video">{% trans "Video Dars" %}</option>
                 {% endif %}
 
                 {% if selected_type == 'pdf' %}
-                <option value="pdf" selected>PDF Kitob</option>
+                <option value="pdf" selected>{% trans "PDF Kitob" %}</option>
                 {% else %}
-                <option value="pdf">PDF Kitob</option>
+                <option value="pdf">{% trans "PDF Kitob" %}</option>
                 {% endif %}
 
                 {% if selected_type == 'link' %}
-                <option value="link" selected>Foydali Link</option>
+                <option value="link" selected>{% trans "Foydali Link" %}</option>
                 {% else %}
-                <option value="link">Foydali Link</option>
+                <option value="link">{% trans "Foydali Link" %}</option>
                 {% endif %}
 
                 {% if selected_type == 'audio' %}
-                <option value="audio" selected>Audio</option>
+                <option value="audio" selected>{% trans "Audio" %}</option>
                 {% else %}
-                <option value="audio">Audio</option>
+                <option value="audio">{% trans "Audio" %}</option>
                 {% endif %}
             </select>
         </div>
         <div class="col-md-4 d-flex align-items-end">
             <button type="submit" class="btn btn-primary w-100 rounded-pill">
-                <i class="bi bi-filter me-2"></i> Filtrlash
+                <i class="bi bi-filter me-2"></i> {% trans "Filtrlash" %}
             </button>
         </div>
     </form>
@@ -123,11 +124,11 @@
             <div class="card-footer bg-transparent border-0 p-4 pt-0">
                 {% if resource.file %}
                 <a href="{{ resource.file.url }}" class="btn btn-outline-primary w-100 rounded-pill" target="_blank">
-                    <i class="bi bi-download me-2"></i> Yuklab olish
+                    <i class="bi bi-download me-2"></i> {% trans "Yuklab olish" %}
                 </a>
                 {% elif resource.link %}
                 <a href="{{ resource.link }}" class="btn btn-outline-primary w-100 rounded-pill" target="_blank">
-                    <i class="bi bi-box-arrow-up-right me-2"></i> O ochish
+                    <i class="bi bi-box-arrow-up-right me-2"></i> {% trans "Ochish" %}
                 </a>
                 {% endif %}
             </div>
@@ -137,7 +138,7 @@
     <div class="col-12 text-center py-5">
         <div class="glass-card p-5 d-inline-block">
             <i class="bi bi-folder2-open fs-1 text-muted opacity-50 mb-3 d-block"></i>
-            <h5 class="text-muted mb-0">Hozircha resurslar yo'q</h5>
+            <h5 class="text-muted mb-0">{% trans "Hozircha resurslar yo'q" %}</h5>
         </div>
     </div>
     {% endfor %}

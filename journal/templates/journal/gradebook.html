@@ -1,17 +1,17 @@
 {% extends 'base.html' %}
-
-{% block title %}Jurnal - LearnSphere{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Jurnal" %} - LearnSphere{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h2 class="fw-bold text-dark">O'qituvchi Jurnali</h2>
-        <p class="text-muted">O'quvchilarni baholash va kompetensiyalarni belgilash</p>
+        <h2 class="fw-bold text-dark">{% trans "O'qituvchi Jurnali" %}</h2>
+        <p class="text-muted">{% trans "O'quvchilarni baholash va kompetensiyalarni belgilash" %}</p>
     </div>
     {% if selected_class and selected_subject %}
     <a href="{% url 'export_grades' %}?class_id={{ selected_class.id }}&subject_id={{ selected_subject.id }}"
         class="btn btn-success rounded-pill shadow-sm">
-        <i class="bi bi-file-earmark-excel me-2"></i>Excel Yuklash
+        <i class="bi bi-file-earmark-excel me-2"></i>{% trans "Excel Yuklash" %}
     </a>
     {% endif %}
 </div>
@@ -20,18 +20,18 @@
 <div class="glass-card p-4 mb-4">
     <form method="get" class="row g-3 align-items-end">
         <div class="col-md-4">
-            <label class="form-label text-secondary small fw-bold text-uppercase">Sinf</label>
+            <label class="form-label text-secondary small fw-bold text-uppercase">{% trans "Sinf" %}</label>
             <select name="class_id" class="form-select border-0 bg-light" style="padding: 0.8rem;">
-                <option value="">Sinfni tanlang</option>
+                <option value="">{% trans "Sinfni tanlang" %}</option>
                 {% for c in classes %}
                 <option value="{{ c.id }}" {% if c.is_selected %}selected{% endif %}>{{ c.name }}</option>
                 {% endfor %}
             </select>
         </div>
         <div class="col-md-4">
-            <label class="form-label text-secondary small fw-bold text-uppercase">Fan</label>
+            <label class="form-label text-secondary small fw-bold text-uppercase">{% trans "Fan" %}</label>
             <select name="subject_id" class="form-select border-0 bg-light" style="padding: 0.8rem;">
-                <option value="">Fanni tanlang</option>
+                <option value="">{% trans "Fanni tanlang" %}</option>
                 {% for s in subjects %}
                 <option value="{{ s.id }}" {% if s.is_selected %}selected{% endif %}>{{ s.name }}</option>
                 {% endfor %}
@@ -40,7 +40,7 @@
         <div class="col-md-4">
             <button type="submit" class="btn btn-primary w-100 shadow-sm border-0"
                 style="background: var(--primary-gradient); padding: 0.8rem; font-weight: 600;">
-                <i class="bi bi-search me-2"></i> Jurnalni Ochish
+                <i class="bi bi-search me-2"></i> {% trans "Jurnalni Ochish" %}
             </button>
         </div>
     </form>
@@ -67,12 +67,12 @@
                 <thead class="text-secondary text-uppercase small bg-light">
                     <tr>
                         <th class="ps-4 border-0" style="width: 50px;">#</th>
-                        <th class="border-0">O'quvchi</th>
-                        <th class="border-0" style="width: 150px;">Baho (1-5)</th>
+                        <th class="border-0">{% trans "O'quvchi" %}</th>
+                        <th class="border-0" style="width: 150px;">{% trans "Baho (1-5)" %}</th>
                         {% if selected_subject.metadata.competencies %}
-                        <th class="border-0">Kompetensiya</th>
+                        <th class="border-0">{% trans "Kompetensiya" %}</th>
                         {% endif %}
-                        <th class="pe-4 border-0">Izoh</th>
+                        <th class="pe-4 border-0">{% trans "Izoh" %}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -100,7 +100,7 @@
                         <td>
                             <select name="competency_{{ student.id }}"
                                 class="form-select border-0 bg-light text-muted small" style="height: 45px;">
-                                <option value="">Tanlang...</option>
+                                <option value="">{% trans "Tanlang..." %}</option>
                                 {% for comp in selected_subject.metadata.competencies %}
                                 <option value="{{ comp }}">{{ comp }}</option>
                                 {% endfor %}
@@ -109,7 +109,7 @@
                         {% endif %}
                         <td class="pe-4">
                             <input type="text" name="comment_{{ student.id }}"
-                                class="form-control border-0 bg-light small" placeholder="Izoh..."
+                                class="form-control border-0 bg-light small" placeholder="{% trans 'Izoh...' %}"
                                 style="height: 45px;">
                         </td>
                     </tr>
@@ -120,11 +120,11 @@
 
         <div class="p-4 bg-light border-top d-flex justify-content-between align-items-center">
             <small class="text-muted d-none d-md-block">
-                <i class="bi bi-keyboard me-1"></i> <strong>Tab</strong> tugmasi orqali tezkor o'tish
+                <i class="bi bi-keyboard me-1"></i> {% trans "Tab tugmasi orqali tezkor o'tish" %}
             </small>
             <button type="submit" class="btn btn-success shadow-sm px-4 py-2 border-0 rounded-pill"
                 style="font-weight: 600;">
-                <i class="bi bi-check-lg me-2"></i> Saqlash
+                <i class="bi bi-check-lg me-2"></i> {% trans "Saqlash" %}
             </button>
         </div>
     </form>
@@ -152,11 +152,11 @@
     <div class="mb-3 text-muted opacity-50">
         <i class="bi bi-journal-album fs-1"></i>
     </div>
-    <h5 class="text-muted">Ishni boshlash uchun sinf va fanni tanlang</h5>
+    <h5 class="text-muted">{% trans "Ishni boshlash uchun sinf va fanni tanlang" %}</h5>
 </div>
 {% else %}
 <div class="alert alert-warning glass-card border-0">
-    <i class="bi bi-exclamation-triangle me-2"></i>Sinflar yoki fanlar mavjud emas.
+    <i class="bi bi-exclamation-triangle me-2"></i>{% trans "Sinflar yoki fanlar mavjud emas." %}
 </div>
 {% endif %}
 {% endblock %}

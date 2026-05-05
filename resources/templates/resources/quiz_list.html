@@ -1,17 +1,18 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Testlar - LearnSphere{% endblock %}
+{% block title %}{% trans "Testlar" %} - LearnSphere{% endblock %}
 
 {% block content %}
 <div class="row mb-4">
     <div class="col-md-8">
-        <h2 class="fw-bold">Bilimni Sinash (Testlar)</h2>
-        <p class="text-muted">O'z bilimingizni mustahkamlang</p>
+        <h2 class="fw-bold">{% trans "Bilimni Sinash (Testlar)" %}</h2>
+        <p class="text-muted">{% trans "O'z bilimingizni mustahkamlang" %}</p>
     </div>
     <div class="col-md-4 text-md-end">
         {% if user.role == 'teacher' or user.role == 'admin' or user.role == 'director' %}
         <a href="{% url 'quiz_create' %}" class="btn btn-primary rounded-pill shadow-sm">
-            <i class="bi bi-plus-lg me-2"></i> Yangi Test
+            <i class="bi bi-plus-lg me-2"></i> {% trans "Yangi Test" %}
         </a>
         {% endif %}
     </div>
@@ -21,9 +22,9 @@
 <div class="glass-card p-4 mb-4">
     <form method="get" class="row g-3">
         <div class="col-md-8">
-            <label for="subject" class="form-label fw-bold">Fan</label>
+            <label for="subject" class="form-label fw-bold">{% trans "Fan" %}</label>
             <select name="subject" id="subject" class="form-select rounded-3">
-                <option value="">Barcha Fanlar</option>
+                <option value="">{% trans "Barcha Fanlar" %}</option>
                 {% for subject in subjects %}
                 {% if selected_subject == subject.id %}
                 <option value="{{ subject.id }}" selected>{{ subject.name }}</option>
@@ -35,7 +36,7 @@
         </div>
         <div class="col-md-4 d-flex align-items-end">
             <button type="submit" class="btn btn-primary w-100 rounded-pill">
-                <i class="bi bi-filter me-2"></i> Filtrlash
+                <i class="bi bi-filter me-2"></i> {% trans "Filtrlash" %}
             </button>
         </div>
     </form>
@@ -52,7 +53,7 @@
                         {{ quiz.subject.name }}
                     </span>
                     <span class="text-muted small">
-                        <i class="bi bi-question-circle"></i> {{ quiz.question_count }} ta savol
+                        <i class="bi bi-question-circle"></i> {% blocktrans with count=quiz.question_count %}{{ count }} ta savol{% endblocktrans %}
                     </span>
                 </div>
 
@@ -60,7 +61,7 @@
                 <p class="text-muted small mb-4">{{ quiz.description|truncatewords:15 }}</p>
 
                 <a href="{% url 'quiz_detail' quiz.id %}" class="btn btn-primary w-100 rounded-pill mt-auto">
-                    Kirish
+                    {% trans "Kirish" %}
                 </a>
             </div>
         </div>
@@ -69,7 +70,7 @@
     <div class="col-12 text-center py-5">
         <div class="glass-card p-5 d-inline-block">
             <i class="bi bi-clipboard-check fs-1 text-muted opacity-50 mb-3 d-block"></i>
-            <h5 class="text-muted mb-0">Hozircha testlar yo'q</h5>
+            <h5 class="text-muted mb-0">{% trans "Hozircha testlar yo'q" %}</h5>
         </div>
     </div>
     {% endfor %}

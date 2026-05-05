@@ -1,17 +1,18 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Davomat - LearnSphere{% endblock %}
+{% block title %}{% trans "Davomat" %} - LearnSphere{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h2 class="fw-bold text-dark">Kunlik Davomat</h2>
-        <p class="text-muted">O'quvchilar davomatini qayd etish</p>
+        <h2 class="fw-bold text-dark">{% trans "Kunlik Davomat" %}</h2>
+        <p class="text-muted">{% trans "O'quvchilar davomatini qayd etish" %}</p>
     </div>
     {% if selected_class %}
     <a href="{% url 'export_attendance' %}?class_id={{ selected_class.id }}"
         class="btn btn-success rounded-pill shadow-sm">
-        <i class="bi bi-file-earmark-excel me-2"></i>Excel Yuklash
+        <i class="bi bi-file-earmark-excel me-2"></i>{% trans "Excel Yuklash" %}
     </a>
     {% endif %}
 </div>
@@ -20,10 +21,10 @@
 <div class="glass-card p-4 mb-4">
     <form method="get" class="row g-3 align-items-end">
         <div class="col-md-5">
-            <label class="form-label text-secondary small fw-bold text-uppercase">Sinf</label>
+            <label class="form-label text-secondary small fw-bold text-uppercase">{% trans "Sinf" %}</label>
             <select name="class_id" class="form-select border-0 bg-light" onchange="this.form.submit()"
                 style="padding: 0.8rem;">
-                <option value="">Sinfni Tanlang</option>
+                <option value="">{% trans "Sinfni Tanlang" %}</option>
                 {% for c in classes %}
                 <option value="{{ c.id }}" {% if c.is_selected %}selected{% endif %}>{{ c.name }}</option>
                 {% endfor %}
@@ -33,7 +34,7 @@
             {% if selected_class %}
             <div class="alert alert-light border-0 mb-0 d-flex align-items-center">
                 <i class="bi bi-info-circle text-primary me-2"></i>
-                <small class="text-muted">Sinf tanlandi: <strong>{{ selected_class.name }}</strong></small>
+                <small class="text-muted">{% trans "Sinf tanlandi" %}: <strong>{{ selected_class.name }}</strong></small>
             </div>
             {% endif %}
         </div>
@@ -44,7 +45,7 @@
 <div class="glass-card p-0 overflow-hidden">
     <div class="p-4 border-bottom bg-light d-flex justify-content-between align-items-center">
         <div>
-            <h5 class="fw-bold mb-0 text-primary">Sinf: {{ selected_class.name }}</h5>
+            <h5 class="fw-bold mb-0 text-primary">{% trans "Sinf" %}: {{ selected_class.name }}</h5>
         </div>
         <span class="badge bg-white text-dark border px-3 py-2 rounded-pill">
             <i class="bi bi-calendar-event me-2"></i> {{ today|date:"d.m.Y" }}
@@ -61,11 +62,11 @@
                 <thead class="text-secondary text-uppercase small bg-light">
                     <tr>
                         <th class="ps-4 border-0" style="width: 50px;">#</th>
-                        <th class="border-0">O'quvchi</th>
-                        <th class="border-0 text-center">Keldi</th>
-                        <th class="border-0 text-center">Kelmadi</th>
-                        <th class="border-0 text-center">Kech qoldi</th>
-                        <th class="border-0 text-center">Sababli</th>
+                        <th class="border-0">{% trans "O'quvchi" %}</th>
+                        <th class="border-0 text-center">{% trans "Keldi" %}</th>
+                        <th class="border-0 text-center">{% trans "Kelmadi" %}</th>
+                        <th class="border-0 text-center">{% trans "Kech qoldi" %}</th>
+                        <th class="border-0 text-center">{% trans "Sababli" %}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -88,25 +89,25 @@
                             <input type="radio" name="attendance_{{ student.id }}" value="present" class="btn-check"
                                 id="present_{{ student.id }}" autocomplete="off">
                             <label class="btn btn-outline-success btn-sm rounded-pill px-3"
-                                for="present_{{ student.id }}">Bor</label>
+                                for="present_{{ student.id }}">{% trans "Bor" %}</label>
                         </td>
                         <td class="text-center">
                             <input type="radio" name="attendance_{{ student.id }}" value="absent" class="btn-check"
                                 id="absent_{{ student.id }}" autocomplete="off">
                             <label class="btn btn-outline-danger btn-sm rounded-pill px-3"
-                                for="absent_{{ student.id }}">Yo'q</label>
+                                for="absent_{{ student.id }}">{% trans "Yo'q" %}</label>
                         </td>
                         <td class="text-center">
                             <input type="radio" name="attendance_{{ student.id }}" value="late" class="btn-check"
                                 id="late_{{ student.id }}" autocomplete="off">
                             <label class="btn btn-outline-warning btn-sm rounded-pill px-3"
-                                for="late_{{ student.id }}">Kech</label>
+                                for="late_{{ student.id }}">{% trans "Kech" %}</label>
                         </td>
                         <td class="text-center">
                             <input type="radio" name="attendance_{{ student.id }}" value="excused" class="btn-check"
                                 id="excused_{{ student.id }}" autocomplete="off">
                             <label class="btn btn-outline-secondary btn-sm rounded-pill px-3"
-                                for="excused_{{ student.id }}">Sababli</label>
+                                for="excused_{{ student.id }}">{% trans "Sababli" %}</label>
                         </td>
                     </tr>
                     {% endfor %}
@@ -117,15 +118,15 @@
         <div class="p-4 bg-light border-top d-flex justify-content-between align-items-center flex-wrap gap-3">
             <div class="btn-group" role="group">
                 <button type="button" class="btn btn-sm btn-outline-success" onclick="markAll('present')">
-                    <i class="bi bi-check-all me-1"></i>Barchasi keldi
+                    <i class="bi bi-check-all me-1"></i>{% trans "Barchasi keldi" %}
                 </button>
                 <button type="button" class="btn btn-sm btn-outline-danger" onclick="markAll('absent')">
-                    <i class="bi bi-x-circle me-1"></i>Barchasi kelmadi
+                    <i class="bi bi-x-circle me-1"></i>{% trans "Barchasi kelmadi" %}
                 </button>
             </div>
             <button type="submit" class="btn btn-success shadow-sm px-4 py-2 border-0 rounded-pill"
                 style="font-weight: 600;">
-                <i class="bi bi-check-lg me-2"></i> Davomatni Saqlash
+                <i class="bi bi-check-lg me-2"></i> {% trans "Davomatni Saqlash" %}
             </button>
         </div>
     </form>
@@ -144,11 +145,11 @@
     <div class="mb-3 text-muted opacity-50">
         <i class="bi bi-calendar-check fs-1"></i>
     </div>
-    <h5 class="text-muted">Davomatni boshlash uchun sinfni tanlang</h5>
+    <h5 class="text-muted">{% trans "Davomatni boshlash uchun sinfni tanlang" %}</h5>
 </div>
 {% else %}
 <div class="alert alert-warning glass-card border-0">
-    <i class="bi bi-exclamation-triangle me-2"></i>Sinflar mavjud emas.
+    <i class="bi bi-exclamation-triangle me-2"></i>{% trans "Sinflar mavjud emas." %}
 </div>
 {% endif %}
 {% endblock %}

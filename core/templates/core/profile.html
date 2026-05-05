@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Profil - LearnSphere{% endblock %}
+{% block title %}{% trans "Profil" %} - LearnSphere{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
@@ -40,41 +41,40 @@
                     onchange="this.form.submit()">
 
                 <h5 class="fw-bold mb-4 border-bottom pb-2 text-primary"><i
-                        class="bi bi-person-lines-fill me-2"></i>Shaxsiy Ma'lumotlar</h5>
+                        class="bi bi-person-lines-fill me-2"></i>{% trans "Shaxsiy Ma'lumotlar" %}</h5>
 
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <label class="form-label text-secondary small fw-bold text-uppercase">Ism</label>
+                        <label class="form-label text-secondary small fw-bold text-uppercase">{% trans "Ism" %}</label>
                         <input type="text" name="first_name" class="form-control bg-light border-0 py-3"
-                            value="{{ user.first_name }}" placeholder="Ismingiz">
+                            value="{{ user.first_name }}" placeholder="{% trans 'Ismingiz' %}">
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label text-secondary small fw-bold text-uppercase">Familiya</label>
+                        <label class="form-label text-secondary small fw-bold text-uppercase">{% trans "Familiya" %}</label>
                         <input type="text" name="last_name" class="form-control bg-light border-0 py-3"
-                            value="{{ user.last_name }}" placeholder="Familiyangiz">
+                            value="{{ user.last_name }}" placeholder="{% trans 'Familiyangiz' %}">
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label text-secondary small fw-bold text-uppercase">Email</label>
+                        <label class="form-label text-secondary small fw-bold text-uppercase">{% trans "Email" %}</label>
                         <input type="email" name="email" class="form-control bg-light border-0 py-3"
-                            value="{{ user.email }}" placeholder="Email manzilingiz">
+                            value="{{ user.email }}" placeholder="{% trans 'Email manzilingiz' %}">
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label text-secondary small fw-bold text-uppercase">Telefon</label>
+                        <label class="form-label text-secondary small fw-bold text-uppercase">{% trans "Telefon" %}</label>
                         <input type="text" name="phone" class="form-control bg-light border-0 py-3"
                             value="{{ user.phone|default:'' }}" placeholder="+998...">
                     </div>
                     <div class="col-12">
-                        <label class="form-label text-secondary small fw-bold text-uppercase">Qisqacha ma'lumot
-                            (Bio)</label>
+                        <label class="form-label text-secondary small fw-bold text-uppercase">{% trans "Qisqacha ma'lumot (Bio)" %}</label>
                         <textarea name="bio" class="form-control bg-light border-0 py-3" rows="3"
-                            placeholder="O'zingiz haqida...">{{ user.bio|default:'' }}</textarea>
+                            placeholder="{% trans 'O\'zingiz haqida...' %}">{{ user.bio|default:'' }}</textarea>
                     </div>
                 </div>
 
                 <div class="text-end mt-4 pt-3 border-top">
                     <button type="submit" class="btn btn-primary btn-lg rounded-pill shadow-lg px-5 fw-bold"
                         style="background: var(--primary-gradient); border: none;">
-                        <i class="bi bi-check-lg me-2"></i> Saqlash
+                        <i class="bi bi-check-lg me-2"></i> {% trans "Saqlash" %}
                     </button>
                 </div>
             </form>
@@ -82,7 +82,7 @@
 
         {% if user.role == 'parent' and children %}
         <div class="glass-card p-4">
-            <h5 class="fw-bold mb-3 text-primary"><i class="bi bi-people-fill me-2"></i>Farzandlarim</h5>
+            <h5 class="fw-bold mb-3 text-primary"><i class="bi bi-people-fill me-2"></i>{% trans "Farzandlarim" %}</h5>
             <div class="list-group list-group-flush rounded-3">
                 {% for child in children %}
                 <div class="list-group-item bg-transparent border-light d-flex align-items-center p-3">

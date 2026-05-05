@@ -6,7 +6,7 @@
     <div class="row h-100">
         <div class="col-md-3 border-end bg-light p-0">
             <div class="p-3 border-bottom bg-white">
-                <h5 class="mb-3"><i class="bi bi-robot me-2 text-primary"></i>AI Assistant</h5>
+                <h5 class="mb-3"><i class="bi bi-robot me-2 text-primary"></i>{% trans "AI Assistant" %}</h5>
                 <div class="btn-group w-100" role="group">
                     <button type="button" class="btn btn-sm btn-outline-primary" data-agent="teacher">
                         <i class="bi bi-person-workspace"></i> {% trans "Teacher" %}
@@ -111,13 +111,19 @@
             const data = await response.json();
             if (response.ok) {
                 currentConversationId = data.conversation_id;
-                document.getElementById('chatTitle').textContent = `New ${currentAgentType.charAt(0).toUpperCase() + currentAgentType.slice(1)} Chat`;
+                const agentLabels = {
+                    'teacher': '{% trans "Teacher" %}',
+                    'parent': '{% trans "Parent" %}',
+                    'student': '{% trans "Student" %}'
+                };
+                const agentLabel = agentLabels[currentAgentType] || currentAgentType;
+                document.getElementById('chatTitle').textContent = `{% trans "Yangi" %} ${agentLabel} {% trans "chat" %}`;
                 document.getElementById('agentType').textContent = data.agent_type;
                 document.getElementById('chatMessages').innerHTML = '';
                 document.getElementById('messageInput').disabled = false;
                 document.getElementById('sendBtn').disabled = false;
             } else {
-                alert('Error starting conversation: ' + data.error);
+                alert('{% trans "Error starting conversation" %}: ' + data.error);
             }
         } catch (error) {
             console.error('Error:', error);
@@ -126,7 +132,7 @@
                 // Try to get text if JSON failed
                 response.text().then(text => console.error('Response text:', text));
             } else {
-                alert('Failed to start conversation. Network error or code issue: ' + error.message);
+                alert('{% trans "Failed to start conversation. Network error or code issue" %}: ' + error.message);
             }
         }
     }
@@ -161,12 +167,12 @@
                     addActionsToChat(data.actions);
                 }
             } else {
-                alert('Error sending message: ' + data.error);
+                alert('{% trans "Error sending message" %}: ' + data.error);
             }
         } catch (error) {
             console.error('Error:', error);
             document.getElementById('typingIndicator').style.display = 'none';
-            alert('Failed to send message');
+            alert('{% trans "Failed to send message" %}');
         }
     }
 
@@ -177,7 +183,7 @@
             const data = await response.json();
             if (response.ok) {
                 currentConversationId = data.conversation_id;
-                document.getElementById('chatTitle').textContent = `Conversation #${convId}`;
+                document.getElementById('chatTitle').textContent = `{% trans "Conversation" %} #${convId}`;
                 document.getElementById('agentType').textContent = data.agent_type;
                 document.getElementById('chatMessages').innerHTML = '';
                 data.messages.forEach(msg => {
@@ -190,7 +196,7 @@
             }
         } catch (error) {
             console.error('Error:', error);
-            alert('Failed to load conversation');
+            alert('{% trans "Failed to load conversation" %}');
         }
     }
 
@@ -211,7 +217,7 @@
         const chatDiv = document.getElementById('chatMessages');
         const actionsDiv = document.createElement('div');
         actionsDiv.className = 'mb-3';
-        actionsDiv.innerHTML = `<div class="alert alert-info"><strong>Actions Performed:</strong><ul class="mb-0 mt-2">${actions.map(a => `<li>${a.type}: ${a.description || a.student || a.title}</li>`).join('')}</ul></div>`;
+        actionsDiv.innerHTML = `<div class="alert alert-info"><strong>{% trans "Actions Performed" %}:</strong><ul class="mb-0 mt-2">${actions.map(a => `<li>${a.type}: ${a.description || a.student || a.title}</li>`).join('')}</ul></div>`;
         chatDiv.appendChild(actionsDiv);
         chatDiv.scrollTop = chatDiv.scrollHeight;
     }

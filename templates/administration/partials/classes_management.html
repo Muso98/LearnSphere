@@ -65,7 +65,7 @@
     }
 
     function deleteClass(id, name) {
-        if (!confirm(`${name} sinfni o'chirishga ishonchingiz komilmi?`)) return;
+        if (!confirm(`${name} {% trans "sinfni o'chirishga ishonchingiz komilmi?" %}`)) return;
 
         fetch(`/administration/classes/${id}/delete/`, {
             method: 'POST',
@@ -74,10 +74,10 @@
             .then(r => r.json())
             .then(data => {
                 if (data.success) {
-                    AdminUtils.Toast.show('Sinf o\'chirildi!', 'success');
+                    AdminUtils.Toast.show('{% trans "Sinf o\'chirildi!" %}', 'success');
                     loadClasses();
                 } else {
-                    AdminUtils.Toast.show(data.message || 'Xatolik!', 'error');
+                    AdminUtils.Toast.show(data.message || '{% trans "Xatolik!" %}', 'error');
                 }
             });
     }

@@ -170,9 +170,9 @@
     }
     function bulkDelete() {
         const ids = Array.from(document.querySelectorAll('.user-checkbox:checked')).map(cb => parseInt(cb.value));
-        if (!confirm(`${ids.length} ta foydalanuvchini o'chirmoqchimisiz?`)) return;
+        if (!confirm(`${ids.length} {% trans "ta foydalanuvchini o'chirmoqchimisiz?" %}`)) return;
         fetch('{% url "user_bulk_action" %}', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}' }, body: JSON.stringify({ action: 'delete', user_ids: ids }) })
-            .then(r => r.json()).then(data => { if (data.success) { alert(data.message); location.reload(); } else { alert(data.error); } });
+            .then(r => r.json()).then(data => { if (data.success) { alert(data.message); location.reload(); } else { alert(data.error || '{% trans "Xatolik yuz berdi" %}'); } });
     }
     function bulkActivate() {
         const ids = Array.from(document.querySelectorAll('.user-checkbox:checked')).map(cb => parseInt(cb.value));

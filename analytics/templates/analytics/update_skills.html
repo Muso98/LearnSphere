@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}{{ student.get_full_name }} - Qobiliyatlar - LearnSphere{% endblock %}
+{% block title %}{{ student.get_full_name }} - {% trans "Qobiliyatlar" %} - LearnSphere{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
@@ -12,7 +13,7 @@
                     {{ student.first_name|make_list|first }}
                 </div>
                 <h3 class="fw-bold mb-1">{{ student.get_full_name }}</h3>
-                <p class="text-muted">Soft Skills Baholash</p>
+                <p class="text-muted">{% trans "Soft Skills Baholash" %}</p>
             </div>
 
             <form method="post">
@@ -38,11 +39,11 @@
 
                 <div class="d-grid gap-2 mt-5">
                     <button type="submit" class="btn btn-primary rounded-pill py-3 fw-bold">
-                        Saqlash
+                        {% trans "Saqlash" %}
                     </button>
                     <a href="{% url 'skill_input_detail' student.student_class.id %}"
                         class="btn btn-light rounded-pill py-3">
-                        Bekor qilish
+                        {% trans "Bekor qilish" %}
                     </a>
                 </div>
             </form>

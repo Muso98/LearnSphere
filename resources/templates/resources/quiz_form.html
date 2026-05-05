@@ -1,26 +1,27 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Yangi Test Yaratish - LearnSphere{% endblock %}
+{% block title %}{% trans "Yangi Test Yaratish" %} - LearnSphere{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-8 col-lg-6">
         <div class="glass-card p-4 p-md-5">
-            <h3 class="fw-bold mb-4 text-center">Yangi Test Yaratish</h3>
+            <h3 class="fw-bold mb-4 text-center">{% trans "Yangi Test Yaratish" %}</h3>
 
             <form method="post">
                 {% csrf_token %}
 
                 <div class="mb-3">
-                    <label for="title" class="form-label fw-bold">Test Sarlavhasi</label>
+                    <label for="title" class="form-label fw-bold">{% trans "Test Sarlavhasi" %}</label>
                     <input type="text" class="form-control rounded-3 py-2" id="title" name="title" required
-                        placeholder="Masalan: 1-chorak yakuniy nazorat">
+                        placeholder="{% trans 'Masalan: 1-chorak yakuniy nazorat' %}">
                 </div>
 
                 <div class="mb-3">
-                    <label for="subject" class="form-label fw-bold">Fan</label>
+                    <label for="subject" class="form-label fw-bold">{% trans "Fan" %}</label>
                     <select class="form-select rounded-3 py-2" id="subject" name="subject" required>
-                        <option value="">Fanni tanlang</option>
+                        <option value="">{% trans "Fanni tanlang" %}</option>
                         {% for subject in subjects %}
                         <option value="{{ subject.id }}">{{ subject.name }}</option>
                         {% endfor %}
@@ -28,23 +29,23 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="time_limit" class="form-label fw-bold">Vaqt Cheklovi (daqiqa)</label>
+                    <label for="time_limit" class="form-label fw-bold">{% trans "Vaqt Cheklovi (daqiqa)" %}</label>
                     <input type="number" class="form-control rounded-3 py-2" id="time_limit" name="time_limit" value="0"
                         min="0">
-                    <div class="form-text">0 = Cheklov yo'q</div>
+                    <div class="form-text">0 = {% trans "Cheklov yo'q" %}</div>
                 </div>
 
                 <div class="mb-4">
-                    <label for="description" class="form-label fw-bold">Tavsif (ixtiyoriy)</label>
+                    <label for="description" class="form-label fw-bold">{% trans "Tavsif (ixtiyoriy)" %}</label>
                     <textarea class="form-control rounded-3" id="description" name="description" rows="3"
-                        placeholder="Test haqida qisqacha ma'lumot..."></textarea>
+                        placeholder="{% trans 'Test haqida qisqacha ma\'lumot...' %}"></textarea>
                 </div>
 
                 <div class="d-grid gap-2">
                     <button type="submit" class="btn btn-primary rounded-pill py-2 fw-bold shadow-sm">
-                        Davom etish <i class="bi bi-arrow-right ms-2"></i>
+                        {% trans "Davom etish" %} <i class="bi bi-arrow-right ms-2"></i>
                     </button>
-                    <a href="{% url 'quiz_list' %}" class="btn btn-light rounded-pill py-2">Bekor qilish</a>
+                    <a href="{% url 'quiz_list' %}" class="btn btn-light rounded-pill py-2">{% trans "Bekor qilish" %}</a>
                 </div>
             </form>
         </div>

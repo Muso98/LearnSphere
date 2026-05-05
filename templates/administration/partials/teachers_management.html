@@ -84,7 +84,7 @@
             .then(r => r.json())
             .then(data => {
                 if (data.success) {
-                    AdminUtils.Toast.show('Tayinlash bekor qilindi!', 'success');
+                    AdminUtils.Toast.show('{% trans "Tayinlash bekor qilindi!" %}', 'success');
                     loadTeacherAssignments();
                 }
             });

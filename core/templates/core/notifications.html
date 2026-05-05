@@ -1,14 +1,15 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Bildirishnomalar - LearnSphere{% endblock %}
+{% block title %}{% trans "Bildirishnomalar" %} - LearnSphere{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-lg-8">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                <h2 class="fw-bold text-dark">Bildirishnomalar</h2>
-                <p class="text-muted mb-0">Sizda {{ unread_notifications_count }} ta o'qilmagan xabar bor</p>
+                <h2 class="fw-bold text-dark">{% trans "Bildirishnomalar" %}</h2>
+                <p class="text-muted mb-0">{% blocktrans with count=unread_notifications_count %}Sizda {{ count }} ta o'qilmagan xabar bor{% endblocktrans %}</p>
             </div>
             <!-- Ideal holda bu yerda "Barchasini o'qilgan deb belgilash" tugmasi bo'lishi kerak -->
         </div>
@@ -28,8 +29,8 @@
                         </div>
                         <div class="flex-grow-1">
                             <div class="d-flex w-100 justify-content-between align-items-center mb-1">
-                                <h6 class="mb-0 fw-bold text-dark">Yangi Xabar</h6>
-                                <small class="text-muted">{{ notification.created_at|timesince }} oldin</small>
+                                <h6 class="mb-0 fw-bold text-dark">{% trans "Yangi Xabar" %}</h6>
+                                <small class="text-muted">{% blocktrans with time=notification.created_at|timesince %}{{ time }} oldin{% endblocktrans %}</small>
                             </div>
                             <p class="mb-1 text-secondary" style="font-size: 0.95rem;">{{ notification.message }}</p>
 
@@ -37,7 +38,7 @@
                             <span
                                 class="position-absolute top-50 end-0 translate-middle-y me-3 badge rounded-pill bg-danger"
                                 style="width: 10px; height: 10px; padding: 0;">
-                                <span class="visually-hidden">Unread</span>
+                                <span class="visually-hidden">{% trans "Unread" %}</span>
                             </span>
                             {% endif %}
                         </div>
@@ -50,8 +51,8 @@
                 <div class="mb-3 text-muted opacity-25">
                     <i class="bi bi-bell-slash fs-1"></i>
                 </div>
-                <h5 class="text-muted fw-bold">Bildirishnomalar yo'q</h5>
-                <p class="text-muted small">Hozircha sizga kelgan xabarlar mavjud emas.</p>
+                <h5 class="text-muted fw-bold">{% trans "Bildirishnomalar yo'q" %}</h5>
+                <p class="text-muted small">{% trans "Hozircha sizga kelgan xabarlar mavjud emas." %}</p>
             </div>
             {% endif %}
         </div>

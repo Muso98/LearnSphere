@@ -1,24 +1,25 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Vazifa Topshirish - LearnSphere{% endblock %}
+{% block title %}{% trans "Vazifa Topshirish" %} - LearnSphere{% endblock %}
 
 {% block content %}
-<h2>Vazifa Topshirish</h2>
+<h2>{% trans "Vazifa Topshirish" %}</h2>
 <div class="card">
     <div class="card-header">
-        {{ assignment.subject.name }} - Muddat: {{ assignment.deadline }}
+        {{ assignment.subject.name }} - {% trans "Muddat" %}: {{ assignment.deadline }}
     </div>
     <div class="card-body">
-        <p><strong>Tavsif:</strong> {{ assignment.description }}</p>
+        <p><strong>{% trans "Tavsif" %}:</strong> {{ assignment.description }}</p>
 
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="mb-3">
-                <label class="form-label">Fayl Yuklash</label>
+                <label class="form-label">{% trans "Fayl Yuklash" %}</label>
                 <input type="file" name="file_submission" class="form-control" required>
             </div>
-            <button type="submit" class="btn btn-success">Topshirish</button>
-            <a href="{% url 'assignment_list' %}" class="btn btn-secondary">Bekor qilish</a>
+            <button type="submit" class="btn btn-success">{% trans "Topshirish" %}</button>
+            <a href="{% url 'assignment_list' %}" class="btn btn-secondary">{% trans "Bekor qilish" %}</a>
         </form>
     </div>
 </div>

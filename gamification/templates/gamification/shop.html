@@ -1,17 +1,18 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Ballar Do'koni - LearnSphere{% endblock %}
+{% block title %}{% trans "Ballar Do'koni" %} - LearnSphere{% endblock %}
 
 {% block content %}
 <div class="row align-items-center mb-5">
     <div class="col-md-8">
-        <h2 class="fw-bold">Ballar Do'koni</h2>
-        <p class="text-muted mb-0">Yig'gan ballaringizni ajoyib imtiyozlarga almashtiring</p>
+        <h2 class="fw-bold">{% trans "Ballar Do'koni" %}</h2>
+        <p class="text-muted mb-0">{% trans "Yig'gan ballaringizni ajoyib imtiyozlarga almashtiring" %}</p>
     </div>
     <div class="col-md-4 text-md-end mt-3 mt-md-0">
         <div class="d-inline-flex align-items-center bg-white rounded-pill px-4 py-2 shadow-sm border border-warning">
-            <span class="text-muted me-2">Balansingiz:</span>
-            <h4 class="mb-0 fw-bold text-primary">{{ user_balance }} <small class="fs-6 text-muted">ball</small></h4>
+            <span class="text-muted me-2">{% trans "Balansingiz" %}:</span>
+            <h4 class="mb-0 fw-bold text-primary">{{ user_balance }} <small class="fs-6 text-muted">{% trans "ball" %}</small></h4>
         </div>
     </div>
 </div>
@@ -39,7 +40,7 @@
                 <div class="d-flex justify-content-between align-items-start mb-2">
                     <h5 class="card-title fw-bold mb-0">{{ reward.name }}</h5>
                     <span class="badge bg-warning text-dark rounded-pill">
-                        {{ reward.cost }} ball
+                        {{ reward.cost }} {% trans "ball" %}
                     </span>
                 </div>
 
@@ -49,11 +50,11 @@
                     {% csrf_token %}
                     {% if user_balance >= reward.cost %}
                     <button type="submit" class="btn btn-primary w-100 rounded-pill">
-                        Sotib olish
+                        {% trans "Sotib olish" %}
                     </button>
                     {% else %}
                     <button type="button" class="btn btn-secondary w-100 rounded-pill" disabled>
-                        Ball yetmaydi
+                        {% trans "Ball yetmaydi" %}
                     </button>
                     {% endif %}
                 </form>
@@ -63,7 +64,7 @@
     {% empty %}
     <div class="col-12 text-center py-5">
         <i class="bi bi-shop fs-1 text-muted opacity-25 mb-3 d-block"></i>
-        <h5 class="text-muted">Do'konda hozircha mahsulotlar yo'q</h5>
+        <h5 class="text-muted">{% trans "Do'konda hozircha mahsulotlar yo'q" %}</h5>
     </div>
     {% endfor %}
 </div>

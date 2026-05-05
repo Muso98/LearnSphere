@@ -101,7 +101,7 @@
 
 <script>
     function deleteGrade(id) {
-        if (!confirm('Ushbu bahoni o\'chirib tashlamoqchimisiz?')) return;
+        if (!confirm('{% trans "Ushbu bahoni o\'chirib tashlamoqchimisiz?" %}')) return;
 
         fetch(`/administration/grades/${id}/delete/`, {
             method: 'POST',
@@ -114,7 +114,7 @@
                 if (data.success) {
                     document.getElementById(`grade-row-${id}`).remove();
                 } else {
-                    alert('Xatolik yuz berdi');
+                    alert('{% trans "Xatolik yuz berdi" %}');
                 }
             });
     }

@@ -1,17 +1,18 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}{{ class_obj.name }} - O'quvchilar - LearnSphere{% endblock %}
+{% block title %}{{ class_obj.name }} - {% trans "O'quvchilar" %} - LearnSphere{% endblock %}
 
 {% block content %}
 <div class="row mb-4">
     <div class="col-12">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{% url 'skill_input_list' %}">Sinflar</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'skill_input_list' %}">{% trans "Sinflar" %}</a></li>
                 <li class="breadcrumb-item active" aria-current="page">{{ class_obj.name }}</li>
             </ol>
         </nav>
-        <h2 class="fw-bold">{{ class_obj.name }} sinf o'quvchilari</h2>
+        <h2 class="fw-bold">{% blocktrans with name=class_obj.name %}{{ name }} sinf o'quvchilari{% endblocktrans %}</h2>
     </div>
 </div>
 
@@ -31,13 +32,13 @@
             </div>
 
             {% if student.skill_map.exists %}
-            <span class="badge bg-success rounded-pill">Baholangan <i class="bi bi-check-circle ms-1"></i></span>
+            <span class="badge bg-success rounded-pill">{% trans "Baholangan" %} <i class="bi bi-check-circle ms-1"></i></span>
             {% else %}
-            <span class="badge bg-warning text-dark rounded-pill">Baholanmagan</span>
+            <span class="badge bg-warning text-dark rounded-pill">{% trans "Baholanmagan" %}</span>
             {% endif %}
         </a>
         {% empty %}
-        <p class="text-center text-muted col-12 my-4">Sinfda o'quvchilar yo'q.</p>
+        <p class="text-center text-muted col-12 my-4">{% trans "Sinfda o'quvchilar yo'q." %}</p>
         {% endfor %}
     </div>
 </div>

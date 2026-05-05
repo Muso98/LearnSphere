@@ -1,33 +1,34 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Grade Submission - LearnSphere{% endblock %}
+{% block title %}{% trans "Vazifani Baholash" %} - LearnSphere{% endblock %}
 
 {% block content %}
-<h2>Grade Submission</h2>
+<h2>{% trans "Vazifani Baholash" %}</h2>
 <div class="card">
     <div class="card-header">
         {{ submission.assignment.subject.name }} - {{ submission.student.first_name }} {{ submission.student.last_name
         }}
     </div>
     <div class="card-body">
-        <p><strong>Assignment:</strong> {{ submission.assignment.description }}</p>
-        <p><strong>Submitted File:</strong> <a href="{{ submission.file_submission.url }}" target="_blank">Download</a>
+        <p><strong>{% trans "Topshiriq" %}:</strong> {{ submission.assignment.description }}</p>
+        <p><strong>{% trans "Topshirilgan Fayl" %}:</strong> <a href="{{ submission.file_submission.url }}" target="_blank">{% trans "Yuklab olish" %}</a>
         </p>
-        <p><strong>Submitted At:</strong> {{ submission.submitted_at }}</p>
+        <p><strong>{% trans "Topshirilgan vaqt" %}:</strong> {{ submission.submitted_at }}</p>
 
         <form method="post">
             {% csrf_token %}
             <div class="mb-3">
-                <label class="form-label">Grade (1-5)</label>
+                <label class="form-label">{% trans "Baho" %} (1-5)</label>
                 <input type="number" name="grade" min="1" max="5" class="form-control"
                     value="{{ submission.grade|default:'' }}" required>
             </div>
             <div class="mb-3">
-                <label class="form-label">Feedback</label>
+                <label class="form-label">{% trans "Fikr-mulohaza" %}</label>
                 <textarea name="feedback" class="form-control" rows="3">{{ submission.feedback }}</textarea>
             </div>
-            <button type="submit" class="btn btn-primary">Save Grade</button>
-            <a href="{% url 'view_submissions' submission.assignment.id %}" class="btn btn-secondary">Cancel</a>
+            <button type="submit" class="btn btn-primary">{% trans "Bahoni Saqlash" %}</button>
+            <a href="{% url 'view_submissions' submission.assignment.id %}" class="btn btn-secondary">{% trans "Bekor qilish" %}</a>
         </form>
     </div>
 </div>

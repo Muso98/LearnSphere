@@ -91,7 +91,7 @@
             .then(r => r.json())
             .then(data => {
                 if (data.success) {
-                    AdminUtils.Toast.show('Baho o\'chirildi!', 'success');
+                    AdminUtils.Toast.show('{% trans "Baho o\'chirildi!" %}', 'success');
                     loadGrades();
                 }
             });

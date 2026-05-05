@@ -109,7 +109,7 @@
             .then(r => r.json())
             .then(data => {
                 if (data.success) {
-                    AdminUtils.Toast.show('Davomat yangilandi!', 'success');
+                    AdminUtils.Toast.show('{% trans "Davomat yangilandi!" %}', 'success');
                     loadAttendance();
                 }
             });

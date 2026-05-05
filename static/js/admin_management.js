@@ -109,7 +109,7 @@ class AjaxForm {
         // Disable submit button
         if (this.submitBtn) {
             this.submitBtn.disabled = true;
-            this.submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Yuklanmoqda...';
+            this.submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>${AdminUtils.Translations.loading}`;
         }
 
         try {
@@ -124,21 +124,21 @@ class AjaxForm {
             const data = await response.json();
 
             if (data.success) {
-                Toast.show(data.message || 'Muvaffaqiyatli saqlandi!', 'success');
+                Toast.show(data.message || AdminUtils.Translations.success_save, 'success');
                 if (this.onSuccess) this.onSuccess(data);
             } else {
-                Toast.show(data.message || 'Xatolik yuz berdi!', 'error');
+                Toast.show(data.message || AdminUtils.Translations.error_general, 'error');
                 if (this.onError) this.onError(data);
             }
         } catch (error) {
             console.error('Form submission error:', error);
-            Toast.show('Tarmoq xatosi!', 'error');
+            Toast.show(AdminUtils.Translations.error_network, 'error');
             if (this.onError) this.onError(error);
         } finally {
             // Re-enable submit button
             if (this.submitBtn) {
                 this.submitBtn.disabled = false;
-                this.submitBtn.innerHTML = this.submitBtn.dataset.originalText || 'Saqlash';
+                this.submitBtn.innerHTML = this.submitBtn.dataset.originalText || AdminUtils.Translations.save;
             }
         }
     }
@@ -286,7 +286,7 @@ class BulkActions {
     async executeAction(action, url) {
         const items = this.getSelectedItems();
         if (items.length === 0) {
-            Toast.show('Hech narsa tanlanmagan!', 'warning');
+            Toast.show(AdminUtils.Translations.no_selection, 'warning');
             return;
         }
 
@@ -308,12 +308,12 @@ class BulkActions {
                 // Reload table or update UI
                 return true;
             } else {
-                Toast.show(data.message || 'Xatolik yuz berdi!', 'error');
+                Toast.show(data.message || AdminUtils.Translations.error_general, 'error');
                 return false;
             }
         } catch (error) {
             console.error('Bulk action error:', error);
-            Toast.show('Tarmoq xatosi!', 'error');
+            Toast.show(AdminUtils.Translations.error_network, 'error');
             return false;
         }
     }
@@ -328,7 +328,7 @@ function confirmAction(message, callback) {
 
 // Delete with confirmation
 async function deleteItem(url, itemName, onSuccess) {
-    if (!confirm(`${itemName}ni o'chirishga ishonchingiz komilmi?`)) {
+    if (!confirm(`${itemName}${AdminUtils.Translations.delete_confirm}`)) {
         return;
     }
 
@@ -343,14 +343,14 @@ async function deleteItem(url, itemName, onSuccess) {
         const data = await response.json();
 
         if (data.success) {
-            Toast.show(data.message || 'Muvaffaqiyatli o\'chirildi!', 'success');
+            Toast.show(data.message || AdminUtils.Translations.success_delete, 'success');
             if (onSuccess) onSuccess(data);
         } else {
-            Toast.show(data.message || 'Xatolik yuz berdi!', 'error');
+            Toast.show(data.message || AdminUtils.Translations.error_general, 'error');
         }
     } catch (error) {
         console.error('Delete error:', error);
-        Toast.show('Tarmoq xatosi!', 'error');
+        Toast.show(AdminUtils.Translations.error_network, 'error');
     }
 }
 

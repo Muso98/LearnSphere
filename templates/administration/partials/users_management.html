@@ -2,9 +2,9 @@
 {% load i18n %}
 
 <div class="management-header">
-    <h3 class="management-title"><i class="bi bi-people me-2"></i>Foydalanuvchilar Boshqaruvi</h3>
+    <h3 class="management-title"><i class="bi bi-people me-2"></i>{% trans "Foydalanuvchilar Boshqaruvi" %}</h3>
     <button class="btn btn-action btn-action-primary" onclick="showUserModal('create')">
-        <i class="bi bi-plus-circle"></i> Yangi Foydalanuvchi
+        <i class="bi bi-plus-circle"></i> {% trans "Yangi Foydalanuvchi" %}
     </button>
 </div>
 
@@ -12,29 +12,29 @@
 <div class="filter-panel">
     <div class="row g-3">
         <div class="col-md-4">
-            <input type="text" id="userSearch" class="form-control" placeholder="Qidirish (ism, username, email)...">
+            <input type="text" id="userSearch" class="form-control" placeholder="{% trans 'Qidirish (ism, username, email)...' %}">
         </div>
         <div class="col-md-3">
             <select id="roleFilter" class="form-select">
-                <option value="">Barcha rollar</option>
-                <option value="student">O'quvchi</option>
-                <option value="teacher">O'qituvchi</option>
-                <option value="parent">Ota-ona</option>
-                <option value="vice_director">Direktor o'rinbosari</option>
-                <option value="director">Direktor</option>
-                <option value="admin">Admin</option>
+                <option value="">{% trans "Barcha rollar" %}</option>
+                <option value="student">{% trans "O'quvchi" %}</option>
+                <option value="teacher">{% trans "O'qituvchi" %}</option>
+                <option value="parent">{% trans "Ota-ona" %}</option>
+                <option value="vice_director">{% trans "Direktor o'rinbosari" %}</option>
+                <option value="director">{% trans "Direktor" %}</option>
+                <option value="admin">{% trans "Admin" %}</option>
             </select>
         </div>
         <div class="col-md-3">
             <select id="statusFilter" class="form-select">
-                <option value="">Barcha holatlar</option>
-                <option value="active">Faol</option>
-                <option value="inactive">Faol emas</option>
+                <option value="">{% trans "Barcha holatlar" %}</option>
+                <option value="active">{% trans "Faol" %}</option>
+                <option value="inactive">{% trans "Faol emas" %}</option>
             </select>
         </div>
         <div class="col-md-2">
             <button class="btn btn-secondary w-100" onclick="resetUserFilters()">
-                <i class="bi bi-arrow-clockwise"></i> Tozalash
+                <i class="bi bi-arrow-clockwise"></i> {% trans "Tozalash" %}
             </button>
         </div>
     </div>
@@ -43,17 +43,17 @@
 <!-- Bulk Actions Bar (hidden by default) -->
 <div id="userBulkActions" class="bulk-actions-bar d-none">
     <div class="selected-info">
-        <span class="selected-count">0</span> ta foydalanuvchi tanlandi
+        <span class="selected-count">0</span> {% trans "ta foydalanuvchi tanlandi" %}
     </div>
     <div class="action-buttons">
         <button class="btn btn-action btn-action-success btn-sm" onclick="bulkActivate()">
-            <i class="bi bi-check-circle"></i> Faollashtirish
+            <i class="bi bi-check-circle"></i> {% trans "Faollashtirish" %}
         </button>
         <button class="btn btn-action btn-action-warning btn-sm" onclick="bulkDeactivate()">
-            <i class="bi bi-x-circle"></i> Faolsizlantirish
+            <i class="bi bi-x-circle"></i> {% trans "Faolsizlantirish" %}
         </button>
         <button class="btn btn-action btn-action-danger btn-sm" onclick="bulkDelete()">
-            <i class="bi bi-trash"></i> O'chirish
+            <i class="bi bi-trash"></i> {% trans "O'chirish" %}
         </button>
     </div>
 </div>
@@ -66,20 +66,20 @@
                 <th style="width: 50px;">
                     <input type="checkbox" class="form-check-input" id="selectAllUsers">
                 </th>
-                <th>Foydalanuvchi</th>
-                <th>Rol</th>
-                <th>Email</th>
-                <th>Telefon</th>
-                <th>Holati</th>
-                <th>Qo'shilgan sana</th>
-                <th style="width: 200px;">Harakatlar</th>
+                <th>{% trans "Foydalanuvchi" %}</th>
+                <th>{% trans "Rol" %}</th>
+                <th>{% trans "Email" %}</th>
+                <th>{% trans "Telefon" %}</th>
+                <th>{% trans "Holati" %}</th>
+                <th>{% trans "Qo'shilgan sana" %}</th>
+                <th style="width: 200px;">{% trans "Harakatlar" %}</th>
             </tr>
         </thead>
         <tbody id="usersTableBody">
             <tr>
                 <td colspan="8" class="text-center py-5">
                     <div class="spinner-border text-primary" role="status"></div>
-                    <p class="mt-2 text-muted">Yuklanmoqda...</p>
+                    <p class="mt-2 text-muted">{% trans "Yuklanmoqda..." %}</p>
                 </td>
             </tr>
         </tbody>
@@ -94,7 +94,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="userModalTitle">Foydalanuvchi Qo'shish</h5>
+                <h5 class="modal-title" id="userModalTitle">{% trans "Foydalanuvchi Qo'shish" %}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
@@ -104,64 +104,64 @@
 
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <label class="form-label">Username</label>
+                            <label class="form-label">{% trans "Username" %}</label>
                             <input type="text" class="form-control" name="username" required>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Rol</label>
+                            <label class="form-label">{% trans "Rol" %}</label>
                             <select class="form-select" name="role" required>
-                                <option value="student">O'quvchi</option>
-                                <option value="teacher">O'qituvchi</option>
-                                <option value="parent">Ota-ona</option>
-                                <option value="vice_director">Direktor o'rinbosari</option>
-                                <option value="director">Direktor</option>
-                                <option value="admin">Admin</option>
+                                <option value="student">{% trans "O'quvchi" %}</option>
+                                <option value="teacher">{% trans "O'qituvchi" %}</option>
+                                <option value="parent">{% trans "Ota-ona" %}</option>
+                                <option value="vice_director">{% trans "Direktor o'rinbosari" %}</option>
+                                <option value="director">{% trans "Direktor" %}</option>
+                                <option value="admin">{% trans "Admin" %}</option>
                             </select>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Ism</label>
+                            <label class="form-label">{% trans "Ism" %}</label>
                             <input type="text" class="form-control" name="first_name" required>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Familiya</label>
+                            <label class="form-label">{% trans "Familiya" %}</label>
                             <input type="text" class="form-control" name="last_name" required>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Email</label>
+                            <label class="form-label">{% trans "Email" %}</label>
                             <input type="email" class="form-control" name="email" required>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Telefon</label>
+                            <label class="form-label">{% trans "Telefon" %}</label>
                             <input type="text" class="form-control" name="phone">
                         </div>
                         <div class="col-md-6" id="passwordField">
-                            <label class="form-label">Parol</label>
+                            <label class="form-label">{% trans "Parol" %}</label>
                             <input type="password" class="form-control" name="password1">
                         </div>
                         <div class="col-md-6" id="passwordConfirmField">
-                            <label class="form-label">Parolni tasdiqlang</label>
+                            <label class="form-label">{% trans "Parolni tasdiqlang" %}</label>
                             <input type="password" class="form-control" name="password2">
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Sinf (faqat o'quvchilar uchun)</label>
+                            <label class="form-label">{% trans "Sinf (faqat o'quvchilar uchun)" %}</label>
                             <select class="form-select" name="student_class">
-                                <option value="">Tanlash...</option>
+                                <option value="">{% trans "Tanlash..." %}</option>
                                 <!-- Will be populated dynamically -->
                             </select>
                         </div>
                         <div class="col-md-6">
                             <div class="form-check mt-4">
                                 <input class="form-check-input" type="checkbox" name="is_active" id="isActive" checked>
-                                <label class="form-check-label" for="isActive">Faol</label>
+                                <label class="form-check-label" for="isActive">{% trans "Faol" %}</label>
                             </div>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bekor qilish</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Bekor qilish" %}</button>
                 <button type="button" class="btn btn-action btn-action-primary" onclick="saveUser()">
-                    <i class="bi bi-save"></i> Saqlash
+                    <i class="bi bi-save"></i> {% trans "Saqlash" %}
                 </button>
             </div>
         </div>
@@ -192,7 +192,7 @@
             })
             .catch(err => {
                 console.error('Error loading users:', err);
-                AdminUtils.Toast.show('Xatolik yuz berdi!', 'error');
+                AdminUtils.Toast.show('{% trans "Xatolik yuz berdi!" %}', 'error');
             });
     }
 
@@ -202,8 +202,8 @@
             tbody.innerHTML = `<tr><td colspan="8" class="text-center py-5">
             <div class="empty-state">
                 <i class="bi bi-people"></i>
-                <h3>Foydalanuvchilar topilmadi</h3>
-                <p>Yangi foydalanuvchi qo'shish uchun yuqoridagi tugmani bosing</p>
+                <h3>{% trans "Foydalanuvchilar topilmadi" %}</h3>
+                <p>{% trans "Yangi foydalanuvchi qo'shish uchun yuqoridagi tugmani bosing" %}</p>
             </div>
         </td></tr>`;
             return;
@@ -228,7 +228,7 @@
             <td><span class="badge badge-modern bg-${getRoleBadgeColor(user.role)}">${user.role_display}</span></td>
             <td>${user.email || '-'}</td>
             <td>${user.phone || '-'}</td>
-            <td><span class="badge ${user.is_active ? 'bg-success' : 'bg-secondary'}">${user.is_active ? 'Faol' : 'Faol emas'}</span></td>
+            <td><span class="badge ${user.is_active ? 'bg-success' : 'bg-secondary'}">${user.is_active ? '{% trans "Faol" %}' : '{% trans "Faol emas" %}'}</span></td>
             <td>${user.date_joined}</td>
             <td class="table-actions">
                 <button class="btn btn-sm btn-info" onclick="editUser(${user.id})" title="Tahrirlash">
@@ -265,11 +265,11 @@
         document.getElementById('userId').value = userId || '';
 
         if (mode === 'create') {
-            document.getElementById('userModalTitle').textContent = 'Yangi Foydalanuvchi';
+            document.getElementById('userModalTitle').textContent = '{% trans "Yangi Foydalanuvchi" %}';
             document.getElementById('passwordField').style.display = 'block';
             document.getElementById('passwordConfirmField').style.display = 'block';
         } else {
-            document.getElementById('userModalTitle').textContent = 'Foydalanuvchini Tahrirlash';
+            document.getElementById('userModalTitle').textContent = '{% trans "Foydalanuvchini Tahrirlash" %}';
             document.getElementById('passwordField').style.display = 'none';
             document.getElementById('passwordConfirmField').style.display = 'none';
             // Load user data
@@ -297,30 +297,30 @@
             .then(r => r.json())
             .then(data => {
                 if (data.success) {
-                    AdminUtils.Toast.show(data.message || 'Muvaffaqiyatli saqlandi!', 'success');
+                    AdminUtils.Toast.show(data.message || '{% trans "Muvaffaqiyatli saqlandi!" %}', 'success');
                     userModal.hide();
                     loadUsers();
                 } else {
                     if (data.errors) {
-                        let errorMsg = 'Xatoliklar:<br>';
+                        let errorMsg = '{% trans "Xatoliklar" %}:<br>';
                         for (const [field, errors] of Object.entries(data.errors)) {
                             errorMsg += `- <b>${field}:</b> ${errors.join(', ')}<br>`;
                         }
                         AdminUtils.Toast.show(errorMsg, 'error');
                         console.error('Form errors:', data.errors);
                     } else {
-                        AdminUtils.Toast.show(data.message || 'Xatolik yuz berdi!', 'error');
+                        AdminUtils.Toast.show(data.message || '{% trans "Xatolik yuz berdi!" %}', 'error');
                     }
                 }
             })
             .catch(err => {
                 console.error('Save error:', err);
-                AdminUtils.Toast.show('Tarmoq xatosi!', 'error');
+                AdminUtils.Toast.show('{% trans "Tarmoq xatosi!" %}', 'error');
             });
     }
 
     function deleteUser(userId, username) {
-        if (!confirm(`${username}ni o'chirishga ishonchingiz komilmi?`)) return;
+        if (!confirm(`{% trans "ni o'chirishga ishonchingiz komilmi?" %}`.replace('ni', username + 'ni'))) return;
 
         const url = "{% url 'user_delete' 0 %}".replace('0', userId);
         fetch(url, {
@@ -333,10 +333,10 @@
             .then(r => r.json())
             .then(data => {
                 if (data.success) {
-                    AdminUtils.Toast.show(data.message || 'Muvaffaqiyatli o\'chirildi!', 'success');
+                    AdminUtils.Toast.show(data.message || '{% trans "Muvaffaqiyatli o\'chirildi!" %}', 'success');
                     loadUsers();
                 } else {
-                    AdminUtils.Toast.show(data.message || 'Xatolik yuz berdi!', 'error');
+                    AdminUtils.Toast.show(data.message || '{% trans "Xatolik yuz berdi!" %}', 'error');
                 }
             });
     }

@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}{{ room.number }} - Band qilish - LearnSphere{% endblock %}
+{% block title %}{{ room.number }} - {% trans "Band qilish" %} - LearnSphere{% endblock %}
 
 {% block content %}
 <div class="row">
@@ -12,18 +13,18 @@
             </span>
             <h2 class="fw-bold mb-3">{{ room.number }}</h2>
             <ul class="list-unstyled text-muted mb-4">
-                <li class="mb-2"><i class="bi bi-people-fill me-2"></i> Sig'imi: {{ room.capacity }}</li>
+                <li class="mb-2"><i class="bi bi-people-fill me-2"></i> {% trans "Sig'imi" %}: {{ room.capacity }}</li>
                 {% if room.has_projector %}
-                <li class="mb-2"><i class="bi bi-projector-fill me-2 text-success"></i> Proyektor mavjud</li>
+                <li class="mb-2"><i class="bi bi-projector-fill me-2 text-success"></i> {% trans "Proyektor mavjud" %}</li>
                 {% endif %}
                 {% if room.has_smartboard %}
-                <li class="mb-2"><i class="bi bi-display-fill me-2 text-success"></i> Elektron doska mavjud</li>
+                <li class="mb-2"><i class="bi bi-display-fill me-2 text-success"></i> {% trans "Elektron doska mavjud" %}</li>
                 {% endif %}
             </ul>
             <p class="small text-muted border-top pt-3">{{ room.description }}</p>
 
             <a href="{% url 'room_list' %}" class="btn btn-light w-100 rounded-pill mt-3">
-                <i class="bi bi-arrow-left me-2"></i> Barchasi
+                <i class="bi bi-arrow-left me-2"></i> {% trans "Barchasi" %}
             </a>
         </div>
     </div>
@@ -32,9 +33,9 @@
     <div class="col-lg-8">
         <div class="glass-card p-4">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h4 class="fw-bold mb-0">Bandlik Jadvali</h4>
+                <h4 class="fw-bold mb-0">{% trans "Bandlik Jadvali" %}</h4>
                 <form method="get" class="d-flex align-items-center">
-                    <label class="me-2 small fw-bold">Sana:</label>
+                    <label class="me-2 small fw-bold">{% trans "Sana" %}:</label>
                     <input type="date" name="date" class="form-control form-control-sm rounded-3 me-2"
                         value="{{ selected_date|date:'Y-m-d' }}" onchange="this.form.submit()">
                 </form>
@@ -54,41 +55,41 @@
                                 <span class="small text-muted">{{ booking.purpose }} ({{ booking.teacher.get_full_name
                                     }})</span>
                             </div>
-                            <span class="badge bg-secondary bg-opacity-10 text-secondary rounded-pill">Band</span>
+                            <span class="badge bg-secondary bg-opacity-10 text-secondary rounded-pill">{% trans "Band" %}</span>
                         </div>
                     </div>
                     {% endfor %}
                 </div>
                 {% else %}
                 <div class="text-center py-4 bg-light bg-opacity-50 rounded-3">
-                    <p class="text-muted mb-0">Bu sana uchun bandliklar yo'q</p>
+                    <p class="text-muted mb-0">{% trans "Bu sana uchun bandliklar yo'q" %}</p>
                 </div>
                 {% endif %}
             </div>
 
             <!-- Booking Form -->
-            <h5 class="fw-bold mb-3 border-top pt-4">Xonani Band Qilish</h5>
+            <h5 class="fw-bold mb-3 border-top pt-4">{% trans "Xonani Band Qilish" %}</h5>
             <form action="{% url 'book_room' room.id %}" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="date" value="{{ selected_date|date:'Y-m-d' }}">
 
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <label class="form-label small fw-bold">Boshlanish</label>
+                        <label class="form-label small fw-bold">{% trans "Boshlanish" %}</label>
                         <input type="time" name="start_time" class="form-control rounded-3" required>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label small fw-bold">Tugash</label>
+                        <label class="form-label small fw-bold">{% trans "Tugash" %}</label>
                         <input type="time" name="end_time" class="form-control rounded-3" required>
                     </div>
                     <div class="col-12">
-                        <label class="form-label small fw-bold">Maqsad</label>
+                        <label class="form-label small fw-bold">{% trans "Maqsad" %}</label>
                         <input type="text" name="purpose" class="form-control rounded-3"
-                            placeholder="Masalan: Fizika laboratoriyasi, 9-A sinf" required>
+                            placeholder="{% trans 'Masalan: Fizika laboratoriyasi, 9-A sinf' %}" required>
                     </div>
                     <div class="col-12 mt-4">
                         <button type="submit" class="btn btn-primary w-100 rounded-pill py-2">
-                            <i class="bi bi-calendar-plus me-2"></i> Band qilish
+                            <i class="bi bi-calendar-plus me-2"></i> {% trans "Band qilish" %}
                         </button>
                     </div>
                 </div>
